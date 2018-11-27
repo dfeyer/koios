@@ -1,0 +1,16 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    Dominique Feyer -- Developper -- @dfeyer
+
+# THANKS
+
+    My familly & my kids
+    All the other famillies who help to build this platform
+
+# TECHNOLOGY COLOPHON
+
+    Elm 0.19
+    PostCSS

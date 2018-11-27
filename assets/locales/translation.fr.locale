@@ -1,0 +1,11 @@
+{
+  "title": {
+    "default": "Koios - Aide au suivi du plan d'étude romand (PER) pour les enfants IHES",
+    "home": "Bienvenue sur Koios"
+  },
+  "error": {
+    "general": "Oups, nous sommes désolé, nous ne pouvons pas traiter votre demande...",
+    "notFound": "Oups, nous ne trouvons pas la page que vous cherchez."
+  },
+  "loadingInProgress": "Chargement en cours..."
+}
