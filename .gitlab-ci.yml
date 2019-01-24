@@ -1,0 +1,18 @@
+stages:
+  - deploy
+
+pages:
+  cache:
+    paths:
+    - node_modules/
+    - elm-stuff/
+  stage: deploy
+  script:
+  - yarn install
+  - yarn run build
+  - mv dist public
+  artifacts:
+    paths:
+    - public
+  only:
+  - master

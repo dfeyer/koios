@@ -1,0 +1,85 @@
+.collection-item {
+  font-weight: bold;
+}
+
+.m-1 {
+  margin: 1rem !important;
+}
+
+.text-langues {
+  color: rgb(255, 204, 0) !important;
+}
+
+.text-mathematiques-et-sciences-de-la-nature {
+  color: rgb(222, 114, 114) !important;
+}
+
+.text-sciences-humaines-et-sociales {
+  color: rgb(51, 153, 102) !important;
+}
+
+.text-arts {
+  color: rgb(255, 102, 0) !important;
+}
+
+.text-corps-et-mouvement {
+  color: rgb(132, 132, 234) !important;
+}
+
+.text-formation-generale {
+  color: rgb(201, 3, 201) !important;
+}
+
+.text-capacites-transversales {
+  color: rgb(177, 110, 76) !important;
+}
+
+
+.fill-langues {
+  background-color: rgb(255, 204, 0) !important;
+}
+a.fill-langues:hover {
+  background-color: whitesmoke !important;
+}
+
+.fill-mathematiques-et-sciences-de-la-nature {
+  background-color: rgb(222, 114, 114) !important;
+}
+a.fill-mathematiques-et-sciences-de-la-nature:hover {
+  background-color: whitesmoke !important;
+}
+
+.fill-sciences-humaines-et-sociales {
+  background-color: rgb(51, 153, 102) !important;
+}
+a.fill-sciences-humaines-et-sociales:hover {
+  background-color: whitesmoke !important;
+}
+
+.fill-arts {
+  background-color: rgb(255, 102, 0) !important;
+}
+a.fill-arts:hover {
+  background-color: whitesmoke !important;
+}
+
+.fill-corps-et-mouvement {
+  background-color: rgb(132, 132, 234) !important;
+}
+a.fill-corps-et-mouvement:hover {
+  background-color: whitesmoke !important;
+}
+
+.fill-formation-generale {
+  background-color: rgb(201, 3, 201) !important;
+}
+a.fill-formation-generale:hover {
+  background-color: whitesmoke !important;
+}
+
+.fill-capacites-transversales {
+  background-color: rgb(177, 110, 76) !important;
+}
+a.fill-capacites-transversales:hover {
+  background-color: whitesmoke !important;
+}

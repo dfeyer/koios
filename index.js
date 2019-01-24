@@ -1,6 +1,13 @@
+import 'material-design-icons';
+
+import 'materialize-css/dist/js/materialize.js';
+import 'materialize-css/dist/css/materialize.css';
+
+import './src/Styles.css';
+
 import { Elm } from './src/Main.elm'
 import localeFrench from './assets/locales/translation.fr.locale'
-import sections from './assets/sections.json'
+import activities from './assets/activities.json'
 
 Elm.Main.init({
     node: document.getElementById('main'),
@@ -8,6 +15,6 @@ Elm.Main.init({
       translations: {
         fr: localeFrench
       },
-      sections: sections
+      activities: activities
     }
 });

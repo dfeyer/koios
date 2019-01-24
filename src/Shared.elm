@@ -1,36 +1,72 @@
-module Shared exposing (Model, Msg(..), RemoteData(..), Route(..), Section, SectionIdentifier, Targets, initialModel, mapRemoteData)
+module Shared exposing (Group, Model, Msg(..), Route(..), Section, SectionIdentifier, UriWithLabel, initialModel, toUriWithLabel)
 
 import Browser exposing (UrlRequest)
 import Browser.Navigation exposing (Key)
 import Http
 import I18Next exposing (Translations, initialTranslations)
-import RemoteData exposing (RemoteData(..), WebData)
 import Url exposing (Url)
+
+
+type alias Slug =
+    String
+
+
+type alias UUID =
+    String
 
 
 type alias Model =
     { key : Key
     , route : Route
-    , sections : RemoteData (List String)
+    , activities : List Group
     , translations : Translations
+    }
+
+
+type alias Group =
+    { title : String
+    , slug : Slug
+    , id : UUID
+    , introductions : List Introduction
+    , topics : List Topic
+    }
+
+
+type alias Introduction =
+    { title : String
+    , slug : Slug
+    , id : UUID
+    , url : String
+    }
+
+
+type alias Topic =
+    { title : String
+    , slug : Slug
+    , id : UUID
+    , sections : List Section
     }
 
 
 type alias Section =
     { title : String
+    , slug : Slug
+    , id : UUID
     , identifier : SectionIdentifier
     , hash : String
     , url : String
-    , pdf : String
-    , targets : List Targets
+    , pdf : Maybe String
+    , targets : List Target
     , group : String
     , section : String
     , subsection : String
     }
 
 
-type alias Targets =
-    ( String, Maybe String )
+type alias Target =
+    { text : String
+    , position : String
+    }
 
 
 type alias SectionIdentifier =
@@ -41,11 +77,20 @@ type alias SectionIdentifier =
     }
 
 
-initialModel : Route -> Key -> Model
-initialModel route key =
+toUriWithLabel : String -> String -> String -> UriWithLabel
+toUriWithLabel uri label slug =
+    ( uri, label, slug )
+
+
+type alias UriWithLabel =
+    ( String, String, String )
+
+
+initialModel : Route -> List Group -> Key -> Model
+initialModel route activities key =
     { key = key
     , route = route
-    , sections = NotAsked
+    , activities = activities
     , translations = initialTranslations
     }
 
@@ -59,26 +104,3 @@ type Msg
     = OnUrlChange Url
     | OnUrlRequest UrlRequest
     | TranslationsLoaded (Result Http.Error Translations)
-
-
-type RemoteData a
-    = NotAsked
-    | Loading
-    | Loaded a
-    | Failure
-
-
-mapRemoteData : (a -> b) -> RemoteData a -> RemoteData b
-mapRemoteData fn remoteData =
-    case remoteData of
-        NotAsked ->
-            NotAsked
-
-        Loading ->
-            Loading
-
-        Loaded data ->
-            Loaded (fn data)
-
-        Failure ->
-            Failure
