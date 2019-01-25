@@ -3,7 +3,6 @@ module Main exposing (init, main, subscriptions, update, view)
 import Browser
 import Browser.Navigation as Nav
 import Html exposing (..)
-import Html.Attributes exposing (..)
 import I18Next
     exposing
         ( Delims(..)
@@ -12,9 +11,11 @@ import I18Next
         , t
         )
 import Pages.Home
+import Pages.NotFound
 import Routes exposing (..)
 import Shared exposing (..)
 import Url
+import Views.Page
 
 
 
@@ -90,8 +91,9 @@ update msg model =
 
         OnUrlChange url ->
             let
-                newRoute =
+                newRoute = Debug.log "New Route" (
                     Routes.parseUrl url
+                    )
             in
             ( { model | route = newRoute }, Cmd.none )
 
@@ -118,11 +120,7 @@ view model =
 
 page : Model -> Html Msg
 page model =
-    div []
-        [ pageHeader model
-        , pageWithData model
-        , pageFooter model
-        ]
+    Views.Page.view model pageWithData
 
 
 pageWithData : Model -> Html Msg
@@ -131,162 +129,18 @@ pageWithData model =
         HomeRoute ->
             Pages.Home.view model
 
+        GroupRoute groupSlug ->
+            Pages.Home.view model
+
+        TargetRoute groupSlug targetSlug ->
+            Pages.Home.view model
+
+        SectionRoute groupSlug targetSlug sectionSlug ->
+            Pages.Home.view model
+
         NotFoundRoute ->
-            notFoundView
+            Pages.NotFound.view
 
 
-icon : String -> Html Msg
-icon name =
-    i [ class "material-icons" ] [ text name ]
 
 
-leftIcon : String -> Html Msg
-leftIcon name =
-    i [ class "material-icons left" ] [ text name ]
-
-
-pageHeader : Model -> Html.Html Msg
-pageHeader model =
-    let
-        links =
-            case model.route of
-                HomeRoute ->
-                    [ ( text (t model.translations "title.home"), '#' )
-                    ]
-
-                NotFoundRoute ->
-                    [ ( text (t model.translations "error.notFound"), '#' )
-                    ]
-    in
-    nav [ class "blue-grey", attribute "role" "navigation" ]
-        [ div [ class "nav-wrapper container" ]
-            [ a [ class "brand-logo right", href "#", id "logo-container" ]
-                [ icon "forum", text "koios" ]
-            , ul [ class "left hide-on-med-and-down" ]
-                [ li []
-                    [ a [ href "#" ]
-                        [ leftIcon "list_alt"
-                        , text "plan d'étude"
-                        ]
-                    ]
-                , li []
-                    [ a [ href "#" ]
-                        [ leftIcon "view_week"
-                        , text "semainier"
-                        ]
-                    ]
-                , li []
-                    [ a [ href "#" ]
-                        [ leftIcon "view_list"
-                        , text "journal"
-                        ]
-                    ]
-                , li []
-                    [ a [ href "#" ]
-                        [ leftIcon "view_agenda"
-                        , text "calendrier"
-                        ]
-                    ]
-                ]
-            , ul [ class "sidenav", id "nav-mobile" ]
-                [ li []
-                    [ a [ href "#" ]
-                        [ leftIcon "list_alt"
-                        , text "plan d'étude"
-                        ]
-                    ]
-                , li []
-                    [ a [ href "#" ]
-                        [ leftIcon "view_week"
-                        , text "semainier"
-                        ]
-                    ]
-                , li []
-                    [ a [ href "#" ]
-                        [ leftIcon "view_list"
-                        , text "journal"
-                        ]
-                    ]
-                , li []
-                    [ a [ href "#" ]
-                        [ leftIcon "view_agenda"
-                        , text "calendrier"
-                        ]
-                    ]
-                ]
-            , a [ class "sidenav-trigger", attribute "data-target" "nav-mobile", href "#" ]
-                [ i [ class "material-icons" ]
-                    [ text "menu" ]
-                ]
-            ]
-        ]
-
-
-pageFooter : Model -> Html Msg
-pageFooter model =
-    footer [ class "page-footer blue-grey lighten-1" ]
-        [ div [ class "container" ]
-            [ div [ class "row" ]
-                [ div [ class "col l6 s12" ]
-                    [ h5 [ class "white-text" ]
-                        [ text "IHES-VD // Votre portfolio IHES" ]
-                    , p [ class "grey-text text-lighten-4" ]
-                        [ text "Pour aider la communauté IHES en Suisse Romande, IHES-VD permet de faire un suivi des apprentissages et aide les parents à faire le pont entre leur mode d'apprentissage, leurs projets et le plan d'étude romand (PER). IHES-VD est une variante spécialisé pour la canton de vaud qui prend en compte quelques spécificités du plan d'étude cantonal." ]
-                    ]
-                , div [ class "col l3 s12" ]
-                    [ h5 [ class "white-text" ]
-                        [ text "Apprendre" ]
-                    , ul []
-                        [ li []
-                            [ a [ class "white-text", href "#!" ]
-                                [ text "Comment utiliser ?" ]
-                            ]
-                        , li []
-                            [ a [ class "white-text", href "#!" ]
-                                [ text "Pourquoi vous inscrire ?" ]
-                            ]
-                        , li []
-                            [ a [ class "white-text", href "#!" ]
-                                [ text "Respect de la vie privée" ]
-                            ]
-                        , li []
-                            [ a [ class "white-text", href "#!" ]
-                                [ text "Conditions générales" ]
-                            ]
-                        ]
-                    ]
-                , div [ class "col l3 s12" ]
-                    [ h5 [ class "white-text" ]
-                        [ text "Connect" ]
-                    , ul []
-                        [ li []
-                            [ a [ class "white-text", href "#!" ]
-                                [ text "Forum IEF/Romandie" ]
-                            ]
-                        , li []
-                            [ a [ class "white-text", href "#!" ]
-                                [ text "Portail IEL" ]
-                            ]
-                        , li []
-                            [ a [ class "white-text", href "#!" ]
-                                [ text "Mastondon" ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        , div [ class "footer-copyright" ]
-            [ div [ class "container" ]
-                [ text "Design & développement par "
-                , a [ class "orange-text text-lighten-3", href "#" ]
-                    [ text "Dominique Feyer" ]
-                ]
-            ]
-        ]
-
-
-notFoundView : Html msg
-notFoundView =
-    div []
-        [ text "Not found"
-        ]

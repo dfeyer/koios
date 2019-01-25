@@ -97,6 +97,9 @@ initialModel route activities key =
 
 type Route
     = HomeRoute
+    | GroupRoute Slug
+    | TargetRoute Slug Slug
+    | SectionRoute Slug Slug Slug
     | NotFoundRoute
 
 

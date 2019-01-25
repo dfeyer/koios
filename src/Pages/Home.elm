@@ -9,7 +9,7 @@ import Views.Layout exposing (mainHeaderView, pageLayoutView, rowCenterView)
 view : Model -> Html.Html Msg
 view model =
     pageLayoutView
-        [ mainHeaderView "Plan d'étude romand (PER)"
+        [ mainHeaderView "Activités"
         , rowCenterView [ groupCollectionView model.activities ]
         ]
 
@@ -33,7 +33,7 @@ groupToUriWithLabel { title, slug } =
 
 activityBasePath : String
 activityBasePath =
-    "activites/"
+    "/activity/"
 
 
 activityPath : Maybe String -> String
