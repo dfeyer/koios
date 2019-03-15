@@ -1,4 +1,4 @@
-module Views.Layout exposing (mainHeaderView, pageLayoutView, rowCenterView)
+module Views.Layout exposing (mainHeaderView, mainHeaderWithChapterView, pageLayoutView, rowView)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -9,25 +9,25 @@ pageLayoutView : List (Html Msg) -> Html Msg
 pageLayoutView content =
     div
         [ id "banner"
-        , class "section no-pad-bot"
         ]
-        [ div [ class "container" ]
-            ([ br [] []
-             , br [] []
-             ]
-                ++ content
-                ++ [ br [] []
-                   , br [] []
-                   ]
-            )
+        [ div []
+            content
         ]
 
 
 mainHeaderView : String -> Html Msg
 mainHeaderView content =
-    h1 [ class "header center black-text" ] [ text content ]
+    h1 [] [ text content ]
 
 
-rowCenterView : List (Html Msg) -> Html Msg
-rowCenterView content =
-    div [ class "row center" ] content
+mainHeaderWithChapterView : String -> String -> Html Msg
+mainHeaderWithChapterView chapter content =
+    div []
+        [ h3 [ class "chapter" ] [ text chapter ]
+        , h1 [] [ text content ]
+        ]
+
+
+rowView : List (Html Msg) -> Html Msg
+rowView content =
+    div [] content

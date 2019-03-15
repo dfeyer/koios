@@ -1,6 +1,6 @@
 {
-  "short_name": "Koios",
-  "name": "Koios - Aide au suivi du plan d'étude romand (PER) pour les enfants IHES",
+  "short_name": "Carnet de bord",
+  "name": "Carnet de bord - Aide au suivi du plan d'étude romand (PER) pour les enfants IHES",
   "icons": [{
     "src": "icon.png",
     "type": "image/png",

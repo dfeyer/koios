@@ -1,121 +1,106 @@
 module Views.Page exposing (view)
 
-import Helper.Icon exposing (icon, leftIcon)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import I18Next exposing (t)
 import Shared exposing (Model, Route(..))
 
+
 view : Model -> (Model -> Html msg) -> Html msg
 view model content =
-    div []
+    div [ class "content" ]
         [ pageHeader model
-        , content model
+        , div [ class "content__main" ]
+            [ content model
+            ]
         , pageFooter model
         ]
 
-navigation : List (Html.Html msg)
+
+navigation : Html.Html msg
 navigation =
-    [ li []
-        [ a [ href "/" ]
-            [ leftIcon "list_alt"
-            , text "activités"
+    ul [ class "main-menu" ]
+        [ li [ class "main-menu__item" ]
+            [ a [ class "main-menu__link", href "/" ]
+                [ text "activités"
+                ]
+            ]
+        , li [ class "main-menu__item" ]
+            [ a [ class "main-menu__link", href "/plan" ]
+                [ text "semainier"
+                ]
+            ]
+        , li [ class "main-menu__item" ]
+            [ a [ class "main-menu__link", href "/report" ]
+                [ text "journal"
+                ]
+            ]
+        , li [ class "main-menu__item" ]
+            [ a [ class "main-menu__link", href "/agenda" ]
+                [ text "calendrier"
+                ]
             ]
         ]
-    , li []
-        [ a [ href "/plan" ]
-            [ leftIcon "view_week"
-            , text "semainier"
-            ]
-        ]
-    , li []
-        [ a [ href "/report" ]
-            [ leftIcon "view_list"
-            , text "journal"
-            ]
-        ]
-    , li []
-        [ a [ href "/agenda" ]
-            [ leftIcon "view_agenda"
-            , text "calendrier"
-            ]
-        ]
-    ]
+
 
 pageHeader : Model -> Html.Html msg
 pageHeader model =
-    nav [ class "blue-grey", attribute "role" "navigation" ]
-        [ div [ class "nav-wrapper container" ]
-            [ a [ class "brand-logo right", href "#", id "logo-container" ]
-                [ icon "forum", text "koios" ]
-            , ul [ class "left hide-on-med-and-down" ] navigation
-            , ul [ class "sidenav", id "nav-mobile" ] navigation
-            , a [ class "sidenav-trigger", attribute "data-target" "nav-mobile", href "#" ]
-                [ i [ class "material-icons" ]
-                    [ text "menu" ]
-                ]
+    nav [ class "main-navigation", attribute "role" "navigation" ]
+        [ div [ class "main-navigation__wrapper" ]
+            [ a [ class "main-navigation__logo", href "/", id "logo-container" ]
+                [ text "Carnet de bord" ]
+            , navigation
             ]
         ]
 
 
 pageFooter : Model -> Html msg
 pageFooter model =
-    footer [ class "page-footer blue-grey lighten-1" ]
-        [ div [ class "container" ]
-            [ div [ class "row" ]
-                [ div [ class "col l6 s12" ]
-                    [ h5 [ class "white-text" ]
+    footer [ class "page-footer" ]
+        [ div [ class "page-footer__wrapper" ]
+            [ div [ class "page-footer__columns" ]
+                [ div [ class "page_footer__column" ]
+                    [ h3 []
                         [ text "IHES-VD // Votre portfolio IHES" ]
-                    , p [ class "grey-text text-lighten-4" ]
+                    , p []
                         [ text "Pour aider la communauté IHES en Suisse Romande, IHES-VD permet de faire un suivi des apprentissages et aide les parents à faire le pont entre leur mode d'apprentissage, leurs projets et le plan d'étude romand (PER). IHES-VD est une variante spécialisé pour la canton de vaud qui prend en compte quelques spécificités du plan d'étude cantonal." ]
                     ]
-                , div [ class "col l3 s12" ]
-                    [ h5 [ class "white-text" ]
+                , div [ class "page_footer__column" ]
+                    [ h3 []
                         [ text "Apprendre" ]
-                    , ul []
-                        [ li []
-                            [ a [ class "white-text", href "#!" ]
+                    , ul [ class "stabylo-menu" ]
+                        [ li [ class "stabylo-menu__item" ]
+                            [ a [ class "stabylo-menu__link", href "#!" ]
                                 [ text "Comment utiliser ?" ]
                             ]
-                        , li []
-                            [ a [ class "white-text", href "#!" ]
+                        , li [ class "stabylo-menu__item" ]
+                            [ a [ class "stabylo-menu__link", href "#!" ]
                                 [ text "Pourquoi vous inscrire ?" ]
                             ]
-                        , li []
-                            [ a [ class "white-text", href "#!" ]
+                        , li [ class "stabylo-menu__item" ]
+                            [ a [ class "stabylo-menu__link", href "#!" ]
                                 [ text "Respect de la vie privée" ]
                             ]
-                        , li []
-                            [ a [ class "white-text", href "#!" ]
+                        , li [ class "stabylo-menu__item" ]
+                            [ a [ class "stabylo-menu__link", href "#!" ]
                                 [ text "Conditions générales" ]
                             ]
                         ]
                     ]
-                , div [ class "col l3 s12" ]
-                    [ h5 [ class "white-text" ]
-                        [ text "Connect" ]
-                    , ul []
-                        [ li []
-                            [ a [ class "white-text", href "#!" ]
-                                [ text "Forum IEF/Romandie" ]
+                , div [ class "page_footer__column" ]
+                    [ h3 []
+                        [ text "Communauté" ]
+                    , ul [ class "stabylo-menu" ]
+                        [ li [ class "stabylo-menu__item" ]
+                            [ a [ class "stabylo-menu__link", href "#!" ]
+                                [ text "Forum" ]
                             ]
-                        , li []
-                            [ a [ class "white-text", href "#!" ]
-                                [ text "Portail IEL" ]
-                            ]
-                        , li []
-                            [ a [ class "white-text", href "#!" ]
-                                [ text "Mastondon" ]
+                        , li [ class "stabylo-menu__item" ]
+                            [ a [ class "stabylo-menu__link", href "#!" ]
+                                [ text "Mastodon" ]
                             ]
                         ]
                     ]
-                ]
-            ]
-        , div [ class "footer-copyright" ]
-            [ div [ class "container" ]
-                [ text "Design & développement par "
-                , a [ class "orange-text text-lighten-3", href "#" ]
-                    [ text "Dominique Feyer" ]
                 ]
             ]
         ]

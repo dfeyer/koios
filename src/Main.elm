@@ -2,6 +2,7 @@ module Main exposing (init, main, subscriptions, update, view)
 
 import Browser
 import Browser.Navigation as Nav
+import Data.Slugable
 import Html exposing (..)
 import I18Next
     exposing
@@ -10,8 +11,11 @@ import I18Next
         , fetchTranslations
         , t
         )
+import Pages.Group
 import Pages.Home
 import Pages.NotFound
+import Pages.Section
+import Pages.Topic
 import Routes exposing (..)
 import Shared exposing (..)
 import Url
@@ -91,9 +95,9 @@ update msg model =
 
         OnUrlChange url ->
             let
-                newRoute = Debug.log "New Route" (
-                    Routes.parseUrl url
-                    )
+                newRoute =
+                    Debug.log "New Route"
+                        (Routes.parseUrl url)
             in
             ( { model | route = newRoute }, Cmd.none )
 
@@ -130,17 +134,40 @@ pageWithData model =
             Pages.Home.view model
 
         GroupRoute groupSlug ->
-            Pages.Home.view model
+            case maybeGroup model.activities groupSlug of
+                Just group ->
+                    Pages.Group.view model group
 
-        TargetRoute groupSlug targetSlug ->
-            Pages.Home.view model
+                Nothing ->
+                    Pages.NotFound.view
+
+        TopicRoute groupSlug topicSlug ->
+            case maybeTopic model.activities groupSlug topicSlug of
+                ( Just group, Just topic ) ->
+                    Pages.Topic.view model group topic
+
+                _ ->
+                    Pages.NotFound.view
 
         SectionRoute groupSlug targetSlug sectionSlug ->
-            Pages.Home.view model
+            Pages.Section.view model
 
         NotFoundRoute ->
             Pages.NotFound.view
 
 
+maybeGroup : List Group -> Slug -> Maybe Group
+maybeGroup list groupSlug =
+    Data.Slugable.filter list groupSlug
 
 
+maybeTopic : List Group -> Slug -> Slug -> ( Maybe Group, Maybe Topic )
+maybeTopic list groupSlug topicSlug =
+    case maybeGroup list groupSlug of
+        Just group ->
+            ( Just group
+            , Data.Slugable.filter group.topics topicSlug
+            )
+
+        Nothing ->
+            ( Nothing, Nothing )

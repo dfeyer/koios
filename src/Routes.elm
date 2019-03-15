@@ -1,4 +1,4 @@
-module Routes exposing (matchers, parseUrl)
+module Routes exposing (activityGroupPath, homePath, matchers, parseUrl)
 
 import Shared exposing (..)
 import Url exposing (Url)
@@ -9,9 +9,9 @@ matchers : Parser (Route -> a) a
 matchers =
     oneOf
         [ map HomeRoute top
-        , map GroupRoute (s "activity" </> string)
-        , map TargetRoute (s "activity" </> string </> string)
         , map SectionRoute (s "activity" </> string </> string </> string)
+        , map TopicRoute (s "activity" </> string </> string)
+        , map GroupRoute (s "activity" </> string)
         ]
 
 
@@ -34,7 +34,7 @@ pathFor route =
         GroupRoute groupSlug ->
             "/activity/" ++ groupSlug
 
-        TargetRoute groupSlug targetSlug ->
+        TopicRoute groupSlug targetSlug ->
             "/activity/" ++ groupSlug ++ "/" ++ targetSlug
 
         SectionRoute groupSlug targetSlug sectionSlug ->
@@ -43,15 +43,10 @@ pathFor route =
         NotFoundRoute ->
             "/404"
 
+
 homePath =
     pathFor HomeRoute
 
+
 activityGroupPath groupSlug =
     pathFor (GroupRoute groupSlug)
-
-activityTargetPath groupSlug targetSlug =
-    pathFor (TargetRoute groupSlug targetSlug)
-
-
-activitySectionPath groupSlug targetSlug sectionSlug =
-    pathFor (SectionRoute groupSlug targetSlug sectionSlug)

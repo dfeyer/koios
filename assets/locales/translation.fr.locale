@@ -1,7 +1,7 @@
 {
   "title": {
-    "default": "Koios - Aide au suivi du plan d'étude romand (PER) pour les enfants IHES",
-    "home": "Bienvenue sur Koios"
+    "default": "Carnet de bord - Aide au suivi du plan d'étude romand (PER) pour les enfants IHES",
+    "home": "Bienvenue sur Carnet de bord"
   },
   "error": {
     "general": "Oups, nous sommes désolé, nous ne pouvons pas traiter votre demande...",

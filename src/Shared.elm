@@ -1,4 +1,4 @@
-module Shared exposing (Group, Model, Msg(..), Route(..), Section, SectionIdentifier, UriWithLabel, initialModel, toUriWithLabel)
+module Shared exposing (Group, Model, Msg(..), Route(..), Section, SectionIdentifier, Slug, Slugable, Topic, UriWithLabel, initialModel, toUriWithLabel)
 
 import Browser exposing (UrlRequest)
 import Browser.Navigation exposing (Key)
@@ -23,44 +23,44 @@ type alias Model =
     }
 
 
+type alias Slugable a =
+    { a | title : String, slug : Slug }
+
+
 type alias Group =
-    { title : String
-    , slug : Slug
-    , id : UUID
-    , introductions : List Introduction
-    , topics : List Topic
-    }
+    Slugable
+        { id : UUID
+        , introductions : List Introduction
+        , topics : List Topic
+        }
 
 
 type alias Introduction =
-    { title : String
-    , slug : Slug
-    , id : UUID
-    , url : String
-    }
+    Slugable
+        { id : UUID
+        , url : String
+        }
 
 
 type alias Topic =
-    { title : String
-    , slug : Slug
-    , id : UUID
-    , sections : List Section
-    }
+    Slugable
+        { id : UUID
+        , sections : List Section
+        }
 
 
 type alias Section =
-    { title : String
-    , slug : Slug
-    , id : UUID
-    , identifier : SectionIdentifier
-    , hash : String
-    , url : String
-    , pdf : Maybe String
-    , targets : List Target
-    , group : String
-    , section : String
-    , subsection : String
-    }
+    Slugable
+        { id : UUID
+        , identifier : SectionIdentifier
+        , hash : String
+        , url : String
+        , pdf : Maybe String
+        , targets : List Target
+        , group : String
+        , section : String
+        , subsection : String
+        }
 
 
 type alias Target =
@@ -98,7 +98,7 @@ initialModel route activities key =
 type Route
     = HomeRoute
     | GroupRoute Slug
-    | TargetRoute Slug Slug
+    | TopicRoute Slug Slug
     | SectionRoute Slug Slug Slug
     | NotFoundRoute
 
