@@ -1,4 +1,4 @@
-module Routes exposing (activityGroupPath, homePath, matchers, parseUrl)
+module Routes exposing (groupPath, homePath, matchers, parseUrl, topicPath)
 
 import Shared exposing (..)
 import Url exposing (Url)
@@ -37,8 +37,8 @@ pathFor route =
         TopicRoute groupSlug targetSlug ->
             "/activity/" ++ groupSlug ++ "/" ++ targetSlug
 
-        SectionRoute groupSlug targetSlug sectionSlug ->
-            "/activity/" ++ groupSlug ++ "/" ++ targetSlug ++ "/" ++ sectionSlug
+        SectionRoute section cycle order ->
+            "/activity/" ++ section ++ "/" ++ cycle ++ "/" ++ order
 
         NotFoundRoute ->
             "/404"
@@ -48,5 +48,9 @@ homePath =
     pathFor HomeRoute
 
 
-activityGroupPath groupSlug =
+groupPath groupSlug =
     pathFor (GroupRoute groupSlug)
+
+
+topicPath groupSlug topicSlug =
+    pathFor (TopicRoute groupSlug topicSlug)

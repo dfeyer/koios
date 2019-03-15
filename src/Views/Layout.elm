@@ -5,7 +5,7 @@ import Html.Attributes exposing (..)
 import Shared exposing (..)
 
 
-pageLayoutView : List (Html Msg) -> Html Msg
+pageLayoutView : List (Html msg) -> Html msg
 pageLayoutView content =
     div
         [ id "banner"
@@ -15,19 +15,19 @@ pageLayoutView content =
         ]
 
 
-mainHeaderView : String -> Html Msg
+mainHeaderView : Html msg -> Html msg
 mainHeaderView content =
-    h1 [] [ text content ]
+    h1 [] [ content ]
 
 
-mainHeaderWithChapterView : String -> String -> Html Msg
+mainHeaderWithChapterView : Html msg -> Html msg -> Html msg
 mainHeaderWithChapterView chapter content =
     div []
-        [ h3 [ class "chapter" ] [ text chapter ]
-        , h1 [] [ text content ]
+        [ h3 [ class "chapter" ] [ chapter ]
+        , h1 [] [ content ]
         ]
 
 
-rowView : List (Html Msg) -> Html Msg
+rowView : List (Html msg) -> Html msg
 rowView content =
     div [] content

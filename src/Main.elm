@@ -3,6 +3,7 @@ module Main exposing (init, main, subscriptions, update, view)
 import Browser
 import Browser.Navigation as Nav
 import Data.Slugable
+import Data.Topic exposing (foldTopics)
 import Html exposing (..)
 import I18Next
     exposing
@@ -96,8 +97,7 @@ update msg model =
         OnUrlChange url ->
             let
                 newRoute =
-                    Debug.log "New Route"
-                        (Routes.parseUrl url)
+                    Routes.parseUrl url
             in
             ( { model | route = newRoute }, Cmd.none )
 
@@ -149,8 +149,20 @@ pageWithData model =
                 _ ->
                     Pages.NotFound.view
 
-        SectionRoute groupSlug targetSlug sectionSlug ->
-            Pages.Section.view model
+        SectionRoute code cycle order ->
+            let
+                sectionIdentifier =
+                    toSectionIdentifier code
+                        (String.toInt cycle |> Maybe.withDefault 0)
+                        (String.toInt order |> Maybe.withDefault 0)
+                        Nothing
+            in
+            case maybeSection model.activities sectionIdentifier of
+                Just section ->
+                    Pages.Section.view model section
+
+                _ ->
+                    Pages.NotFound.view
 
         NotFoundRoute ->
             Pages.NotFound.view
@@ -171,3 +183,11 @@ maybeTopic list groupSlug topicSlug =
 
         Nothing ->
             ( Nothing, Nothing )
+
+
+maybeSection : List Group -> SectionIdentifier -> Maybe Section
+maybeSection groups identifier =
+    foldTopics groups
+        |> List.foldr (\s a -> List.append a s.sections) []
+        |> List.filter (\section -> section.identifier == identifier)
+        |> List.head

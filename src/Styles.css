@@ -112,6 +112,7 @@
 :root {
   --text-color: rgb(33, 33, 33);
   --text-color-light: rgba(33, 33, 33, 0.7);
+  --text-color-lighter: rgba(33, 33, 33, 0.5);
   --background-color-dynamic: #fff226;
   --background-color: #ffffff;
 
@@ -182,6 +183,13 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.25em;
   margin: 0.75rem 0;
   font-weight: 700;
+}
+
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a,
+h1 > span, h2 > span, h3 > span, h4 > span, h5 > span, h6 > span {
+  font-family: inherit;
+  font-size: inherit;
+  text-decoration: none;
 }
 
 
@@ -346,6 +354,7 @@ figcaption {
 
 .main-navigation__logo {
   font-size: 2.25rem;
+  font-family: var(--font-family-headline);
   font-weight: 800;
   text-decoration: none;
   white-space: nowrap;
@@ -407,26 +416,40 @@ figcaption {
 
 .collection__link {
   display: inline-block;
-  font-family: var(--font-family-headline);
-  font-size: 1.75rem;
   font-weight: 800;
-  text-decoration: none;
   padding: .25em .5em;
   background-color: white;
   line-height: 1.3em;
   margin-bottom: .75em;
-
-  transition: background-color 180ms ease-in-out, color 180ms ease-in-out;
 }
 
-.collection--compact .collection__link {
+.collection__link, .collection__link span {
+  font-family: var(--font-family-headline);
+  font-size: 1.75rem;
+  text-decoration: none;
+
+  transition: background-color 180ms ease-in-out, color 180ms ease-in-out, transform 180ms ease-in-out;
+}
+
+.collection--compact .collection__link, .collection--compact .collection__link span {
   font-size: 1.25rem;
+  font-weight: 400;
 }
 
-.collection__link:hover,
-.collection__link:focus {
+a.collection__link:hover,
+a.collection__link:focus {
   color: white;
   background-color: var(--text-color);
+  transform-origin: center;
+}
+
+a.collection__link:hover {
+  transform: translateX(-.25rem);
+}
+
+a.collection__link:hover span,
+a.collection__link:focus span {
+  color: white;
 }
 
 .stabylo-menu {
@@ -456,4 +479,32 @@ figcaption {
 .stabylo-menu__link:focus {
   color: white;
   background-color: var(--text-color);
+}
+
+.label {
+
+}
+.label__prefix {
+  display: inline-flex;
+  font-weight: 400;
+  color: var(--text-color-lighter);
+  margin-right: .25rem;
+}
+.label__prefix:after {
+  content: "/";
+  font-weight: 400;
+  display: block;
+  margin-left: .25rem;
+}
+
+.breadcrumb {
+
+}
+
+.breadcrumb > *:after {
+  display: inline-block;
+  content: "/";
+  margin: 0 .3rem;
+  color: var(--text-color-lighter);
+  font-weight: 400;
 }

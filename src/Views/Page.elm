@@ -4,6 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import I18Next exposing (t)
 import Shared exposing (Model, Route(..))
+import Views.Helpers exposing (ihes)
 
 
 view : Model -> (Model -> Html msg) -> Html msg
@@ -61,9 +62,15 @@ pageFooter model =
             [ div [ class "page-footer__columns" ]
                 [ div [ class "page_footer__column" ]
                     [ h3 []
-                        [ text "IHES-VD // Votre portfolio IHES" ]
+                        [ text "Carnet de bord IHES"
+                        ]
                     , p []
-                        [ text "Pour aider la communauté IHES en Suisse Romande, IHES-VD permet de faire un suivi des apprentissages et aide les parents à faire le pont entre leur mode d'apprentissage, leurs projets et le plan d'étude romand (PER). IHES-VD est une variante spécialisé pour la canton de vaud qui prend en compte quelques spécificités du plan d'étude cantonal." ]
+                        [ text "Pour aider la communauté "
+                        , ihes
+                        , text " en Suisse Romande, le collectif "
+                        , ihes
+                        , text " en collaboration avec IEL Vaud développe un outil permettant de faire un suivi des apprentissages et aide les parents à faire le pont entre leur mode d'apprentissage, leurs projets et le plan d'étude romand (PER)."
+                        ]
                     ]
                 , div [ class "page_footer__column" ]
                     [ h3 []

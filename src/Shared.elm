@@ -1,7 +1,26 @@
-module Shared exposing (Group, Model, Msg(..), Route(..), Section, SectionIdentifier, Slug, Slugable, Topic, UriWithLabel, initialModel, toUriWithLabel)
+module Shared exposing
+    ( Group
+    , Model
+    , Msg(..)
+    , Route(..)
+    , Section
+    , SectionIdentifier
+    , Slug
+    , Slugable
+    , SlugableTarget
+    , Target
+    , Topic
+    , UriWithLabel
+    , initialModel
+    , labelWithoutUri
+    , toSectionIdentifier
+    , toSlugableTarget
+    , toUriWithLabel
+    )
 
 import Browser exposing (UrlRequest)
 import Browser.Navigation exposing (Key)
+import Html exposing (Html)
 import Http
 import I18Next exposing (Translations, initialTranslations)
 import Url exposing (Url)
@@ -69,6 +88,20 @@ type alias Target =
     }
 
 
+type alias SlugableTarget =
+    Slugable
+        { position : String
+        }
+
+
+toSlugableTarget : Target -> SlugableTarget
+toSlugableTarget { text, position } =
+    { title = text
+    , slug = "#"
+    , position = position
+    }
+
+
 type alias SectionIdentifier =
     { code : String
     , cycle : Int
@@ -77,13 +110,23 @@ type alias SectionIdentifier =
     }
 
 
-toUriWithLabel : String -> String -> String -> UriWithLabel
+toSectionIdentifier : String -> Int -> Int -> Maybe String -> SectionIdentifier
+toSectionIdentifier code cycle order maybeSuffix =
+    SectionIdentifier code cycle order maybeSuffix
+
+
+toUriWithLabel : String -> Html msg -> Slug -> UriWithLabel msg
 toUriWithLabel uri label slug =
-    ( uri, label, slug )
+    ( Just uri, label, Just slug )
 
 
-type alias UriWithLabel =
-    ( String, String, String )
+labelWithoutUri : Html msg -> UriWithLabel msg
+labelWithoutUri label =
+    ( Nothing, label, Nothing )
+
+
+type alias UriWithLabel msg =
+    ( Maybe String, Html msg, Maybe Slug )
 
 
 initialModel : Route -> List Group -> Key -> Model
