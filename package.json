@@ -10,7 +10,7 @@
     "deploy:build": "run-s build",
     "dev": "parcel index.html",
     "watch": "parcel watch index.html",
-    "build": "parcel build --public-url /koios/ index.html",
+    "build": "parcel build index.html",
     "format": "elm-format --yes src/"
   },
   "devDependencies": {
