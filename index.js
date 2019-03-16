@@ -1,5 +1,3 @@
-import 'material-design-icons';
-
 import './src/Styles.css';
 
 import { Elm } from './src/Main.elm'
