@@ -115,6 +115,7 @@
   --text-color-lighter: rgba(33, 33, 33, 0.5);
   --background-color-dynamic: #fff226;
   --background-color: #ffffff;
+  --background-color-inversed: rgb(33, 33, 33);
 
   --font-family-text: "Lora", Arial, Tahoma, sans-serif;
   --font-family-headline: "Encode Sans Expanded", Arial, Tahoma, sans-serif;
@@ -507,4 +508,38 @@ a.collection__link:focus span {
   margin: 0 .3rem;
   color: var(--text-color-lighter);
   font-weight: 400;
+}
+
+.go-to-top {
+  position: fixed;
+  right: 2rem;
+  bottom: 2rem;
+
+  width: 5vw;
+  min-width: 44px;
+
+  font-family: var(--font-family-headline);
+  font-size: 1.25rem;
+  font-weight: 800;
+
+  text-decoration: none;
+
+  padding: .5rem 1rem;
+
+  background-color: var(--background-color-dynamic);
+  background-blend-mode: multiply;
+
+  border: 4px solid white;
+}
+
+.go-to-top, .go-to-top .segment {
+  transition: fill 120ms ease-out, background-color 120ms ease-out;
+}
+
+.go-to-top:hover {
+  background-color: var(--background-color-inversed);
+}
+
+.go-to-top:hover .segment {
+  fill: var(--background-color);
 }

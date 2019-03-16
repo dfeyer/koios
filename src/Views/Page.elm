@@ -1,10 +1,10 @@
 module Views.Page exposing (view)
 
+import Components.GoToTop
 import Components.MainMenu
 import Components.StabyloMenu
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import I18Next exposing (t)
 import Shared exposing (Model, Route(..))
 import Views.Helpers exposing (ihes)
 
@@ -17,6 +17,7 @@ view model content =
             [ content model
             ]
         , pageFooter model
+        , Components.GoToTop.view
         ]
 
 
