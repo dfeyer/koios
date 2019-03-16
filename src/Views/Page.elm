@@ -1,5 +1,7 @@
 module Views.Page exposing (view)
 
+import Components.MainMenu
+import Components.StabyloMenu
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import I18Next exposing (t)
@@ -20,27 +22,11 @@ view model content =
 
 navigation : Html.Html msg
 navigation =
-    ul [ class "main-menu" ]
-        [ li [ class "main-menu__item" ]
-            [ a [ class "main-menu__link", href "/" ]
-                [ text "activités"
-                ]
-            ]
-        , li [ class "main-menu__item" ]
-            [ a [ class "main-menu__link", href "/plan" ]
-                [ text "semainier"
-                ]
-            ]
-        , li [ class "main-menu__item" ]
-            [ a [ class "main-menu__link", href "/report" ]
-                [ text "journal"
-                ]
-            ]
-        , li [ class "main-menu__item" ]
-            [ a [ class "main-menu__link", href "/agenda" ]
-                [ text "calendrier"
-                ]
-            ]
+    Components.MainMenu.view
+        [ ( text "activités", "/" )
+        , ( text "semainier", "/plan" )
+        , ( text "journal", "/report" )
+        , ( text "calendrier", "/agenda" )
         ]
 
 
@@ -51,6 +37,32 @@ pageHeader model =
             [ a [ class "main-navigation__logo", href "/", id "logo-container" ]
                 [ text "Carnet de bord" ]
             , navigation
+            ]
+        ]
+
+
+footerHelpResources : Html msg
+footerHelpResources =
+    div [ class "page_footer__column" ]
+        [ h3 []
+            [ text "Apprendre" ]
+        , Components.StabyloMenu.view
+            [ ( text "Comment utiliser ?", "#!" )
+            , ( text "Pourquoi vous inscrire ?", "#!" )
+            , ( text "Respect de la vie privée?", "#!" )
+            , ( text "Conditions générales", "#!" )
+            ]
+        ]
+
+
+footerSocialResources : Html msg
+footerSocialResources =
+    div [ class "page_footer__column" ]
+        [ h3 []
+            [ text "Communauté" ]
+        , Components.StabyloMenu.view
+            [ ( text "Forum", "#!" )
+            , ( text "Mastodon", "#!" )
             ]
         ]
 
@@ -72,42 +84,8 @@ pageFooter model =
                         , text " en collaboration avec IEL Vaud développe un outil permettant de faire un suivi des apprentissages et aide les parents à faire le pont entre leur mode d'apprentissage, leurs projets et le plan d'étude romand (PER)."
                         ]
                     ]
-                , div [ class "page_footer__column" ]
-                    [ h3 []
-                        [ text "Apprendre" ]
-                    , ul [ class "stabylo-menu" ]
-                        [ li [ class "stabylo-menu__item" ]
-                            [ a [ class "stabylo-menu__link", href "#!" ]
-                                [ text "Comment utiliser ?" ]
-                            ]
-                        , li [ class "stabylo-menu__item" ]
-                            [ a [ class "stabylo-menu__link", href "#!" ]
-                                [ text "Pourquoi vous inscrire ?" ]
-                            ]
-                        , li [ class "stabylo-menu__item" ]
-                            [ a [ class "stabylo-menu__link", href "#!" ]
-                                [ text "Respect de la vie privée" ]
-                            ]
-                        , li [ class "stabylo-menu__item" ]
-                            [ a [ class "stabylo-menu__link", href "#!" ]
-                                [ text "Conditions générales" ]
-                            ]
-                        ]
-                    ]
-                , div [ class "page_footer__column" ]
-                    [ h3 []
-                        [ text "Communauté" ]
-                    , ul [ class "stabylo-menu" ]
-                        [ li [ class "stabylo-menu__item" ]
-                            [ a [ class "stabylo-menu__link", href "#!" ]
-                                [ text "Forum" ]
-                            ]
-                        , li [ class "stabylo-menu__item" ]
-                            [ a [ class "stabylo-menu__link", href "#!" ]
-                                [ text "Mastodon" ]
-                            ]
-                        ]
-                    ]
+                , footerHelpResources
+                , footerSocialResources
                 ]
             ]
         ]
