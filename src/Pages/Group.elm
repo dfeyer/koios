@@ -9,7 +9,7 @@ import Views.Layout exposing (mainHeaderView, pageLayoutView, rowView)
 
 
 view : Model -> Group -> Html.Html Msg
-view { activities } group =
+view { learnings } group =
     pageLayoutView
         [ mainHeaderView (text group.title)
         , rowView [ collectionView group.topics (Data.Topic.toSlug group) title ]

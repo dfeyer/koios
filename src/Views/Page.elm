@@ -24,10 +24,10 @@ view model content =
 navigation : Html.Html msg
 navigation =
     Components.MainMenu.view
-        [ ( text "activités", "/" )
-        , ( text "semainier", "/plan" )
-        , ( text "journal", "/report" )
-        , ( text "calendrier", "/agenda" )
+        [ ( text "Apprentissages", "/" )
+        , ( text "Semainier", "/plan" )
+        , ( text "Journal", "/report" )
+        , ( text "Calendrier", "/agenda" )
         ]
 
 

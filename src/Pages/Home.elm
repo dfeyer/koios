@@ -12,7 +12,7 @@ view : Model -> Html.Html Msg
 view model =
     pageLayoutView
         [ mainHeaderView (text "Activités")
-        , rowView [ collectionView model.activities Data.Group.toSlug title ]
+        , rowView [ collectionView model.learnings Data.Group.toSlug title ]
         ]
 
 

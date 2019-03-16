@@ -45,7 +45,7 @@ main =
 
 type alias Flags =
     { translations : TranslationFlags
-    , activities : List Group
+    , learnings : List Group
     }
 
 
@@ -59,12 +59,12 @@ type alias TranslationFlags =
 
 
 init : Flags -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
-init { translations, activities } url key =
+init { translations, learnings } url key =
     let
         currentRoute =
             Routes.parseUrl url
     in
-    ( initialModel currentRoute activities key
+    ( initialModel currentRoute learnings key
     , fetchTranslations TranslationsLoaded translations.fr
     )
 
@@ -134,7 +134,7 @@ pageWithData model =
             Pages.Home.view model
 
         GroupRoute groupSlug ->
-            case maybeGroup model.activities groupSlug of
+            case maybeGroup model.learnings groupSlug of
                 Just group ->
                     Pages.Group.view model group
 
@@ -142,7 +142,7 @@ pageWithData model =
                     Pages.NotFound.view
 
         TopicRoute groupSlug topicSlug ->
-            case maybeTopic model.activities groupSlug topicSlug of
+            case maybeTopic model.learnings groupSlug topicSlug of
                 ( Just group, Just topic ) ->
                     Pages.Topic.view model group topic
 
@@ -157,7 +157,7 @@ pageWithData model =
                         (String.toInt order |> Maybe.withDefault 0)
                         Nothing
             in
-            case maybeSection model.activities sectionIdentifier of
+            case maybeSection model.learnings sectionIdentifier of
                 Just section ->
                     Pages.Section.view model section
 

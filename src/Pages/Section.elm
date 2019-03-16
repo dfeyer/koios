@@ -13,13 +13,13 @@ import Views.Layout exposing (mainHeaderWithChapterView, pageLayoutView, rowView
 
 
 view : Model -> Section -> Html.Html Msg
-view { activities } section =
+view { learnings } section =
     let
         maybeGroup =
-            Data.Group.bySection activities section.identifier
+            Data.Group.bySection learnings section.identifier
 
         maybeTopic =
-            Data.Topic.bySection activities section.identifier
+            Data.Topic.bySection learnings section.identifier
     in
     case ( maybeGroup, maybeTopic ) of
         ( Just g, Just t ) ->

@@ -9,9 +9,9 @@ matchers : Parser (Route -> a) a
 matchers =
     oneOf
         [ map HomeRoute top
-        , map SectionRoute (s "activity" </> string </> string </> string)
-        , map TopicRoute (s "activity" </> string </> string)
-        , map GroupRoute (s "activity" </> string)
+        , map SectionRoute (s "l" </> string </> string </> string)
+        , map TopicRoute (s "l" </> string </> string)
+        , map GroupRoute (s "l" </> string)
         ]
 
 
@@ -32,13 +32,13 @@ pathFor route =
             "/"
 
         GroupRoute groupSlug ->
-            "/activity/" ++ groupSlug
+            "/l/" ++ groupSlug
 
         TopicRoute groupSlug targetSlug ->
-            "/activity/" ++ groupSlug ++ "/" ++ targetSlug
+            "/l/" ++ groupSlug ++ "/" ++ targetSlug
 
         SectionRoute section cycle order ->
-            "/activity/" ++ section ++ "/" ++ cycle ++ "/" ++ order
+            "/l/" ++ section ++ "/" ++ cycle ++ "/" ++ order
 
         NotFoundRoute ->
             "/404"

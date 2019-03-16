@@ -10,6 +10,6 @@ Elm.Main.init({
       translations: {
         fr: localeFrench
       },
-      activities: activities
+      learnings: activities
     }
 });

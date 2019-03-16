@@ -37,7 +37,7 @@ type alias UUID =
 type alias Model =
     { key : Key
     , route : Route
-    , activities : List Group
+    , learnings : List Group
     , translations : Translations
     }
 
@@ -130,10 +130,10 @@ type alias UriWithLabel msg =
 
 
 initialModel : Route -> List Group -> Key -> Model
-initialModel route activities key =
+initialModel route learnings key =
     { key = key
     , route = route
-    , activities = activities
+    , learnings = learnings
     , translations = initialTranslations
     }
 
