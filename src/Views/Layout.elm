@@ -17,12 +17,12 @@ pageLayoutView content =
 
 mainHeaderView : Html msg -> Html msg
 mainHeaderView content =
-    h1 [] [ content ]
+    header [ class "page-header" ] [ h1 [] [ content ] ]
 
 
 mainHeaderWithChapterView : Html msg -> Html msg -> Html msg
 mainHeaderWithChapterView chapter content =
-    div []
+    header [ class "page-header" ]
         [ h3 [ class "chapter" ] [ chapter ]
         , h1 [] [ content ]
         ]

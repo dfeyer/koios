@@ -1,6 +1,7 @@
 module Pages.Section exposing (view)
 
 import Data.Group
+import Data.Section
 import Data.Slugable exposing (compactCollectionView)
 import Data.Target exposing (toSlugableList)
 import Data.Topic
@@ -24,7 +25,7 @@ view { learnings } section =
     case ( maybeGroup, maybeTopic ) of
         ( Just g, Just t ) ->
             pageLayoutView
-                [ mainHeaderWithChapterView (chapterTitle g t) (text section.title)
+                [ mainHeaderWithChapterView (chapterTitle g t) (pageTitle section)
                 , rowView [ compactCollectionView (toSlugableList section.targets) Data.Target.toSlug title ]
                 ]
 
@@ -37,6 +38,14 @@ title target =
     span [ class "label" ]
         [ span [ class "label__prefix" ] [ text target.position ]
         , text target.title
+        ]
+
+
+pageTitle : Section -> Html msg
+pageTitle section =
+    span []
+        [ span [ class "label__prefix" ] [ text (Data.Section.toIdentifier section.identifier) ]
+        , text (Data.Section.toNavigationTitle section)
         ]
 
 
