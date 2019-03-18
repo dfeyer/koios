@@ -513,11 +513,14 @@ a.collection__link:focus span {
 
 .go-to-top {
   position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   right: 2rem;
   bottom: 2rem;
 
-  width: 5vw;
-  min-width: 44px;
+  width: 60px;
+  height: 60px;
 
   font-family: var(--font-family-headline);
   font-size: 1.25rem;

@@ -2,15 +2,19 @@ module Main exposing (init, main, subscriptions, update, view)
 
 import Browser exposing (Document, UrlRequest)
 import Browser.Navigation as Nav
-import Data.Slugable
-import Data.Topic exposing (foldTopics)
 import Html exposing (..)
+import Html.Attributes exposing (class, title)
+import Html.Events exposing (onClick)
+import Icons.ChevronUp
+import Json.Decode as Decode
 import Page.Blank as Blank
 import Page.Learning as Learning
 import Page.NotFound as NotFound
 import Route exposing (..)
 import Session exposing (Session)
 import Shared exposing (..)
+import Task
+import Tasks.Ui exposing (scrollToTop)
 import Url exposing (Url)
 import Views.Page as Page
 
@@ -81,6 +85,8 @@ type Msg
     | ClickedLink UrlRequest
     | GotLearningMsg Learning.Msg
     | GotSession Session
+    | ScrollToTop
+    | GotToTop ()
 
 
 toSession : Model -> Session
@@ -116,6 +122,9 @@ update msg model =
     case ( msg, model ) of
         ( Ignored, _ ) ->
             ( model, Cmd.none )
+
+        ( ScrollToTop, _ ) ->
+            ( model, Task.perform GotToTop scrollToTop )
 
         ( ClickedLink urlRequest, _ ) ->
             case urlRequest of
@@ -194,7 +203,7 @@ view model =
                     Page.view (Session.viewer (toSession model)) p config
             in
             { title = title
-            , body = List.map (Html.map toMsg) body
+            , body = scrollToTopView ScrollToTop :: List.map (Html.map toMsg) body
             }
     in
     case model of
@@ -206,3 +215,13 @@ view model =
 
         Learning learnings ->
             viewPage Page.Learning GotLearningMsg (Learning.view learnings)
+
+
+scrollToTopView : Msg -> Html Msg
+scrollToTopView msg =
+    a [ Html.Attributes.href "#", onClickNoBubble msg, class "go-to-top", title "Aller en haut de la page" ] [ Icons.ChevronUp.view ]
+
+
+onClickNoBubble : msg -> Html.Attribute msg
+onClickNoBubble message =
+    Html.Events.custom "click" (Decode.succeed { message = message, stopPropagation = True, preventDefault = True })

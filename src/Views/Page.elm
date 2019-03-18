@@ -1,7 +1,6 @@
 module Views.Page exposing (Page(..), view)
 
 import Browser exposing (Document)
-import Components.GoToTop
 import Components.MainMenu
 import Components.StabyloMenu
 import Html exposing (..)
@@ -32,7 +31,6 @@ view _ page { title, content } =
                 [ content
                 ]
             , pageFooter
-            , Components.GoToTop.view
             ]
         ]
     }
