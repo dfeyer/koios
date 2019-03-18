@@ -1,4 +1,4 @@
-module Pages.Section exposing (view)
+module Page.Learning.Section exposing (view)
 
 import Data.Group
 import Data.Section
@@ -7,14 +7,13 @@ import Data.Target exposing (toSlugableList)
 import Data.Topic
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
-import Pages.Topic
-import Routes exposing (topicPath)
-import Shared exposing (Group, Model, Msg, Section, SlugableTarget, Target, Topic, UriWithLabel)
+import Page.Learning.Topic
+import Shared exposing (Group, Msg, Section, SlugableTarget, Target, Topic, UriWithLabel)
 import Views.Layout exposing (mainHeaderWithChapterView, pageLayoutView, rowView)
 
 
-view : Model -> Section -> Html.Html Msg
-view { learnings } section =
+view : List Group -> Section -> Html.Html Msg
+view learnings section =
     let
         maybeGroup =
             Data.Group.bySection learnings section.identifier
@@ -52,6 +51,6 @@ pageTitle section =
 chapterTitle : Group -> Topic -> Html msg
 chapterTitle group topic =
     span [ class "breadcrumb" ]
-        [ Pages.Topic.chapterTitle group
-        , a [ href (topicPath group.slug topic.slug) ] [ text topic.title ]
+        [ Page.Learning.Topic.chapterTitle group
+        , a [ href (group.slug ++ "/" ++ topic.slug) ] [ text topic.title ]
         ]

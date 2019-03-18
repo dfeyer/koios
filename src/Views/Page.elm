@@ -1,28 +1,45 @@
-module Views.Page exposing (view)
+module Views.Page exposing (Page(..), view)
 
+import Browser exposing (Document)
 import Components.GoToTop
 import Components.MainMenu
 import Components.StabyloMenu
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Shared exposing (Model, Route(..))
+import Viewer exposing (Viewer)
 import Views.Helpers exposing (ihes)
 
 
-view : Model -> (Model -> Html msg) -> Html msg
-view model content =
-    div [ class "content" ]
-        [ pageHeader model
-        , div [ class "content__main" ]
-            [ content model
+{-| Determines which navbar link (if any) will be rendered as active.
+Note that we don't enumerate every page here, because the navbar doesn't
+have links for every page. Anything that's not part of the navbar falls
+under Other.
+-}
+type Page
+    = Other
+    | Learning
+    | Week
+    | Journal
+
+
+view : Maybe Viewer -> Page -> { title : String, content : Html msg } -> Document msg
+view _ page { title, content } =
+    { title = title ++ " - Conduit"
+    , body =
+        [ div [ class "content" ]
+            [ pageHeader page
+            , div [ class "content__main" ]
+                [ content
+                ]
+            , pageFooter
+            , Components.GoToTop.view
             ]
-        , pageFooter model
-        , Components.GoToTop.view
         ]
+    }
 
 
-navigation : Html.Html msg
-navigation =
+navigation : Page -> Html.Html msg
+navigation page =
     Components.MainMenu.view
         [ ( text "Apprentissages", "/" )
         , ( text "Semainier", "/plan" )
@@ -31,13 +48,13 @@ navigation =
         ]
 
 
-pageHeader : Model -> Html.Html msg
-pageHeader model =
+pageHeader : Page -> Html.Html msg
+pageHeader page =
     nav [ class "main-navigation", attribute "role" "navigation" ]
         [ div [ class "main-navigation__wrapper" ]
             [ a [ class "main-navigation__logo", href "/", id "logo-container" ]
                 [ text "Carnet de bord" ]
-            , navigation
+            , navigation page
             ]
         ]
 
@@ -68,8 +85,8 @@ footerSocialResources =
         ]
 
 
-pageFooter : Model -> Html msg
-pageFooter model =
+pageFooter : Html msg
+pageFooter =
     footer [ class "page-footer" ]
         [ div [ class "page-footer__wrapper" ]
             [ div [ class "page-footer__columns" ]

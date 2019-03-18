@@ -1,26 +1,32 @@
 module Main exposing (init, main, subscriptions, update, view)
 
-import Browser
+import Browser exposing (Document, UrlRequest)
 import Browser.Navigation as Nav
 import Data.Slugable
 import Data.Topic exposing (foldTopics)
 import Html exposing (..)
-import I18Next
-    exposing
-        ( Delims(..)
-        , Translations
-        , fetchTranslations
-        , t
-        )
-import Pages.Group
-import Pages.Home
-import Pages.NotFound
-import Pages.Section
-import Pages.Topic
-import Routes exposing (..)
+import Page.Blank as Blank
+import Page.Learning as Learning
+import Page.NotFound as NotFound
+import Route exposing (..)
+import Session exposing (Session)
 import Shared exposing (..)
-import Url
-import Views.Page
+import Url exposing (Url)
+import Views.Page as Page
+
+
+
+-- NOTE: Based on discussions around how asset management features
+-- like code splitting and lazy loading have been shaping up, it's possible
+-- that most of this file may become unnecessary in a future release of Elm.
+-- Avoid putting things in this module unless there is no alternative!
+-- See https://discourse.elm-lang.org/t/elm-spa-in-0-19/1800/2 for more.
+
+
+type Model
+    = Redirect Session
+    | NotFound Session
+    | Learning Learning.Model
 
 
 
@@ -34,8 +40,8 @@ main =
         , view = view
         , update = update
         , subscriptions = subscriptions
-        , onUrlChange = OnUrlChange
-        , onUrlRequest = OnUrlRequest
+        , onUrlChange = ChangedUrl
+        , onUrlRequest = ClickedLink
         }
 
 
@@ -58,48 +64,104 @@ type alias TranslationFlags =
 -- INIT
 
 
-init : Flags -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
-init { translations, learnings } url key =
-    let
-        currentRoute =
-            Routes.parseUrl url
-    in
-    ( initialModel currentRoute learnings key
-    , fetchTranslations TranslationsLoaded translations.fr
-    )
+init : Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
+init { learnings } url navKey =
+    changeRouteTo (Route.fromUrl url)
+        (Redirect (Session.fromViewer navKey Nothing learnings))
 
 
 
 -- UPDATE
 
 
+type Msg
+    = Ignored
+    | ChangedRoute (Maybe Route)
+    | ChangedUrl Url
+    | ClickedLink UrlRequest
+    | GotLearningMsg Learning.Msg
+    | GotSession Session
+
+
+toSession : Model -> Session
+toSession model =
+    case model of
+        Redirect session ->
+            session
+
+        NotFound session ->
+            session
+
+        Learning home ->
+            Learning.toSession home
+
+
+changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
+changeRouteTo maybeRoute model =
+    let
+        session =
+            toSession model
+    in
+    case maybeRoute of
+        Nothing ->
+            ( NotFound session, Cmd.none )
+
+        Just LearningRoute ->
+            Learning.init session
+                |> updateWith Learning GotLearningMsg model
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        TranslationsLoaded (Ok translations) ->
-            ( { model | translations = translations }, Cmd.none )
-
-        TranslationsLoaded (Err _) ->
+    case ( msg, model ) of
+        ( Ignored, _ ) ->
             ( model, Cmd.none )
 
-        OnUrlRequest urlRequest ->
+        ( ClickedLink urlRequest, _ ) ->
             case urlRequest of
                 Browser.Internal url ->
+                    case url.fragment of
+                        Nothing ->
+                            -- If we got a link that didn't include a fragment,
+                            -- it's from one of those (href "") attributes that
+                            -- we have to include to make the RealWorld CSS work.
+                            --
+                            -- In an application doing path routing instead of
+                            -- fragment-based routing, this entire
+                            -- `case url.fragment of` expression this comment
+                            -- is inside would be unnecessary.
+                            ( model, Cmd.none )
+
+                        Just _ ->
+                            ( model
+                            , Nav.pushUrl (Session.navKey (toSession model)) (Url.toString url)
+                            )
+
+                Browser.External href ->
                     ( model
-                    , Nav.pushUrl model.key (Url.toString url)
+                    , Nav.load href
                     )
 
-                Browser.External url ->
-                    ( model
-                    , Nav.load url
-                    )
+        ( ChangedUrl url, _ ) ->
+            changeRouteTo (Route.fromUrl url) model
 
-        OnUrlChange url ->
-            let
-                newRoute =
-                    Routes.parseUrl url
-            in
-            ( { model | route = newRoute }, Cmd.none )
+        ( ChangedRoute route, _ ) ->
+            changeRouteTo route model
+
+        ( GotLearningMsg subMsg, Learning learnings ) ->
+            Learning.update subMsg learnings
+                |> updateWith Learning GotLearningMsg model
+
+        ( _, _ ) ->
+            -- Disregard messages that arrived for the wrong page.
+            ( model, Cmd.none )
+
+
+updateWith : (subModel -> Model) -> (subMsg -> Msg) -> Model -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
+updateWith toModel toMsg model ( subModel, subCmd ) =
+    ( toModel subModel
+    , Cmd.map toMsg subCmd
+    )
 
 
 
@@ -107,87 +169,40 @@ update msg model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Sub.none
+subscriptions model =
+    case model of
+        NotFound _ ->
+            Sub.none
+
+        Redirect _ ->
+            Session.changes GotSession (Session.navKey (toSession model))
+
+        Learning learnings ->
+            Sub.map GotLearningMsg (Learning.subscriptions learnings)
 
 
 
 -- VIEW
 
 
-view : Model -> Browser.Document Msg
+view : Model -> Document Msg
 view model =
-    { title = t model.translations "title.default"
-    , body = [ page model ]
-    }
-
-
-page : Model -> Html Msg
-page model =
-    Views.Page.view model pageWithData
-
-
-pageWithData : Model -> Html Msg
-pageWithData model =
-    case model.route of
-        HomeRoute ->
-            Pages.Home.view model
-
-        GroupRoute groupSlug ->
-            case maybeGroup model.learnings groupSlug of
-                Just group ->
-                    Pages.Group.view model group
-
-                Nothing ->
-                    Pages.NotFound.view
-
-        TopicRoute groupSlug topicSlug ->
-            case maybeTopic model.learnings groupSlug topicSlug of
-                ( Just group, Just topic ) ->
-                    Pages.Topic.view model group topic
-
-                _ ->
-                    Pages.NotFound.view
-
-        SectionRoute code cycle order ->
+    let
+        viewPage p toMsg config =
             let
-                sectionIdentifier =
-                    toSectionIdentifier code
-                        (String.toInt cycle |> Maybe.withDefault 0)
-                        (String.toInt order |> Maybe.withDefault 0)
-                        Nothing
+                { title, body } =
+                    Page.view (Session.viewer (toSession model)) p config
             in
-            case maybeSection model.learnings sectionIdentifier of
-                Just section ->
-                    Pages.Section.view model section
+            { title = title
+            , body = List.map (Html.map toMsg) body
+            }
+    in
+    case model of
+        Redirect _ ->
+            viewPage Page.Other (\_ -> Ignored) Blank.view
 
-                _ ->
-                    Pages.NotFound.view
+        NotFound _ ->
+            viewPage Page.Other (\_ -> Ignored) NotFound.view
 
-        NotFoundRoute ->
-            Pages.NotFound.view
-
-
-maybeGroup : List Group -> Slug -> Maybe Group
-maybeGroup list groupSlug =
-    Data.Slugable.filter list groupSlug
-
-
-maybeTopic : List Group -> Slug -> Slug -> ( Maybe Group, Maybe Topic )
-maybeTopic list groupSlug topicSlug =
-    case maybeGroup list groupSlug of
-        Just group ->
-            ( Just group
-            , Data.Slugable.filter group.topics topicSlug
-            )
-
-        Nothing ->
-            ( Nothing, Nothing )
-
-
-maybeSection : List Group -> SectionIdentifier -> Maybe Section
-maybeSection groups identifier =
-    foldTopics groups
-        |> List.foldr (\s a -> List.append a s.sections) []
-        |> List.filter (\section -> section.identifier == identifier)
-        |> List.head
+        Learning learnings ->
+            viewPage Page.Learning GotLearningMsg (Learning.view learnings)

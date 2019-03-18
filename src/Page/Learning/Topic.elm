@@ -1,17 +1,16 @@
-module Pages.Topic exposing (chapterTitle, view)
+module Page.Learning.Topic exposing (chapterTitle, view)
 
 import Data.Group
 import Data.Section
 import Data.Slugable exposing (compactCollectionView)
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
-import Routes exposing (groupPath)
-import Shared exposing (Group, Model, Msg, Section, Slug, Slugable, Topic, UriWithLabel)
+import Shared exposing (Group, Msg, Section, Slug, Slugable, Topic, UriWithLabel)
 import Views.Layout exposing (mainHeaderWithChapterView, pageLayoutView, rowView)
 
 
-view : Model -> Group -> Topic -> Html.Html Msg
-view model group topic =
+view : Group -> Topic -> Html.Html Msg
+view group topic =
     pageLayoutView
         [ mainHeaderWithChapterView (chapterTitle group) (text topic.title)
         , rowView [ compactCollectionView topic.sections Data.Section.toSlug title ]
@@ -28,4 +27,4 @@ title section =
 
 chapterTitle : Group -> Html msg
 chapterTitle group =
-    a [ href (groupPath group.slug) ] [ text group.title ]
+    a [ href group.slug ] [ text group.title ]

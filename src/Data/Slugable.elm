@@ -2,46 +2,32 @@ module Data.Slugable exposing (collectionView, compactCollectionView, filter)
 
 import Html exposing (Html, a, div, li, text, ul)
 import Html.Attributes exposing (class, href)
-import Routes exposing (groupPath)
+import Html.Events exposing (onClick)
 import Shared exposing (Group, Slug, Slugable, Topic, UriWithLabel)
 
 
-collectionView : List (Slugable a) -> (Slugable a -> Slug) -> (Slugable a -> Html msg) -> Html msg
-collectionView list slugify toTitle =
+collectionView : List (Slugable a) -> (Slugable a -> msg) -> (Slugable a -> Html msg) -> Html msg
+collectionView list msg toTitle =
     list
-        |> listToUriWithLabel slugify toTitle
+        |> listToUriWithLabel msg toTitle
         |> linkCollectionView
 
 
-compactCollectionView : List (Slugable a) -> (Slugable a -> Slug) -> (Slugable a -> Html msg) -> Html msg
-compactCollectionView list slugify toTitle =
+compactCollectionView : List (Slugable a) -> (Slugable a -> msg) -> (Slugable a -> Html msg) -> Html msg
+compactCollectionView list msg toTitle =
     list
-        |> listToUriWithLabel slugify toTitle
+        |> listToUriWithLabel msg toTitle
         |> linkCompactCollectionView
 
 
-listToUriWithLabel : (Slugable a -> Slug) -> (Slugable a -> Html msg) -> List (Slugable a) -> List (UriWithLabel msg)
-listToUriWithLabel slugify toTitle groups =
-    List.map (toUriWithLabel slugify toTitle) groups
+listToUriWithLabel : (Slugable a -> msg) -> (Slugable a -> Html msg) -> List (Slugable a) -> List (UriWithLabel msg)
+listToUriWithLabel msg toTitle groups =
+    List.map (toUriWithLabel msg toTitle) groups
 
 
-toUriWithLabel : (Slugable a -> Slug) -> (Slugable a -> Html msg) -> Slugable a -> UriWithLabel msg
-toUriWithLabel slugify toTitle d =
-    let
-        slug_ =
-            case d.slug of
-                "#" ->
-                    Nothing
-
-                _ ->
-                    Just (slugify d)
-    in
-    case slug_ of
-        Just slug ->
-            Shared.toUriWithLabel (groupPath slug) (toTitle d) slug
-
-        Nothing ->
-            Shared.labelWithoutUri (toTitle d)
+toUriWithLabel : (Slugable a -> msg) -> (Slugable a -> Html msg) -> Slugable a -> UriWithLabel msg
+toUriWithLabel msg toTitle d =
+    Shared.toUriWithLabel (msg d) (toTitle d)
 
 
 linkCollectionView : List (UriWithLabel msg) -> Html msg
@@ -55,13 +41,16 @@ linkCompactCollectionView items =
 
 
 linkCollectionItemView : UriWithLabel msg -> Html msg
-linkCollectionItemView ( uri, label, _ ) =
-    case uri of
-        Nothing ->
-            li [ class "collection__item" ] [ div [ class "collection__link", class "collection-item black-text" ] [ label ] ]
-
-        Just u ->
-            li [ class "collection__item" ] [ a [ class "collection__link", href u, class "collection-item black-text" ] [ label ] ]
+linkCollectionItemView ( msg, label ) =
+    li [ class "collection__item" ]
+        [ a
+            [ class "collection__link"
+            , href "#"
+            , onClick msg
+            , class "collection-item black-text"
+            ]
+            [ label ]
+        ]
 
 
 filter : List (Slugable a) -> Slug -> Maybe (Slugable a)
