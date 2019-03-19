@@ -7,10 +7,9 @@ import Data.Slugable exposing (collectionView, compactCollectionView)
 import Data.Target as Target
 import Data.Topic as Topic
 import Html exposing (Html, div, span, text)
-import Html.Attributes exposing (class)
 import Session exposing (Session)
 import Shared exposing (Group, Section, Slugable, SlugableTarget, Target, Topic)
-import Views.Layout exposing (mainHeaderView, rowView)
+import Views.Layout exposing (mainHeaderView, mainHeaderWithChapterView, rowView)
 
 
 
@@ -55,43 +54,48 @@ view model =
     { title = "Apprentissages | Mon carnet de bord IHES"
     , content =
         div []
-            [ mainHeaderView (text "Apprentissages")
-            , case model.position of
+            (case model.position of
                 Nothing ->
-                    rowView [ collectionView model.learnings goToGroup Group.toHtml ]
+                    [ mainHeaderView (text "Apprentissages")
+                    , rowView [ collectionView model.learnings goToGroup Group.toHtml ]
+                    ]
 
                 Just position ->
                     case position of
                         ( groupPosition, Nothing ) ->
                             case groupPosition of
                                 ( group, Nothing ) ->
-                                    viewPosition
+                                    [ mainHeaderWithChapterView (text "Apprentissages") (Group.toHtml group)
+                                    , viewPosition
                                         (Learnings.topicByGroup model.learnings group)
                                         (goToTopic group)
                                         Topic.toHtml
+                                    ]
 
                                 ( group, Just topic ) ->
-                                    viewPositionCompact
+                                    [ mainHeaderWithChapterView (text "Apprentissages") (Group.toHtml group)
+                                    , viewPositionCompact
                                         (Learnings.sectionByTopic model.learnings group topic)
                                         (goToSection group topic)
                                         Section.toHtml
+                                    ]
 
                         ( ( group, Just topic ), Just sectionPosition ) ->
                             case sectionPosition of
                                 ( section, Nothing ) ->
-                                    viewPositionCompact
+                                    [ mainHeaderWithChapterView (text "Apprentissages") (Group.toHtml group)
+                                    , viewPositionCompact
                                         (Learnings.targetBySection model.learnings group topic section)
                                         (goToTarget group topic section)
                                         Target.toHtml
+                                    ]
 
                                 ( section, Just target ) ->
-                                    div [] [ text "TODO Target detail" ]
+                                    [ div [] [ text "TODO Target detail" ] ]
 
                         _ ->
-                            viewError
-
-            -- , rowView [ collectionView model.learnings Data.Group.toSlug titleView ]
-            ]
+                            [ viewError ]
+            )
     }
 
 
