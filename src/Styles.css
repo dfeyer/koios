@@ -198,6 +198,9 @@ h1 > span, h2 > span, h3 > span, h4 > span, h5 > span, h6 > span {
 h1.chapter, h2.chapter, h3.chapter, h4.chapter, h5.chapter, h6.chapter {
   margin-bottom: 0;
   color: var(--text-color-light);
+  padding-bottom: .4rem;
+  border-bottom: 3px solid var(--background-color-inversed);
+  opacity: .6;
 }
 
 .chapter + * {
@@ -548,4 +551,14 @@ a.collection__link:hover span {
 
 .page-header {
   margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  margin-bottom: 0;
+}
+
+.teaser {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-top: -1rem;
 }
