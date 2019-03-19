@@ -8,13 +8,15 @@ import Url.Parser as Parser exposing (..)
 
 
 type Route
-    = LearningRoute
+    = Learning
+    | Schedule
 
 
 parser : Parser (Route -> a) a
 parser =
     oneOf
-        [ map LearningRoute top
+        [ map Learning top
+        , map Schedule (s "semainier")
         ]
 
 
@@ -47,7 +49,10 @@ routeToString page =
     let
         pieces =
             case page of
-                LearningRoute ->
+                Learning ->
                     []
+
+                Schedule ->
+                    [ "semainier" ]
     in
     "/" ++ String.join "/" pieces

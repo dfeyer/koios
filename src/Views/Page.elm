@@ -5,6 +5,7 @@ import Components.MainMenu
 import Components.StabyloMenu
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Route exposing (Route(..))
 import Viewer exposing (Viewer)
 import Views.Helpers exposing (ihes)
 
@@ -17,8 +18,9 @@ under Other.
 type Page
     = Other
     | Learning
-    | Week
-    | Journal
+    | Schedule
+    | Diary
+    | Calendar
 
 
 view : Maybe Viewer -> Page -> { title : String, content : Html msg } -> Document msg
@@ -39,10 +41,10 @@ view _ page { title, content } =
 navigation : Page -> Html.Html msg
 navigation page =
     Components.MainMenu.view
-        [ ( text "Apprentissages", "/" )
-        , ( text "Semainier", "/plan" )
-        , ( text "Journal", "/report" )
-        , ( text "Calendrier", "/agenda" )
+        [ ( text "Apprentissages", Route.Learning )
+        , ( text "Semainier", Route.Schedule )
+        , ( text "Journal", Route.Schedule )
+        , ( text "Calendrier", Route.Schedule )
         ]
 
 
@@ -50,7 +52,7 @@ pageHeader : Page -> Html.Html msg
 pageHeader page =
     nav [ class "main-navigation", attribute "role" "navigation" ]
         [ div [ class "main-navigation__wrapper" ]
-            [ a [ class "main-navigation__logo", href "/", id "logo-container" ]
+            [ a [ class "main-navigation__logo", Route.href Route.Learning, id "logo-container" ]
                 [ text "Carnet de bord" ]
             , navigation page
             ]

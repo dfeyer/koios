@@ -438,14 +438,12 @@ figcaption {
   font-weight: 400;
 }
 
-a.collection__link:hover,
-a.collection__link:focus {
+a.collection__link:hover {
   color: white;
   background-color: var(--text-color);
 }
 
-a.collection__link:hover span,
-a.collection__link:focus span {
+a.collection__link:hover span {
   color: white;
 }
 

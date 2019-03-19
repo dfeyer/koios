@@ -1,5 +1,7 @@
-module Data.Target exposing (fromSlugableTarget, toNavigationTitle, toSlug, toSlugableList, toSlugableTarget)
+module Data.Target exposing (fromSlugableTarget, toHtml, toSlug, toSlugableList, toSlugableTarget, toString)
 
+import Html exposing (Html, span, text)
+import Html.Attributes exposing (class)
 import Shared exposing (Group, SectionIdentifier, Slug, Slugable, SlugableTarget, Target, Topic, UriWithLabel)
 
 
@@ -28,6 +30,11 @@ toSlug _ =
     "#"
 
 
-toNavigationTitle : Target -> String
-toNavigationTitle target =
+toHtml : SlugableTarget -> Html msg
+toHtml target =
+    span [ class "label" ] [ text (toString (fromSlugableTarget target)) ]
+
+
+toString : Target -> String
+toString target =
     target.text

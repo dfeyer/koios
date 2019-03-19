@@ -1,13 +1,13 @@
 module Page.Learning exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
-import Data.Group
-import Data.Section
-import Data.Slugable exposing (collectionView)
-import Data.Target
-import Data.Topic
+import Data.Group as Group
+import Data.Learnings as Learnings
+import Data.Section as Section
+import Data.Slugable exposing (collectionView, compactCollectionView)
+import Data.Target as Target
+import Data.Topic as Topic
 import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (class)
-import Http
 import Session exposing (Session)
 import Shared exposing (Group, Section, Slugable, SlugableTarget, Target, Topic)
 import Views.Layout exposing (mainHeaderView, rowView)
@@ -52,13 +52,13 @@ init session =
 
 view : Model -> { title : String, content : Html Msg }
 view model =
-    { title = "Title"
+    { title = "Apprentissages | Mon carnet de bord IHES"
     , content =
         div []
-            [ mainHeaderView (text "Activités")
+            [ mainHeaderView (text "Apprentissages")
             , case model.position of
                 Nothing ->
-                    rowView [ collectionView model.learnings goToGroup groupTitle ]
+                    rowView [ collectionView model.learnings goToGroup Group.toHtml ]
 
                 Just position ->
                     case position of
@@ -66,23 +66,23 @@ view model =
                             case groupPosition of
                                 ( group, Nothing ) ->
                                     viewPosition
-                                        (topicByGroup model.learnings group)
+                                        (Learnings.topicByGroup model.learnings group)
                                         (goToTopic group)
-                                        topicTitle
+                                        Topic.toHtml
 
                                 ( group, Just topic ) ->
-                                    viewPosition
-                                        (sectionByTopic model.learnings group topic)
+                                    viewPositionCompact
+                                        (Learnings.sectionByTopic model.learnings group topic)
                                         (goToSection group topic)
-                                        sectionTitle
+                                        Section.toHtml
 
                         ( ( group, Just topic ), Just sectionPosition ) ->
                             case sectionPosition of
                                 ( section, Nothing ) ->
-                                    viewPosition
-                                        (targetBySection model.learnings group topic section)
+                                    viewPositionCompact
+                                        (Learnings.targetBySection model.learnings group topic section)
                                         (goToTarget group topic section)
-                                        targetTitle
+                                        Target.toHtml
 
                                 ( section, Just target ) ->
                                     div [] [ text "TODO Target detail" ]
@@ -105,78 +105,19 @@ viewPosition list msg toTitle =
             viewError
 
 
+viewPositionCompact : Maybe (List (Slugable a)) -> (Slugable a -> msg) -> (Slugable a -> Html msg) -> Html msg
+viewPositionCompact list msg toTitle =
+    case list of
+        Just c ->
+            rowView [ compactCollectionView c msg toTitle ]
+
+        Nothing ->
+            viewError
+
+
 viewError : Html msg
 viewError =
     div [] [ text "TODO Handle error" ]
-
-
-groupTitle : Group -> Html msg
-groupTitle group =
-    span [ class "label" ] [ text (Data.Group.toNavigationTitle group) ]
-
-
-topicTitle : Topic -> Html msg
-topicTitle topic =
-    span [ class "label" ] [ text (Data.Topic.toNavigationTitle topic) ]
-
-
-sectionTitle : Section -> Html msg
-sectionTitle section =
-    span [ class "label" ] [ text (Data.Section.toNavigationTitle section) ]
-
-
-targetTitle : SlugableTarget -> Html msg
-targetTitle target =
-    span [ class "label" ] [ text (Data.Target.toNavigationTitle (Data.Target.fromSlugableTarget target)) ]
-
-
-topicByGroup : List Group -> Group -> Maybe (List Topic)
-topicByGroup learnings group =
-    case
-        List.filter (\g -> g.id == group.id) learnings
-            |> List.head
-    of
-        Just group_ ->
-            Just group_.topics
-
-        Nothing ->
-            Nothing
-
-
-sectionByTopic : List Group -> Group -> Topic -> Maybe (List Section)
-sectionByTopic learnings group topic =
-    case topicByGroup learnings group of
-        Just topics ->
-            case
-                List.filter (\t -> t.id == topic.id) topics
-                    |> List.head
-            of
-                Just topic_ ->
-                    Just topic_.sections
-
-                Nothing ->
-                    Nothing
-
-        Nothing ->
-            Nothing
-
-
-targetBySection : List Group -> Group -> Topic -> Section -> Maybe (List SlugableTarget)
-targetBySection learnings group topic section =
-    case sectionByTopic learnings group topic of
-        Just sections ->
-            case
-                List.filter (\s -> s.id == section.id) sections
-                    |> List.head
-            of
-                Just section_ ->
-                    Just (List.map Data.Target.toSlugableTarget section_.targets)
-
-                Nothing ->
-                    Nothing
-
-        Nothing ->
-            Nothing
 
 
 
@@ -205,7 +146,7 @@ goToSection group topic section =
 
 goToTarget : Group -> Topic -> Section -> SlugableTarget -> Msg
 goToTarget group topic section target =
-    GotPosition ( ( group, Just topic ), Just ( section, Just (Data.Target.fromSlugableTarget target) ) )
+    GotPosition ( ( group, Just topic ), Just ( section, Just (Target.fromSlugableTarget target) ) )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )

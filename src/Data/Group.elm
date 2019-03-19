@@ -1,6 +1,8 @@
-module Data.Group exposing (bySection, toNavigationTitle, toSlug)
+module Data.Group exposing (bySection, toHtml, toSlug, toString)
 
 import Data.Topic
+import Html exposing (Html, span, text)
+import Html.Attributes exposing (class)
 import Shared exposing (..)
 
 
@@ -9,8 +11,13 @@ toSlug group =
     group.slug
 
 
-toNavigationTitle : Group -> String
-toNavigationTitle group =
+toHtml : Group -> Html msg
+toHtml group =
+    span [ class "label" ] [ text (toString group) ]
+
+
+toString : Group -> String
+toString group =
     group.title
 
 

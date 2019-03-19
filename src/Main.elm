@@ -4,12 +4,13 @@ import Browser exposing (Document, UrlRequest)
 import Browser.Navigation as Nav
 import Html exposing (..)
 import Html.Attributes exposing (class, title)
-import Html.Events exposing (onClick)
+import Html.Events
 import Icons.ChevronUp
 import Json.Decode as Decode
 import Page.Blank as Blank
 import Page.Learning as Learning
 import Page.NotFound as NotFound
+import Page.Schedule as Schedule
 import Route exposing (..)
 import Session exposing (Session)
 import Shared exposing (..)
@@ -31,6 +32,7 @@ type Model
     = Redirect Session
     | NotFound Session
     | Learning Learning.Model
+    | Schedule Schedule.Model
 
 
 
@@ -84,6 +86,7 @@ type Msg
     | ChangedUrl Url
     | ClickedLink UrlRequest
     | GotLearningMsg Learning.Msg
+    | GotScheduleMsg Schedule.Msg
     | GotSession Session
     | ScrollToTop
     | GotToTop ()
@@ -98,8 +101,11 @@ toSession model =
         NotFound session ->
             session
 
-        Learning home ->
-            Learning.toSession home
+        Learning learning ->
+            Learning.toSession learning
+
+        Schedule schedule ->
+            Schedule.toSession schedule
 
 
 changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
@@ -112,9 +118,13 @@ changeRouteTo maybeRoute model =
         Nothing ->
             ( NotFound session, Cmd.none )
 
-        Just LearningRoute ->
+        Just Route.Learning ->
             Learning.init session
                 |> updateWith Learning GotLearningMsg model
+
+        Just Route.Schedule ->
+            Schedule.init session
+                |> updateWith Schedule GotScheduleMsg model
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -127,24 +137,11 @@ update msg model =
             ( model, Task.perform GotToTop scrollToTop )
 
         ( ClickedLink urlRequest, _ ) ->
-            case urlRequest of
+            case Debug.log "ClickedLink" urlRequest of
                 Browser.Internal url ->
-                    case url.fragment of
-                        Nothing ->
-                            -- If we got a link that didn't include a fragment,
-                            -- it's from one of those (href "") attributes that
-                            -- we have to include to make the RealWorld CSS work.
-                            --
-                            -- In an application doing path routing instead of
-                            -- fragment-based routing, this entire
-                            -- `case url.fragment of` expression this comment
-                            -- is inside would be unnecessary.
-                            ( model, Cmd.none )
-
-                        Just _ ->
-                            ( model
-                            , Nav.pushUrl (Session.navKey (toSession model)) (Url.toString url)
-                            )
+                    ( model
+                    , Nav.pushUrl (Session.navKey (toSession model)) (Url.toString url)
+                    )
 
                 Browser.External href ->
                     ( model
@@ -152,10 +149,10 @@ update msg model =
                     )
 
         ( ChangedUrl url, _ ) ->
-            changeRouteTo (Route.fromUrl url) model
+            changeRouteTo (Route.fromUrl (Debug.log "ChangedUrl" url)) model
 
         ( ChangedRoute route, _ ) ->
-            changeRouteTo route model
+            changeRouteTo (Debug.log "ChangedRoute" route) model
 
         ( GotLearningMsg subMsg, Learning learnings ) ->
             Learning.update subMsg learnings
@@ -189,6 +186,9 @@ subscriptions model =
         Learning learnings ->
             Sub.map GotLearningMsg (Learning.subscriptions learnings)
 
+        Schedule schedule ->
+            Sub.map GotScheduleMsg (Schedule.subscriptions schedule)
+
 
 
 -- VIEW
@@ -213,15 +213,19 @@ view model =
         NotFound _ ->
             viewPage Page.Other (\_ -> Ignored) NotFound.view
 
-        Learning learnings ->
-            viewPage Page.Learning GotLearningMsg (Learning.view learnings)
+        Learning learning ->
+            viewPage Page.Learning GotLearningMsg (Learning.view learning)
+
+        Schedule schedule ->
+            viewPage Page.Schedule GotScheduleMsg (Schedule.view schedule)
 
 
-scrollToTopView : Msg -> Html Msg
+scrollToTopView : msg -> Html msg
 scrollToTopView msg =
     a [ Html.Attributes.href "#", onClickNoBubble msg, class "go-to-top", title "Aller en haut de la page" ] [ Icons.ChevronUp.view ]
 
 
 onClickNoBubble : msg -> Html.Attribute msg
-onClickNoBubble message =
-    Html.Events.custom "click" (Decode.succeed { message = message, stopPropagation = True, preventDefault = True })
+onClickNoBubble msg =
+    Html.Events.custom "click"
+        (Decode.succeed { message = msg, stopPropagation = True, preventDefault = True })

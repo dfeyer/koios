@@ -1,5 +1,7 @@
-module Data.Section exposing (toCode, toIdentifier, toNavigationTitle, toSlug)
+module Data.Section exposing (toCode, toHtml, toIdentifier, toSlug, toString)
 
+import Html exposing (Html, span, text)
+import Html.Attributes exposing (class)
 import Shared exposing (..)
 
 
@@ -12,8 +14,13 @@ toSlug { identifier } =
         ++ String.fromInt identifier.order
 
 
-toNavigationTitle : Section -> String
-toNavigationTitle { title } =
+toHtml : Section -> Html msg
+toHtml section =
+    span [ class "label" ] [ text (toString section) ]
+
+
+toString : Section -> String
+toString { title } =
     title
 
 

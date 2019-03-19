@@ -1,5 +1,7 @@
-module Data.Topic exposing (bySection, containSection, foldTopics, toNavigationTitle, toSlug)
+module Data.Topic exposing (bySection, containSection, foldTopics, toHtml, toSlug, toString)
 
+import Html exposing (Html, span, text)
+import Html.Attributes exposing (class)
 import Shared exposing (Group, SectionIdentifier, Slugable, Topic, UriWithLabel)
 
 
@@ -8,8 +10,13 @@ toSlug group topic =
     group.slug ++ "/" ++ topic.slug
 
 
-toNavigationTitle : Topic -> String
-toNavigationTitle topic =
+toHtml : Topic -> Html msg
+toHtml topic =
+    span [ class "label" ] [ text (toString topic) ]
+
+
+toString : Topic -> String
+toString topic =
     topic.title
 
 

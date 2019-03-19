@@ -8,7 +8,7 @@
     "deploy": "run-s deploy:install deploy:build",
     "deploy:install": "yarn",
     "deploy:build": "run-s build",
-    "dev": "parcel index.html",
+    "dev": "parcel serve --https index.html",
     "watch": "parcel watch index.html",
     "build": "parcel build index.html",
     "format": "elm-format --yes src/"
