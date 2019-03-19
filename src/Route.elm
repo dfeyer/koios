@@ -10,6 +10,8 @@ import Url.Parser as Parser exposing (..)
 type Route
     = Learning
     | Schedule
+    | Diary
+    | Calendar
 
 
 parser : Parser (Route -> a) a
@@ -17,6 +19,8 @@ parser =
     oneOf
         [ map Learning top
         , map Schedule (s "semainier")
+        , map Diary (s "journal")
+        , map Calendar (s "calendrier")
         ]
 
 
@@ -54,5 +58,11 @@ routeToString page =
 
                 Schedule ->
                     [ "semainier" ]
+
+                Diary ->
+                    [ "journal" ]
+
+                Calendar ->
+                    [ "calendrier" ]
     in
     "/" ++ String.join "/" pieces

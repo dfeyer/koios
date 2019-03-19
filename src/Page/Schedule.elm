@@ -1,16 +1,8 @@
 module Page.Schedule exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
-import Data.Group
-import Data.Section
-import Data.Slugable exposing (collectionView)
-import Data.Target
-import Data.Topic
 import Html exposing (Html, div, span, text)
-import Html.Attributes exposing (class)
-import Http
 import Session exposing (Session)
-import Shared exposing (Group, Section, Slugable, SlugableTarget, Target, Topic)
-import Views.Layout exposing (mainHeaderView, rowView)
+import Views.Layout exposing (mainHeaderView)
 
 
 

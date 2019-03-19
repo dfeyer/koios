@@ -8,6 +8,8 @@ import Html.Events
 import Icons.ChevronUp
 import Json.Decode as Decode
 import Page.Blank as Blank
+import Page.Calendar as Calendar
+import Page.Diary as Diary
 import Page.Learning as Learning
 import Page.NotFound as NotFound
 import Page.Schedule as Schedule
@@ -33,6 +35,8 @@ type Model
     | NotFound Session
     | Learning Learning.Model
     | Schedule Schedule.Model
+    | Diary Diary.Model
+    | Calendar Calendar.Model
 
 
 
@@ -87,6 +91,8 @@ type Msg
     | ClickedLink UrlRequest
     | GotLearningMsg Learning.Msg
     | GotScheduleMsg Schedule.Msg
+    | GotDiaryMsg Diary.Msg
+    | GotCalendarMsg Calendar.Msg
     | GotSession Session
     | ScrollToTop
     | GotToTop ()
@@ -107,6 +113,12 @@ toSession model =
         Schedule schedule ->
             Schedule.toSession schedule
 
+        Diary diary ->
+            Diary.toSession diary
+
+        Calendar calendar ->
+            Calendar.toSession calendar
+
 
 changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
 changeRouteTo maybeRoute model =
@@ -125,6 +137,14 @@ changeRouteTo maybeRoute model =
         Just Route.Schedule ->
             Schedule.init session
                 |> updateWith Schedule GotScheduleMsg model
+
+        Just Route.Diary ->
+            Diary.init session
+                |> updateWith Diary GotDiaryMsg model
+
+        Just Route.Calendar ->
+            Calendar.init session
+                |> updateWith Calendar GotCalendarMsg model
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -189,6 +209,12 @@ subscriptions model =
         Schedule schedule ->
             Sub.map GotScheduleMsg (Schedule.subscriptions schedule)
 
+        Diary diary ->
+            Sub.map GotDiaryMsg (Diary.subscriptions diary)
+
+        Calendar calendar ->
+            Sub.map GotCalendarMsg (Calendar.subscriptions calendar)
+
 
 
 -- VIEW
@@ -218,6 +244,12 @@ view model =
 
         Schedule schedule ->
             viewPage Page.Schedule GotScheduleMsg (Schedule.view schedule)
+
+        Diary diary ->
+            viewPage Page.Diary GotDiaryMsg (Diary.view diary)
+
+        Calendar calendar ->
+            viewPage Page.Calendar GotCalendarMsg (Calendar.view calendar)
 
 
 scrollToTopView : msg -> Html msg

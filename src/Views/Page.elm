@@ -43,8 +43,8 @@ navigation page =
     Components.MainMenu.view
         [ ( text "Apprentissages", Route.Learning )
         , ( text "Semainier", Route.Schedule )
-        , ( text "Journal", Route.Schedule )
-        , ( text "Calendrier", Route.Schedule )
+        , ( text "Journal", Route.Diary )
+        , ( text "Calendrier", Route.Calendar )
         ]
 
 
