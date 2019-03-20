@@ -21,6 +21,7 @@ type Page
     | Schedule
     | Diary
     | Calendar
+    | Login
 
 
 view : Maybe Viewer -> Page -> { title : String, content : Html msg } -> Document msg
@@ -45,6 +46,7 @@ navigation page =
         , ( text "Semainier", Route.Schedule )
         , ( text "Journal", Route.Diary )
         , ( text "Calendrier", Route.Calendar )
+        , ( text "Connexion", Route.Login )
         ]
 
 

@@ -12,6 +12,7 @@ type Route
     | Schedule
     | Diary
     | Calendar
+    | Login
 
 
 parser : Parser (Route -> a) a
@@ -21,6 +22,7 @@ parser =
         , map Schedule (s "semainier")
         , map Diary (s "journal")
         , map Calendar (s "calendrier")
+        , map Login (s "connexion")
         ]
 
 
@@ -64,5 +66,8 @@ routeToString page =
 
                 Calendar ->
                     [ "calendrier" ]
+
+                Login ->
+                    [ "connexion" ]
     in
     "/" ++ String.join "/" pieces

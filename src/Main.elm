@@ -11,6 +11,7 @@ import Page.Blank as Blank
 import Page.Calendar as Calendar
 import Page.Diary as Diary
 import Page.Learning as Learning
+import Page.Login as Login
 import Page.NotFound as NotFound
 import Page.Schedule as Schedule
 import Route exposing (..)
@@ -37,6 +38,7 @@ type Model
     | Schedule Schedule.Model
     | Diary Diary.Model
     | Calendar Calendar.Model
+    | Login Login.Model
 
 
 
@@ -93,6 +95,7 @@ type Msg
     | GotScheduleMsg Schedule.Msg
     | GotDiaryMsg Diary.Msg
     | GotCalendarMsg Calendar.Msg
+    | GotLoginMsg Login.Msg
     | GotSession Session
     | ScrollToTop
     | GotToTop ()
@@ -118,6 +121,9 @@ toSession model =
 
         Calendar calendar ->
             Calendar.toSession calendar
+
+        Login login ->
+            Login.toSession login
 
 
 changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
@@ -145,6 +151,10 @@ changeRouteTo maybeRoute model =
         Just Route.Calendar ->
             Calendar.init session
                 |> updateWith Calendar GotCalendarMsg model
+
+        Just Route.Login ->
+            Login.init session
+                |> updateWith Login GotLoginMsg model
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -215,6 +225,9 @@ subscriptions model =
         Calendar calendar ->
             Sub.map GotCalendarMsg (Calendar.subscriptions calendar)
 
+        Login login ->
+            Sub.map GotLoginMsg (Login.subscriptions login)
+
 
 
 -- VIEW
@@ -250,6 +263,9 @@ view model =
 
         Calendar calendar ->
             viewPage Page.Calendar GotCalendarMsg (Calendar.view calendar)
+
+        Login login ->
+            viewPage Page.Login GotLoginMsg (Login.view login)
 
 
 scrollToTopView : msg -> Html msg
