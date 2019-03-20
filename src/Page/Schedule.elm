@@ -1,6 +1,7 @@
 module Page.Schedule exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
-import Html exposing (Html, div, span, text)
+import Html exposing (Html, div, h2, span, text)
+import Html.Attributes exposing (class)
 import Session exposing (Session)
 import Views.Layout exposing (mainHeaderView)
 
@@ -31,9 +32,36 @@ view model =
     { title = "Semainer | Mon carnet de board IHES"
     , content =
         div []
-            [ mainHeaderView (text "Semainier")
-            ]
+            (List.concat
+                [ [ mainHeaderView (text "Semainier")
+                  ]
+                , [ viewWeekList
+                        [ "Lundi"
+                        , "Mardi"
+                        , "Mercredi"
+                        , "Jeudi"
+                        , "Vendredi"
+                        ]
+                  ]
+                ]
+            )
     }
+
+
+viewWeekList : List String -> Html Msg
+viewWeekList days =
+    div [ class "schedule schedule--weekly" ]
+        (List.map
+            viewWeekDay
+            days
+        )
+
+
+viewWeekDay : String -> Html Msg
+viewWeekDay label =
+    div [ class "week week--vertical" ]
+        [ h2 [ class "week__label" ] [ text label ]
+        ]
 
 
 

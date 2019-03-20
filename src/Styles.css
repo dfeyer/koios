@@ -562,3 +562,30 @@ a.collection__link:hover span {
   font-weight: 600;
   margin-top: -1rem;
 }
+
+.schedule {
+  display: grid;
+  min-height: 800px;
+}
+
+.schedule--weekly {
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-gap: 1rem;
+}
+
+
+.week {
+  background-color: var(--background-color);
+  padding: .5rem;
+}
+
+.week--vertical {
+
+}
+
+.week__label {
+  font-size: 1.4rem;
+  opacity: 0.6;
+  padding-bottom: .4rem;
+  border-bottom: 3px solid var(--background-color-inversed);
+}
