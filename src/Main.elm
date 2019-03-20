@@ -188,6 +188,10 @@ update msg model =
             Learning.update subMsg learnings
                 |> updateWith Learning GotLearningMsg model
 
+        ( GotLoginMsg subMsg, Login learnings ) ->
+            Login.update subMsg learnings
+                |> updateWith Login GotLoginMsg model
+
         ( _, _ ) ->
             -- Disregard messages that arrived for the wrong page.
             ( model, Cmd.none )

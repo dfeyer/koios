@@ -113,6 +113,7 @@
   --text-color: rgb(33, 33, 33);
   --text-color-light: rgba(33, 33, 33, 0.7);
   --text-color-lighter: rgba(33, 33, 33, 0.5);
+  --text-color-inversed: #ffffff;
   --background-color-dynamic: #fff226;
   --background-color: #ffffff;
   --background-color-inversed: rgb(33, 33, 33);
@@ -588,4 +589,53 @@ a.collection__link:hover span {
   opacity: 0.6;
   padding-bottom: .4rem;
   border-bottom: 3px solid var(--background-color-inversed);
+}
+
+.login-form {
+  display: flex;
+  justify-content: center;
+}
+
+.login-form__form {
+  width: 30vw;
+  max-width: 20em;
+  margin: 4rem 0;
+}
+
+.form {
+
+}
+
+.form__label {
+  display: block;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.form__input {
+  display: block;
+  border: 0;
+  padding: .8rem 1rem;
+  width: 100%;
+}
+
+.form__actions {
+  margin-top: 2rem;
+}
+
+.form__button {
+  border: 0;
+  padding: .8rem .5rem;
+  width: 100%;
+  background-color: var(--background-color-inversed);
+  color: var(--text-color-inversed);
+}
+
+.form__subactions {
+
+}
+
+.form__subaction {
+  font-size: .8rem;
 }
