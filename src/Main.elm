@@ -157,7 +157,7 @@ update msg model =
             ( model, Task.perform GotToTop scrollToTop )
 
         ( ClickedLink urlRequest, _ ) ->
-            case Debug.log "ClickedLink" urlRequest of
+            case urlRequest of
                 Browser.Internal url ->
                     ( model
                     , Nav.pushUrl (Session.navKey (toSession model)) (Url.toString url)
@@ -169,10 +169,10 @@ update msg model =
                     )
 
         ( ChangedUrl url, _ ) ->
-            changeRouteTo (Route.fromUrl (Debug.log "ChangedUrl" url)) model
+            changeRouteTo (Route.fromUrl url) model
 
         ( ChangedRoute route, _ ) ->
-            changeRouteTo (Debug.log "ChangedRoute" route) model
+            changeRouteTo route model
 
         ( GotLearningMsg subMsg, Learning learnings ) ->
             Learning.update subMsg learnings
