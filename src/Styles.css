@@ -625,11 +625,21 @@ a.collection__link:hover span {
 }
 
 .form__button {
-  border: 0;
+  cursor: pointer;
   padding: .8rem .5rem;
   width: 100%;
   background-color: var(--background-color-inversed);
   color: var(--text-color-inversed);
+  border: 4px solid transparent;
+  font-weight: 600;
+
+  transition: color 180ms ease-in-out, background-color 180ms ease-in-out, border-color 180ms ease-in-out;
+}
+
+.form__button:hover {
+  background-color: var(--background-color-dynamic);
+  border-color: var(--background-color);
+  color: var(--text-color);
 }
 
 .form__subactions {
@@ -638,4 +648,11 @@ a.collection__link:hover span {
 
 .form__subaction {
   font-size: .8rem;
+}
+
+.form__help {
+  font-size: .9rem;
+  font-weight: 400;
+  font-style: italic;
+  margin-top: .4rem;
 }
