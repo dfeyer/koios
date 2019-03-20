@@ -59,57 +59,82 @@ view model =
         div []
             (case model.position of
                 Nothing ->
-                    [ mainHeaderView (text "Apprentissages")
-                    , rowView [ collectionView model.learnings goToGroup Group.toHtml ]
-                    ]
+                    viewLearnings model.learnings
 
                 Just position ->
                     case position of
                         ( groupPosition, Nothing ) ->
                             case groupPosition of
                                 ( group, Nothing ) ->
-                                    [ mainHeaderWithChapterView
-                                        groupBreadcrumbView
-                                        (text (Group.toString group))
-                                    , viewPosition
-                                        (Learnings.topicByGroup model.learnings group)
-                                        (goToTopic group)
-                                        Topic.toHtml
-                                    ]
+                                    viewGroup model.learnings group
 
                                 ( group, Just topic ) ->
-                                    [ mainHeaderWithChapterView
-                                        (topicBreadcrumbView group)
-                                        (text (Topic.toString topic))
-                                    , viewPositionCompact
-                                        (Learnings.sectionByTopic model.learnings group topic)
-                                        (goToSection group topic)
-                                        Section.toHtml
-                                    ]
+                                    viewTopic model.learnings group topic
 
                         ( ( group, Just topic ), Just sectionPosition ) ->
                             case sectionPosition of
                                 ( section, Nothing ) ->
-                                    [ mainHeaderWithChapterView
-                                        (sectionBreadcrumbView group topic)
-                                        (text (Section.toString section))
-                                    , viewPositionCompact
-                                        (Learnings.targetBySection model.learnings group topic section)
-                                        (goToTarget group topic section)
-                                        Target.toHtml
-                                    ]
+                                    viewSection model.learnings group topic section
 
                                 ( section, Just target ) ->
-                                    [ mainHeaderWithChapterView
-                                        (sectionBreadcrumbView group topic)
-                                        (text (Section.toString section))
-                                    , div [ class "teaser" ] [ text (Target.toString target) ]
-                                    ]
+                                    viewTarget group topic section target
 
                         _ ->
                             [ viewError ]
             )
     }
+
+
+viewLearnings : List Group -> List (Html Msg)
+viewLearnings learnings =
+    [ mainHeaderView (text "Apprentissages")
+    , rowView [ collectionView learnings goToGroup Group.toHtml ]
+    ]
+
+
+viewGroup : List Group -> Group -> List (Html Msg)
+viewGroup learnings group =
+    [ mainHeaderWithChapterView
+        groupBreadcrumbView
+        (text (Group.toString group))
+    , viewPosition
+        (Learnings.topicByGroup learnings group)
+        (goToTopic group)
+        Topic.toHtml
+    ]
+
+
+viewTopic : List Group -> Group -> Topic -> List (Html Msg)
+viewTopic learnings group topic =
+    [ mainHeaderWithChapterView
+        (topicBreadcrumbView group)
+        (text (Topic.toString topic))
+    , viewPositionCompact
+        (Learnings.sectionByTopic learnings group topic)
+        (goToSection group topic)
+        Section.toHtml
+    ]
+
+
+viewSection : List Group -> Group -> Topic -> Section -> List (Html Msg)
+viewSection learnings group topic section =
+    [ mainHeaderWithChapterView
+        (sectionBreadcrumbView group topic)
+        (text (Section.toString section))
+    , viewPositionCompact
+        (Learnings.targetBySection learnings group topic section)
+        (goToTarget group topic section)
+        Target.toHtml
+    ]
+
+
+viewTarget : Group -> Topic -> Section -> Target -> List (Html Msg)
+viewTarget group topic section target =
+    [ mainHeaderWithChapterView
+        (sectionBreadcrumbView group topic)
+        (text (Section.toString section))
+    , div [ class "teaser" ] [ text (Target.toString target) ]
+    ]
 
 
 groupBreadcrumbView : Html Msg
