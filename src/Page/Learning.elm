@@ -11,6 +11,7 @@ import Html.Attributes exposing (class, href)
 import Html.Events exposing (onClick)
 import Session exposing (Session)
 import Shared exposing (Group, Section, Slugable, SlugableTarget, Target, Topic)
+import Views.Breadcrumb as Breadcrumb
 import Views.Layout exposing (mainHeaderView, mainHeaderWithChapterView, rowView)
 
 
@@ -68,7 +69,7 @@ view model =
                             case groupPosition of
                                 ( group, Nothing ) ->
                                     [ mainHeaderWithChapterView
-                                        groupBreadcrumb
+                                        groupBreadcrumbView
                                         (text (Group.toString group))
                                     , viewPosition
                                         (Learnings.topicByGroup model.learnings group)
@@ -78,7 +79,7 @@ view model =
 
                                 ( group, Just topic ) ->
                                     [ mainHeaderWithChapterView
-                                        (topicBreadcrumb group)
+                                        (topicBreadcrumbView group)
                                         (text (Topic.toString topic))
                                     , viewPositionCompact
                                         (Learnings.sectionByTopic model.learnings group topic)
@@ -90,7 +91,7 @@ view model =
                             case sectionPosition of
                                 ( section, Nothing ) ->
                                     [ mainHeaderWithChapterView
-                                        (sectionBreadcrumb group topic)
+                                        (sectionBreadcrumbView group topic)
                                         (text (Section.toString section))
                                     , viewPositionCompact
                                         (Learnings.targetBySection model.learnings group topic section)
@@ -100,7 +101,7 @@ view model =
 
                                 ( section, Just target ) ->
                                     [ mainHeaderWithChapterView
-                                        (sectionBreadcrumb group topic)
+                                        (sectionBreadcrumbView group topic)
                                         (text (Section.toString section))
                                     , div [ class "teaser" ] [ text (Target.toString target) ]
                                     ]
@@ -111,43 +112,28 @@ view model =
     }
 
 
-groupBreadcrumb : Html Msg
-groupBreadcrumb =
-    breadcrumb
-        [ ( Nothing, "Apprentissages" )
+groupBreadcrumbView : Html Msg
+groupBreadcrumbView =
+    Breadcrumb.view
+        [ ( GotRoot, "Apprentissages" )
         ]
 
 
-topicBreadcrumb : Group -> Html Msg
-topicBreadcrumb group =
-    breadcrumb
-        [ ( Nothing, "Apprentissages" )
-        , ( Just ( ( group, Nothing ), Nothing ), Group.toString group )
+topicBreadcrumbView : Group -> Html Msg
+topicBreadcrumbView group =
+    Breadcrumb.view
+        [ ( GotRoot, "Apprentissages" )
+        , ( GotPosition ( ( group, Nothing ), Nothing ), Group.toString group )
         ]
 
 
-sectionBreadcrumb : Group -> Topic -> Html Msg
-sectionBreadcrumb group topic =
-    breadcrumb
-        [ ( Nothing, "Apprentissages" )
-        , ( Just ( ( group, Nothing ), Nothing ), Group.toString group )
-        , ( Just ( ( group, Just topic ), Nothing ), Topic.toString topic )
+sectionBreadcrumbView : Group -> Topic -> Html Msg
+sectionBreadcrumbView group topic =
+    Breadcrumb.view
+        [ ( GotRoot, "Apprentissages" )
+        , ( GotPosition ( ( group, Nothing ), Nothing ), Group.toString group )
+        , ( GotPosition ( ( group, Just topic ), Nothing ), Topic.toString topic )
         ]
-
-
-breadcrumb : List ( Maybe Position, String ) -> Html Msg
-breadcrumb items =
-    items
-        |> List.map
-            (\( p, l ) ->
-                case p of
-                    Just p_ ->
-                        a [ href "#", onClick (GotPosition p_) ] [ text l ]
-
-                    Nothing ->
-                        a [ href "#", onClick GotRoot ] [ text l ]
-            )
-        |> span [ class "breadcrumb" ]
 
 
 viewPosition : Maybe (List (Slugable a)) -> (Slugable a -> msg) -> (Slugable a -> Html msg) -> Html msg
