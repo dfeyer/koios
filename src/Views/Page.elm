@@ -26,18 +26,33 @@ type Page
 
 view : Maybe Viewer -> Page -> { title : String, content : Html msg } -> Document msg
 view _ page { title, content } =
-    { title = title ++ " - Conduit"
+    { title = title
     , body =
-        [ div [ class "content" ]
+        [ pageWrapper
             [ pageHeader page
-            , div [ class "progress" ] [ div [] [] ]
-            , div [ class "content__main" ]
+            , progress
+            , contentWrapper
                 [ content
                 ]
             , pageFooter
             ]
         ]
     }
+
+
+progress : Html msg
+progress =
+    div [ class "progress" ] [ div [] [] ]
+
+
+pageWrapper : List (Html msg) -> Html msg
+pageWrapper =
+    div [ class "content" ]
+
+
+contentWrapper : List (Html msg) -> Html msg
+contentWrapper =
+    div [ class "content__main" ]
 
 
 navigation : Page -> Html.Html msg
