@@ -30,6 +30,7 @@ view _ page { title, content } =
     , body =
         [ div [ class "content" ]
             [ pageHeader page
+            , div [ class "progress" ] [ div [] [] ]
             , div [ class "content__main" ]
                 [ content
                 ]

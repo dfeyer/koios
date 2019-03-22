@@ -498,6 +498,7 @@ a.collection__link:hover span {
 .label {
 
 }
+
 .label__prefix {
   display: inline-flex;
   font-weight: inherit;
@@ -505,6 +506,7 @@ a.collection__link:hover span {
   color: var(--text-color-lighter);
   margin-right: .25rem;
 }
+
 .label__prefix:after {
   content: "|";
   font-weight: 400;
@@ -670,5 +672,38 @@ a.collection__link:hover span {
   font-size: .9rem;
   font-weight: 400;
   font-style: italic;
-  margin-top: .4rem;
+}
+
+.progress {
+  background-color: transparent;
+  width: 100%;
+
+  opacity: 0;
+
+  transition: all 120ms ease-in-out;
+}
+
+.progress div {
+  background-color: var(--background-color-inversed);
+  height: .2rem;
+  animation-delay: 300ms;
+}
+
+.progress--on {
+  opacity: .5;
+}
+
+.progress--on div {
+  width: 0%;
+  animation: progress 3s infinite forwards ease-out;
+}
+
+@keyframes progress {
+  0% {
+    width: 0%;
+  }
+
+  100% {
+    width: 100%;
+  }
 }
