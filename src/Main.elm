@@ -9,7 +9,7 @@ import Html exposing (..)
 import Html.Attributes exposing (class, title)
 import Html.Events
 import Icons.ChevronUp
-import Json.Decode as Decode exposing (Decoder, Value, string)
+import Json.Decode as Decode exposing (Decoder, Value, nullable, string)
 import Json.Decode.Pipeline exposing (custom, required)
 import Page.Blank as Blank
 import Page.Calendar as Calendar
@@ -80,7 +80,7 @@ main =
 type alias Flags =
     { translations : TranslationFlags
     , learnings : List Group
-    , storage : Cred -> Viewer
+    , storage : Maybe (Cred -> Viewer)
     }
 
 
@@ -89,7 +89,7 @@ decodeFlags =
     Decode.succeed Flags
         |> required "translations" decodeTranslationFlags
         |> required "learnings" (Decode.list Group.decode)
-        |> required "storage" Viewer.decoder
+        |> required "storage" (nullable Viewer.decoder)
 
 
 type alias TranslationFlags =

@@ -184,7 +184,7 @@ decodeSectionIdentifier =
         |> required "code" string
         |> required "cycle" int
         |> required "order" int
-        |> required "prefix" (nullable string)
+        |> required "suffix" (nullable string)
 
 
 decodeTarget : Decoder Target
