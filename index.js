@@ -7,15 +7,19 @@ import learnings from './assets/activities.json'
 const storageKey = "koios-store";
 const storage = localStorage.getItem(storageKey);
 
+const flags = JSON.stringify({
+  translations: {
+    fr: localeFrench
+  },
+  learnings,
+  storage
+});
+
+const node = document.getElementById('main');
+
 const app = Elm.Main.init({
-  node: document.getElementById('main'),
-  flags: {
-    translations: {
-      fr: localeFrench
-    },
-    learnings,
-    storage
-  }
+  node,
+  flags
 });
 
 app.ports.storeCache.subscribe(function (val) {

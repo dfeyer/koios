@@ -1,10 +1,10 @@
 module Main exposing (init, main, subscriptions, update, view)
 
-import Api
+import Api exposing (Cred)
 import Auth0 exposing (Auth0Config, auth0AuthorizeURL)
 import Browser exposing (Document, UrlRequest(..))
 import Browser.Navigation as Nav
-import Data.Group exposing (Group)
+import Data.Group as Group exposing (Group)
 import Html exposing (..)
 import Html.Attributes exposing (class, title)
 import Html.Events
@@ -61,9 +61,9 @@ authorizeURL =
 -- MAIN
 
 
-main : Program Flags Model Msg
+main : Program Value Model Msg
 main =
-    Browser.application
+    Api.application decodeFlags
         { init = init
         , view = view
         , update = update
@@ -80,7 +80,16 @@ main =
 type alias Flags =
     { translations : TranslationFlags
     , learnings : List Group
+    , storage : Cred -> Viewer
     }
+
+
+decodeFlags : Decoder Flags
+decodeFlags =
+    Decode.succeed Flags
+        |> required "translations" decodeTranslationFlags
+        |> required "learnings" (Decode.list Group.decode)
+        |> required "storage" Viewer.decoder
 
 
 type alias TranslationFlags =
@@ -94,10 +103,17 @@ decodeTranslationFlags =
         |> required "fr" string
 
 
-init : Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
-init { learnings } url navKey =
-    changeRouteTo (Route.fromUrl url)
-        (Redirect (Session.fromViewer navKey Nothing learnings))
+init : Maybe Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
+init mayabeFlags url navKey =
+    case mayabeFlags of
+        Just { learnings } ->
+            changeRouteTo (Route.fromUrl url)
+                (Redirect (Session.fromViewer navKey Nothing learnings))
+
+        Nothing ->
+            -- TODO Handle broken flags
+            changeRouteTo (Route.fromUrl url)
+                (Redirect (Session.fromViewer navKey Nothing []))
 
 
 
