@@ -3,6 +3,7 @@ module Page.Schedule exposing (Model, Msg, init, subscriptions, toSession, updat
 import Html exposing (Html, div, h2, span, text)
 import Html.Attributes exposing (class)
 import Session exposing (Session)
+import Views.Event as Event
 import Views.Layout exposing (mainHeaderView)
 
 
@@ -61,6 +62,9 @@ viewWeekDay : String -> Html Msg
 viewWeekDay label =
     div [ class "week week--vertical" ]
         [ h2 [ class "week__label" ] [ text label ]
+        , Event.timedView 10 11 "Mathématique"
+        , Event.timedView 15 18 "Menuiserie"
+        , Event.timedView 20 21 "Lecture"
         ]
 
 

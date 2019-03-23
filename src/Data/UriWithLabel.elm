@@ -8,13 +8,13 @@ import Html exposing (Html)
 
 
 type alias UriWithLabel msg =
-    ( msg, Html msg )
+    ( msg, Html msg, String )
 
 
 
 -- CONSTRUCTORS
 
 
-toUriWithLabel : msg -> Html msg -> UriWithLabel msg
-toUriWithLabel msg label =
-    ( msg, label )
+toUriWithLabel : msg -> Html msg -> String -> UriWithLabel msg
+toUriWithLabel msg label slug =
+    ( msg, label, slug )

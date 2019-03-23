@@ -4,6 +4,7 @@ import Data.UriWithLabel as UriWithLabel exposing (UriWithLabel)
 import Html exposing (Html, a, li, ul)
 import Html.Attributes exposing (class, href)
 import Html.Events exposing (onClick)
+import Html.Keyed
 
 
 
@@ -43,7 +44,7 @@ listToUriWithLabel msg toTitle groups =
 
 toUriWithLabel : (Slugable a -> msg) -> (Slugable a -> Html msg) -> Slugable a -> UriWithLabel msg
 toUriWithLabel msg toTitle d =
-    UriWithLabel.toUriWithLabel (msg d) (toTitle d)
+    UriWithLabel.toUriWithLabel (msg d) (toTitle d) d.slug
 
 
 linkCollectionView : List (UriWithLabel msg) -> Html msg
@@ -57,15 +58,21 @@ linkCompactCollectionView items =
 
 
 linkCollectionItemView : UriWithLabel msg -> Html msg
-linkCollectionItemView ( msg, label ) =
+linkCollectionItemView ( msg, label, slug ) =
+    let
+        li =
+            Html.Keyed.node "li"
+    in
     li [ class "collection__item" ]
-        [ a
-            [ class "collection__link"
-            , href "#"
-            , onClick msg
-            , class "collection-item black-text"
-            ]
-            [ label ]
+        [ ( slug
+          , a
+                [ class "collection__link"
+                , href "#"
+                , onClick msg
+                , class "collection-item black-text"
+                ]
+                [ label ]
+          )
         ]
 
 

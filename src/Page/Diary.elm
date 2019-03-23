@@ -1,6 +1,7 @@
 module Page.Diary exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
-import Html exposing (Html, div, span, text)
+import Html exposing (Html, article, div, footer, h1, h2, header, section, span, text)
+import Html.Attributes exposing (class)
 import Session exposing (Session)
 import Views.Layout exposing (mainHeaderView)
 
@@ -32,8 +33,22 @@ view model =
     , content =
         div []
             [ mainHeaderView (text "Journal")
+            , section [ class "feed" ]
+                [ feedItemView [ text "..." ]
+                , feedItemView [ text "..." ]
+                , feedItemView [ text "..." ]
+                ]
             ]
     }
+
+
+feedItemView : List (Html msg) -> Html msg
+feedItemView content =
+    article [ class "feed-item" ]
+        [ header [ class "feed-item__header" ]
+            [ h2 [ class "feed-item__headline" ] [ text "Samedi, 23 mars 2019" ] ]
+        , div [ class "feed-item__content" ] content
+        ]
 
 
 
