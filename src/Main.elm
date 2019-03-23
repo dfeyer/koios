@@ -1,12 +1,16 @@
 module Main exposing (init, main, subscriptions, update, view)
 
-import Browser exposing (Document, UrlRequest)
+import Api
+import Auth0 exposing (Auth0Config, auth0AuthorizeURL)
+import Browser exposing (Document, UrlRequest(..))
 import Browser.Navigation as Nav
+import Data.Group exposing (Group)
 import Html exposing (..)
 import Html.Attributes exposing (class, title)
 import Html.Events
 import Icons.ChevronUp
-import Json.Decode as Decode
+import Json.Decode as Decode exposing (Decoder, Value, string)
+import Json.Decode.Pipeline exposing (custom, required)
 import Page.Blank as Blank
 import Page.Calendar as Calendar
 import Page.Diary as Diary
@@ -16,10 +20,10 @@ import Page.NotFound as NotFound
 import Page.Schedule as Schedule
 import Route exposing (..)
 import Session exposing (Session)
-import Shared exposing (..)
 import Task
 import Tasks.Ui exposing (scrollToTop)
 import Url exposing (Url)
+import Viewer exposing (Viewer)
 import Views.Page as Page
 
 
@@ -41,6 +45,18 @@ type Model
     | Login Login.Model
 
 
+authorizeURL : UrlRequest
+authorizeURL =
+    External
+        (auth0AuthorizeURL
+            (Auth0Config "https://koios.eu.auth0.com" "m46vXrYcNOUWJIOegGaHXsxomn6c87PN")
+            "token"
+            "http://localhost:1234/auth/login"
+            [ "openid", "name", "email" ]
+            Nothing
+        )
+
+
 
 -- MAIN
 
@@ -58,7 +74,7 @@ main =
 
 
 
--- FLAGS
+-- INIT
 
 
 type alias Flags =
@@ -72,8 +88,10 @@ type alias TranslationFlags =
     }
 
 
-
--- INIT
+decodeTranslationFlags : Decoder TranslationFlags
+decodeTranslationFlags =
+    Decode.succeed TranslationFlags
+        |> required "fr" string
 
 
 init : Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -153,6 +171,12 @@ changeRouteTo maybeRoute model =
                 |> updateWith Calendar GotCalendarMsg model
 
         Just Route.Login ->
+            ( model
+            , Task.succeed (ClickedLink authorizeURL)
+                |> Task.perform identity
+            )
+
+        Just Route.AuthVerify ->
             Login.init session
                 |> updateWith Login GotLoginMsg model
 

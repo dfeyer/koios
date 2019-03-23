@@ -1,8 +1,8 @@
-module Data.Topic exposing (bySection, containSection, foldTopics, toHtml, toSlug, toString)
+module Data.Topic exposing (bySection, containSection, foldTopics, toHtml, toSlug, toString, topicByGroup)
 
+import Data.Group exposing (Group, SectionIdentifier, Topic)
 import Html exposing (Html, span, text)
 import Html.Attributes exposing (class)
-import Shared exposing (Group, SectionIdentifier, Slugable, Topic, UriWithLabel)
 
 
 toSlug : Group -> Topic -> String
@@ -39,3 +39,16 @@ containSection identifier topic =
 foldTopics : List Group -> List Topic
 foldTopics groups =
     List.foldr (\g a -> List.append a g.topics) [] groups
+
+
+topicByGroup : List Group -> Group -> Maybe (List Topic)
+topicByGroup learnings group =
+    case
+        List.filter (\g -> g.id == group.id) learnings
+            |> List.head
+    of
+        Just group_ ->
+            Just group_.topics
+
+        Nothing ->
+            Nothing

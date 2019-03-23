@@ -1,7 +1,7 @@
 module Session exposing (Session, changes, fromViewer, learningList, navKey, viewer)
 
 import Browser.Navigation as Nav
-import Shared exposing (Group)
+import Data.Group exposing (Group)
 import Viewer exposing (Viewer)
 
 

@@ -1,16 +1,13 @@
 module Page.Learning exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
-import Data.Group as Group
-import Data.Learnings as Learnings
+import Data.Group as Group exposing (Group, Section, Target, Topic)
 import Data.Section as Section
-import Data.Slugable exposing (collectionView, compactCollectionView)
-import Data.Target as Target
+import Data.Slugable exposing (Slugable, collectionView, compactCollectionView)
+import Data.Target as Target exposing (SlugableTarget)
 import Data.Topic as Topic
-import Html exposing (Html, a, div, span, text)
-import Html.Attributes exposing (class, href)
-import Html.Events exposing (onClick)
+import Html exposing (Html, div, text)
+import Html.Attributes exposing (class)
 import Session exposing (Session)
-import Shared exposing (Group, Section, Slugable, SlugableTarget, Target, Topic)
 import Views.Breadcrumb as Breadcrumb
 import Views.Layout exposing (mainHeaderView, mainHeaderWithChapterView, rowView)
 
@@ -98,7 +95,7 @@ viewGroup learnings group =
         groupBreadcrumbView
         (text (Group.toString group))
     , viewPosition
-        (Learnings.topicByGroup learnings group)
+        (Topic.topicByGroup learnings group)
         (goToTopic group)
         Topic.toHtml
     ]
@@ -110,7 +107,7 @@ viewTopic learnings group topic =
         (topicBreadcrumbView group)
         (text (Topic.toString topic))
     , viewPositionCompact
-        (Learnings.sectionByTopic learnings group topic)
+        (Section.sectionByTopic learnings group topic)
         (goToSection group topic)
         Section.toHtml
     ]
@@ -122,7 +119,7 @@ viewSection learnings group topic section =
         (sectionBreadcrumbView group topic)
         (text (Section.toString section))
     , viewPositionCompact
-        (Learnings.targetBySection learnings group topic section)
+        (Target.targetBySection learnings group topic section)
         (goToTarget group topic section)
         Target.toHtml
     ]

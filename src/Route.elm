@@ -13,6 +13,7 @@ type Route
     | Diary
     | Calendar
     | Login
+    | AuthVerify
 
 
 parser : Parser (Route -> a) a
@@ -23,6 +24,7 @@ parser =
         , map Diary (s "journal")
         , map Calendar (s "calendrier")
         , map Login (s "connexion")
+        , map AuthVerify (s "auth/login")
         ]
 
 
@@ -69,5 +71,8 @@ routeToString page =
 
                 Login ->
                     [ "connexion" ]
+
+                AuthVerify ->
+                    [ "auth", "login" ]
     in
     "/" ++ String.join "/" pieces

@@ -1,9 +1,25 @@
-module Data.Slugable exposing (collectionView, compactCollectionView, filter)
+module Data.Slugable exposing (Slug, Slugable, collectionView, compactCollectionView, filter)
 
-import Html exposing (Html, a, div, li, text, ul)
+import Data.UriWithLabel as UriWithLabel exposing (UriWithLabel)
+import Html exposing (Html, a, li, ul)
 import Html.Attributes exposing (class, href)
 import Html.Events exposing (onClick)
-import Shared exposing (Group, Slug, Slugable, Topic, UriWithLabel)
+
+
+
+-- TYPES
+
+
+type alias Slugable a =
+    { a | title : String, slug : Slug }
+
+
+type alias Slug =
+    String
+
+
+
+-- VIEWS
 
 
 collectionView : List (Slugable a) -> (Slugable a -> msg) -> (Slugable a -> Html msg) -> Html msg
@@ -27,7 +43,7 @@ listToUriWithLabel msg toTitle groups =
 
 toUriWithLabel : (Slugable a -> msg) -> (Slugable a -> Html msg) -> Slugable a -> UriWithLabel msg
 toUriWithLabel msg toTitle d =
-    Shared.toUriWithLabel (msg d) (toTitle d)
+    UriWithLabel.toUriWithLabel (msg d) (toTitle d)
 
 
 linkCollectionView : List (UriWithLabel msg) -> Html msg
@@ -51,6 +67,10 @@ linkCollectionItemView ( msg, label ) =
             ]
             [ label ]
         ]
+
+
+
+-- FILTERS
 
 
 filter : List (Slugable a) -> Slug -> Maybe (Slugable a)

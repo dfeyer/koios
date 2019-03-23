@@ -1,5 +1,7 @@
-module Viewer exposing (Viewer)
+module Viewer exposing (Viewer, cred, decoder, username)
 
+import Api exposing (Cred)
+import Json.Decode as Decode exposing (Decoder)
 import Username exposing (Username)
 
 
@@ -8,20 +10,33 @@ import Username exposing (Username)
 
 
 type Viewer
-    = Viewer Username
+    = Viewer Cred
 
 
 
 -- INFO
 
 
+cred : Viewer -> Cred
+cred (Viewer val) =
+    val
+
+
 username : Viewer -> Username
-username (Viewer u) =
-    u
+username (Viewer val) =
+    Api.username val
 
 
-{-| Passwords must be at least this many characters long!
--}
-minPasswordChars : Int
-minPasswordChars =
-    8
+
+-- SERIALIZATION
+
+
+decoder : Decoder (Cred -> Viewer)
+decoder =
+    Decode.succeed Viewer
+
+
+store : Viewer -> Cmd msg
+store (Viewer credVal) =
+    Api.storeCredWith
+        credVal
