@@ -602,7 +602,7 @@ a.collection__link:hover span {
 }
 
 .week__label {
-  font-size: 1.1rem;
+  font-size: 1rem;
   opacity: 0.6;
   padding-bottom: .2rem;
   border-bottom: 2px solid var(--background-color-inversed);
@@ -706,4 +706,26 @@ a.collection__link:hover span {
   100% {
     width: 100%;
   }
+}
+
+
+.calendar {
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.day {
+  background-color: var(--background-color);
+  padding: .5rem;
+  min-height: 8rem;
+}
+
+.day__label {
+  font-size: 1rem;
+  text-align: right;
+  opacity: 0.6;
+  padding-bottom: .2rem;
+  border-bottom: 2px solid var(--background-color-inversed);
+  margin-top: 0;
 }

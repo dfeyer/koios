@@ -1,6 +1,7 @@
 module Page.Calendar exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
 import Html exposing (Html, div, span, text)
+import Html.Attributes exposing (class)
 import Session exposing (Session)
 import Views.Layout exposing (mainHeaderView)
 
@@ -32,8 +33,19 @@ view model =
     , content =
         div []
             [ mainHeaderView (text "Calendrier")
+            , div [ class "calendar" ]
+                (List.map
+                    dayView
+                    (List.range 1 31)
+                )
             ]
     }
+
+
+dayView : Int -> Html Msg
+dayView day =
+    div [ class "day" ]
+        [ div [ class "day__label" ] [ text (String.fromInt day) ] ]
 
 
 
