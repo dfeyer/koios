@@ -1,10 +1,10 @@
 module Page.Calendar exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
 import Html exposing (Html, div, h3, span, text)
-import Html.Attributes exposing (class, style)
+import Html.Attributes exposing (class)
 import Session exposing (Session)
 import Views.Event as Event
-import Views.Layout exposing (mainHeaderView)
+import Views.Layout exposing (mainHeaderWithChapterView)
 
 
 
@@ -33,7 +33,7 @@ view model =
     { title = "Calendrier | Mon carnet de board IHES"
     , content =
         div []
-            [ mainHeaderView (text "Calendrier")
+            [ mainHeaderWithChapterView (text "Calendrier") (text "Mars")
             , div [ class "calendar" ]
                 (List.map
                     dayView

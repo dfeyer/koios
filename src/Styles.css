@@ -592,7 +592,7 @@ a.collection__link:hover span {
 }
 
 .schedule--weekly {
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: auto repeat(5, 1fr);
   grid-gap: 1rem;
 }
 
@@ -600,14 +600,13 @@ a.collection__link:hover span {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: repeat(var(--schedule-week-hours),1fr);
-  padding: .5rem;
 }
 
 .week--vertical {
 
 }
 
-.week__label {
+.day__label {
   position: sticky;
   top: 0;
   background-color: var(--background-color-dynamic);
@@ -617,6 +616,31 @@ a.collection__link:hover span {
   padding-bottom: .2rem;
   border-bottom: 2px solid var(--background-color-inversed);
   margin-top: 0;
+}
+
+.day__header {
+  font-size: .8rem;
+  margin: 0;
+  font-weight: 300;
+}
+
+.day__subheader {
+  font-size: 1rem;
+  margin: 0;
+  margin-bottom: .25rem;
+  font-weight: 600;
+}
+
+.hour__label {
+  --start: 1;
+  --end: 2;
+  grid-row-start: calc(var(--start) - var(--schedule-week-hour-begin) + 1);
+  grid-row-end: calc(var(--end) - var(--schedule-week-hour-begin) + 1);
+  border-top: 1px solid var(--text-color-light);
+}
+
+.hour__label:after {
+  content: var(--start);
 }
 
 .login-form {
@@ -751,6 +775,10 @@ a.collection__link:hover span {
   padding-left: .25rem;
   border-left: 1px solid var(--background-color-inversed);
   background-color: var(--background-color-dynamic);
+
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .event--timed {
@@ -758,11 +786,14 @@ a.collection__link:hover span {
   --end: 2;
   grid-row-start: calc(var(--start) - var(--schedule-week-hour-begin));
   grid-row-end: calc(var(--end) - var(--schedule-week-hour-begin));
+  margin-bottom: 0;
 }
 
 .event__label {
   line-height: 1.2;
-  margin-bottom: .2rem;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .event__time, .event__start, .event__end {
