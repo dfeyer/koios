@@ -752,6 +752,8 @@ a.collection__link:hover span {
 
 .day {
   min-height: 8rem;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .day__label {
