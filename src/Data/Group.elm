@@ -1,4 +1,21 @@
-module Data.Group exposing (Group, Introduction, Section, SectionIdentifier, Target, Topic, decode, toHtml, toSlug, toString)
+module Data.Group exposing
+    ( Group
+    , GroupPosition
+    , Introduction
+    , Position
+    , Section
+    , SectionIdentifier
+    , SectionPosition
+    , Target
+    , Topic
+    , decode
+    , groupBySlug
+    , sectionBySlug
+    , targetByPosition
+    , toHtml
+    , toString
+    , topicBySlug
+    )
 
 import Data.Slugable exposing (Slug, Slugable)
 import Html exposing (Html, span, text)
@@ -106,18 +123,20 @@ type alias SectionIdentifier =
     }
 
 
-toSectionIdentifier : String -> Int -> Int -> Maybe String -> SectionIdentifier
-toSectionIdentifier code cycle order maybeSuffix =
-    SectionIdentifier code cycle order maybeSuffix
+type alias Position =
+    ( GroupPosition, Maybe SectionPosition )
+
+
+type alias GroupPosition =
+    ( Group, Maybe Topic )
+
+
+type alias SectionPosition =
+    ( Section, Maybe Target )
 
 
 
 -- INFO
-
-
-toSlug : Group -> String
-toSlug group =
-    group.slug
 
 
 toHtml : Group -> Html msg
@@ -128,6 +147,49 @@ toHtml group =
 toString : Group -> String
 toString group =
     group.title
+
+
+
+-- FILTER
+
+
+groupBySlug : List Group -> String -> Maybe Group
+groupBySlug list groupSlug =
+    List.filter (\g -> g.slug == groupSlug) list
+        |> List.head
+
+
+topicBySlug : List Group -> String -> String -> Maybe Topic
+topicBySlug list groupSlug topicSlug =
+    case groupBySlug list groupSlug of
+        Nothing ->
+            Nothing
+
+        Just group ->
+            List.filter (\t -> t.slug == topicSlug) group.topics
+                |> List.head
+
+
+sectionBySlug : List Group -> String -> String -> String -> Maybe Section
+sectionBySlug list groupSlug topicSlug sectionSlug =
+    case topicBySlug list groupSlug topicSlug of
+        Nothing ->
+            Nothing
+
+        Just topic ->
+            List.filter (\s -> s.slug == sectionSlug) topic.sections
+                |> List.head
+
+
+targetByPosition : List Group -> String -> String -> String -> String -> Maybe Target
+targetByPosition list groupSlug topicSlug sectionSlug targetPosition =
+    case sectionBySlug list groupSlug topicSlug sectionSlug of
+        Nothing ->
+            Nothing
+
+        Just section ->
+            List.filter (\t -> t.position == targetPosition) section.targets
+                |> List.head
 
 
 

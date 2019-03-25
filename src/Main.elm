@@ -186,8 +186,8 @@ changeRouteTo maybeRoute model =
         Nothing ->
             ( { model | module_ = NotFound session }, Cmd.none )
 
-        Just Route.Learning ->
-            Learning.init session model.learnings
+        Just (Route.Learning path) ->
+            Learning.init session model.learnings path
                 |> updateWith Learning GotLearningMsg model
 
         Just Route.Schedule ->

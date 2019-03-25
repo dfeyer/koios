@@ -1,12 +1,13 @@
 module Page.Learning exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
-import Data.Group as Group exposing (Group, Section, Target, Topic)
+import Data.Group as Group exposing (Group, Position, Section, Target, Topic)
 import Data.Section as Section
 import Data.Slugable exposing (Slugable, collectionView, compactCollectionView)
 import Data.Target as Target exposing (SlugableTarget)
 import Data.Topic as Topic
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (class)
+import Route exposing (positionToRoute)
 import Session exposing (Session)
 import Views.Breadcrumb as Breadcrumb
 import Views.Layout exposing (mainHeaderView, mainHeaderWithChapterView, rowView)
@@ -23,23 +24,11 @@ type alias Model =
     }
 
 
-type alias Position =
-    ( GroupPosition, Maybe SectionPosition )
-
-
-type alias GroupPosition =
-    ( Group, Maybe Topic )
-
-
-type alias SectionPosition =
-    ( Section, Maybe Target )
-
-
-init : Session -> List Group -> ( Model, Cmd Msg )
-init session learnings =
+init : Session -> List Group -> Maybe String -> ( Model, Cmd Msg )
+init session learnings maybePath =
     ( { session = session
       , learnings = learnings
-      , position = Nothing
+      , position = Route.pathToPosition learnings maybePath
       }
     , Cmd.none
     )
@@ -223,7 +212,10 @@ update msg model =
             ( { model | position = Nothing }, Cmd.none )
 
         GotPosition position ->
-            ( { model | position = Just position }, Cmd.none )
+            ( { model | position = Just position }
+            , positionToRoute (Just position)
+                |> Route.replaceUrl (Session.navKey model.session)
+            )
 
 
 

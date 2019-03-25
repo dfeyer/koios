@@ -1,4 +1,4 @@
-module Data.Target exposing (SlugableTarget, fromSlugableTarget, targetBySection, toHtml, toSlug, toSlugableList, toSlugableTarget, toString)
+module Data.Target exposing (SlugableTarget, fromSlugableTarget, targetBySection, toHtml, toSlugableTarget, toString)
 
 import Data.Group exposing (Group, Section, Target, Topic)
 import Data.Section exposing (sectionByTopic)
@@ -21,11 +21,6 @@ type alias SlugableTarget =
 -- INFO
 
 
-toSlugableList : List Target -> List SlugableTarget
-toSlugableList targets =
-    List.map toSlugableTarget targets
-
-
 toSlugableTarget : Target -> SlugableTarget
 toSlugableTarget { text, position } =
     { title = text
@@ -39,11 +34,6 @@ fromSlugableTarget slugable =
     { text = slugable.title
     , position = slugable.position
     }
-
-
-toSlug : SlugableTarget -> Slug
-toSlug _ =
-    "#"
 
 
 toHtml : SlugableTarget -> Html msg

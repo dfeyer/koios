@@ -5,7 +5,7 @@ import Components.MainMenu
 import Components.StabyloMenu
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Route exposing (Route(..))
+import Route exposing (Route(..), positionToRoute)
 import Viewer exposing (Viewer)
 import Views.Helpers exposing (ihes)
 
@@ -58,7 +58,7 @@ contentWrapper =
 navigation : Page -> Html.Html msg
 navigation page =
     Components.MainMenu.view
-        [ ( text "Apprentissages", Route.Learning )
+        [ ( text "Apprentissages", positionToRoute Nothing )
         , ( text "Semainier", Route.Schedule )
         , ( text "Journal", Route.Diary )
         , ( text "Calendrier", Route.Calendar )
@@ -70,7 +70,7 @@ pageHeader : Page -> Html.Html msg
 pageHeader page =
     nav [ class "main-navigation", attribute "role" "navigation" ]
         [ div [ class "main-navigation__wrapper" ]
-            [ a [ class "main-navigation__logo", Route.href Route.Learning, id "logo-container" ]
+            [ a [ class "main-navigation__logo", Route.href (positionToRoute Nothing), id "logo-container" ]
                 [ text "Carnet de bord" ]
             , navigation page
             ]
