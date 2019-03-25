@@ -1,6 +1,6 @@
 module Main exposing (init, main, subscriptions, update, view)
 
-import Api exposing (Cred)
+import Api exposing (Cred, decoderFromCred)
 import Auth0 exposing (Auth0Config, auth0AuthorizeURL)
 import Browser exposing (Document, UrlRequest(..))
 import Browser.Navigation as Nav
@@ -23,6 +23,7 @@ import Session exposing (Session)
 import Task
 import Tasks.Ui exposing (scrollToTop)
 import Url exposing (Url)
+import Username exposing (Username)
 import Viewer exposing (Viewer)
 import Views.Page as Page
 
@@ -86,7 +87,7 @@ main =
 type alias Flags =
     { translations : TranslationFlags
     , learnings : List Group
-    , viewer : Maybe (Cred -> Viewer)
+    , viewer : Maybe Viewer
     }
 
 
@@ -95,7 +96,12 @@ decodeFlags =
     Decode.succeed Flags
         |> required "translations" decodeTranslationFlags
         |> required "learnings" (Decode.list Group.decode)
-        |> required "viewer" (nullable Viewer.decoder)
+        |> required "viewer" (nullable (storageDecoder Viewer.decoder))
+
+
+storageDecoder : Decoder (Cred -> Viewer) -> Decoder Viewer
+storageDecoder decoder =
+    Decode.field "user" (decoderFromCred decoder)
 
 
 type alias TranslationFlags =
@@ -114,7 +120,7 @@ init maybeFlags url navKey =
     case maybeFlags of
         Just { learnings, viewer } ->
             changeRouteTo (Route.fromUrl url)
-                { module_ = Redirect (Session.fromViewer navKey Nothing)
+                { module_ = Redirect (Session.fromViewer navKey viewer)
                 , learnings = learnings
                 }
 

@@ -1,4 +1,4 @@
-port module Api exposing (Cred, application, createCred, logout, storeCredWith, username, viewerChanges)
+port module Api exposing (Cred, application, createCred, decoderFromCred, logout, storeCredWith, username, viewerChanges)
 
 {-| The authentication credentials for the Viewer (that is, the currently logged-in user.)
 This includes:
@@ -131,8 +131,10 @@ application flagsDecoder config =
         init flags url navKey =
             let
                 flags_ =
-                    Decode.decodeValue Decode.string flags
-                        |> Result.andThen (Decode.decodeString flagsDecoder)
+                    Debug.log "Flags"
+                        (Decode.decodeValue Decode.string flags
+                            |> Result.andThen (Decode.decodeString flagsDecoder)
+                        )
             in
             config.init (flags_ |> Result.toMaybe) url navKey
     in

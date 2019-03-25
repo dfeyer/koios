@@ -5,7 +5,7 @@ import localeFrench from './assets/locales/translation.fr.locale'
 import learnings from './assets/activities.json'
 
 const storageKey = "koios-store";
-const viewer = localStorage.getItem(storageKey);
+const viewer = JSON.parse(localStorage.getItem(storageKey));
 
 const flags = {
   translations: {
@@ -14,6 +14,8 @@ const flags = {
   learnings,
   viewer
 };
+
+console.log(flags);
 
 const node = document.getElementById('main');
 

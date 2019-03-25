@@ -38,7 +38,7 @@ type ConnectionType
 
 init : Session -> ( Model, Cmd Msg )
 init session =
-    ( initModel session
+    ( initModel (Debug.log "Session" session)
     , Cmd.none
     )
 
