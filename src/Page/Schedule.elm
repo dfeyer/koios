@@ -91,6 +91,7 @@ eventList =
     , createEvent Event.emptyView 13 14
     , createEvent Event.emptyView 14 15
     , createEvent (Event.timedView "Menuiserie") 15 18
+    , createEvent (Event.timedView "FEEL") 16 18
     , createEvent Event.emptyView 18 19
     , createEvent Event.emptyView 19 20
     , createEvent (Event.timedView "Lecture") 20 21

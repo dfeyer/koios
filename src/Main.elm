@@ -35,7 +35,13 @@ import Views.Page as Page
 -- See https://discourse.elm-lang.org/t/elm-spa-in-0-19/1800/2 for more.
 
 
-type Model
+type alias Model =
+    { module_ : Module
+    , learnings : List Group
+    }
+
+
+type Module
     = Redirect Session
     | NotFound Session
     | Learning Learning.Model
@@ -80,7 +86,7 @@ main =
 type alias Flags =
     { translations : TranslationFlags
     , learnings : List Group
-    , storage : Maybe (Cred -> Viewer)
+    , viewer : Maybe (Cred -> Viewer)
     }
 
 
@@ -89,7 +95,7 @@ decodeFlags =
     Decode.succeed Flags
         |> required "translations" decodeTranslationFlags
         |> required "learnings" (Decode.list Group.decode)
-        |> required "storage" (nullable Viewer.decoder)
+        |> required "viewer" (nullable Viewer.decoder)
 
 
 type alias TranslationFlags =
@@ -104,16 +110,20 @@ decodeTranslationFlags =
 
 
 init : Maybe Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
-init mayabeFlags url navKey =
-    case mayabeFlags of
-        Just { learnings } ->
+init maybeFlags url navKey =
+    case maybeFlags of
+        Just { learnings, viewer } ->
             changeRouteTo (Route.fromUrl url)
-                (Redirect (Session.fromViewer navKey Nothing learnings))
+                { module_ = Redirect (Session.fromViewer navKey Nothing)
+                , learnings = learnings
+                }
 
         Nothing ->
             -- TODO Handle broken flags
             changeRouteTo (Route.fromUrl url)
-                (Redirect (Session.fromViewer navKey Nothing []))
+                { module_ = Redirect (Session.fromViewer navKey Nothing)
+                , learnings = []
+                }
 
 
 
@@ -136,8 +146,8 @@ type Msg
 
 
 toSession : Model -> Session
-toSession model =
-    case model of
+toSession { module_ } =
+    case module_ of
         Redirect session ->
             session
 
@@ -168,10 +178,10 @@ changeRouteTo maybeRoute model =
     in
     case maybeRoute of
         Nothing ->
-            ( NotFound session, Cmd.none )
+            ( { model | module_ = NotFound session }, Cmd.none )
 
         Just Route.Learning ->
-            Learning.init session
+            Learning.init session model.learnings
                 |> updateWith Learning GotLearningMsg model
 
         Just Route.Schedule ->
@@ -187,10 +197,8 @@ changeRouteTo maybeRoute model =
                 |> updateWith Calendar GotCalendarMsg model
 
         Just Route.Login ->
-            ( model
-            , Task.succeed (ClickedLink authorizeURL)
-                |> Task.perform identity
-            )
+            Login.init session
+                |> updateWith Login GotLoginMsg model
 
         Just Route.AuthVerify ->
             Login.init session
@@ -198,8 +206,8 @@ changeRouteTo maybeRoute model =
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    case ( msg, model ) of
+update msg ({ module_ } as model) =
+    case ( msg, module_ ) of
         ( Ignored, _ ) ->
             ( model, Cmd.none )
 
@@ -237,9 +245,9 @@ update msg model =
             ( model, Cmd.none )
 
 
-updateWith : (subModel -> Model) -> (subMsg -> Msg) -> Model -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
+updateWith : (subModel -> Module) -> (subMsg -> Msg) -> Model -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
 updateWith toModel toMsg model ( subModel, subCmd ) =
-    ( toModel subModel
+    ( { model | module_ = toModel subModel }
     , Cmd.map toMsg subCmd
     )
 
@@ -249,8 +257,8 @@ updateWith toModel toMsg model ( subModel, subCmd ) =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
-    case model of
+subscriptions ({ module_ } as model) =
+    case module_ of
         NotFound _ ->
             Sub.none
 
@@ -278,7 +286,7 @@ subscriptions model =
 
 
 view : Model -> Document Msg
-view model =
+view ({ module_ } as model) =
     let
         viewPage p toMsg config =
             let
@@ -289,7 +297,7 @@ view model =
             , body = scrollToTopView ScrollToTop :: List.map (Html.map toMsg) body
             }
     in
-    case model of
+    case module_ of
         Redirect _ ->
             viewPage Page.Other (\_ -> Ignored) Blank.view
 

@@ -1,11 +1,11 @@
-module Request.PasswordLessAuth exposing (Start, StartResponse, start, startByEmail)
+module Request.PasswordLessAuth exposing (Start, StartResponse, VerifyResponse, start, startByEmail, verify, verifyByEmail)
 
 import Http exposing (jsonBody)
-import Json.Decode as Decode exposing (Decoder, bool, string)
+import Json.Decode as Decode exposing (Decoder, bool, int, string)
 import Json.Decode.Pipeline exposing (required)
 import Json.Encode as Encode
 import RemoteData exposing (RemoteData, WebData, sendRequest)
-import Request.PasswordLessAuth.Connection as Connection exposing (Connection)
+import Request.PasswordLessAuth.Connection as Connection exposing (Connection, connectWithEmail)
 import Request.PasswordLessAuth.GrantType as GrantType exposing (GrantType)
 import Request.PasswordLessAuth.LinkType as LinkType exposing (LinkType)
 
@@ -14,9 +14,14 @@ type Endpoint
     = Endpoint String
 
 
-endpoint : Endpoint
-endpoint =
+startEndpoint : Endpoint
+startEndpoint =
     Endpoint "https://koios.eu.auth0.com/passwordless/start"
+
+
+verifyEndpoint : Endpoint
+verifyEndpoint =
+    Endpoint "https://koios.eu.auth0.com/oauth/token"
 
 
 endpointToString : Endpoint -> String
@@ -89,7 +94,7 @@ start options =
     sendRequest <|
         Http.post
             (endpointToString <|
-                endpoint
+                startEndpoint
             )
             (jsonBody <|
                 encodeStart options
@@ -100,9 +105,17 @@ start options =
 type alias Verify =
     { clientId : ClientId
     , connection : Connection
-    , grantType : GrantType
     , username : String
     , password : String
+    }
+
+
+verifyByEmail : String -> String -> Verify
+verifyByEmail email code =
+    { clientId = clientId
+    , connection = Connection.connectWithEmail
+    , username = email
+    , password = code
     }
 
 
@@ -111,11 +124,40 @@ encodeVerify v =
     Encode.object
         [ ( "client_id", clientIdToString v.clientId |> Encode.string )
         , ( "connection", Connection.toString v.connection |> Encode.string )
-        , ( "grant_type", GrantType.toString v.grantType |> Encode.string )
+        , ( "grant_type", Encode.string "password" )
         , ( "username", Encode.string v.username )
         , ( "password", Encode.string v.password )
+        , ( "scope", Encode.string "offline_access" )
         ]
 
 
 type alias VerifyResponse =
-    {}
+    { accessToken : String
+    , refreshToken : String
+    , idToken : String
+    , tokentType : String
+    , expiresIn : Int
+    }
+
+
+decodeVerifyResponse : Decoder VerifyResponse
+decodeVerifyResponse =
+    Decode.succeed VerifyResponse
+        |> required "access_token" string
+        |> required "refresh_token" string
+        |> required "id_token" string
+        |> required "token_type" string
+        |> required "expires_in" int
+
+
+verify : Verify -> Cmd (WebData VerifyResponse)
+verify options =
+    sendRequest <|
+        Http.post
+            (endpointToString <|
+                verifyEndpoint
+            )
+            (jsonBody <|
+                encodeVerify options
+            )
+            decodeVerifyResponse

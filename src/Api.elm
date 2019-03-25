@@ -1,4 +1,4 @@
-port module Api exposing (Cred, application, logout, storeCredWith, username, viewerChanges)
+port module Api exposing (Cred, application, createCred, logout, storeCredWith, username, viewerChanges)
 
 {-| The authentication credentials for the Viewer (that is, the currently logged-in user.)
 This includes:
@@ -27,6 +27,11 @@ import Username exposing (Username)
 
 type Cred
     = Cred Username String
+
+
+createCred : Username -> String -> Cred
+createCred u b =
+    Cred u b
 
 
 username : Cred -> Username
@@ -72,7 +77,7 @@ viewerChanges toMsg decoder =
     onStoreChange (\value -> toMsg (decodeFromChange decoder value))
 
 
-decodeFromChange : Decoder (Cred -> viewer) -> Value -> Maybe viewer
+decodeFromChange : Decoder (Cred -> a) -> Value -> Maybe a
 decodeFromChange viewerDecoder val =
     -- It's stored in localStorage as a JSON String;
     -- first decode the Value as a String, then
@@ -141,7 +146,7 @@ application flagsDecoder config =
         }
 
 
-storageDecoder : Decoder (Cred -> viewer) -> Decoder viewer
+storageDecoder : Decoder (Cred -> a) -> Decoder a
 storageDecoder viewerDecoder =
     Decode.field "user" (decoderFromCred viewerDecoder)
 
