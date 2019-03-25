@@ -1,8 +1,10 @@
 module Page.Schedule exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
+import Data.Hour as Hour
 import Html exposing (Html, div, h2, h3, text)
 import Html.Attributes exposing (class)
 import Session exposing (Session)
+import Views.Calendar as Calendar
 import Views.Day as Day
 import Views.Event as Event
 import Views.Layout exposing (mainHeaderWithChapterView)
@@ -60,28 +62,58 @@ viewWeekList days =
                 (List.range 9 20)
             )
             :: List.map
-                viewWeekDay
+                (viewWeekDay eventList)
                 days
         )
+
+
+type alias Event =
+    { begin : Int
+    , end : Int
+    , preview : Html Msg
+    }
+
+
+createEvent : (Int -> Int -> Html Msg) -> Int -> Int -> Event
+createEvent preview begin end =
+    { begin = begin
+    , end = end
+    , preview = preview begin end
+    }
+
+
+eventList : List Event
+eventList =
+    [ createEvent Event.emptyView 9 10
+    , createEvent (Event.timedView "Mathématique") 10 11
+    , createEvent Event.emptyView 11 12
+    , createEvent Event.emptyView 12 13
+    , createEvent Event.emptyView 13 14
+    , createEvent Event.emptyView 14 15
+    , createEvent (Event.timedView "Menuiserie") 15 18
+    , createEvent Event.emptyView 18 19
+    , createEvent Event.emptyView 19 20
+    , createEvent (Event.timedView "Lecture") 20 21
+    ]
 
 
 viewHourLabel : Int -> Html Msg
 viewHourLabel start =
     div
         [ class "hour__label"
-        , Html.Attributes.attribute "style" ("--start: " ++ String.fromInt start ++ "; --end: " ++ String.fromInt (start + 1) ++ ";")
+        , Calendar.hourInterval start
         ]
-        [ text (String.fromInt (start + 1) ++ ":00") ]
+        [ text (Hour.toString start 0) ]
 
 
-viewWeekDay : ( String, String ) -> Html Msg
-viewWeekDay label =
+viewWeekDay : List Event -> ( String, String ) -> Html Msg
+viewWeekDay events label =
     div [ class "week week--vertical" ]
-        [ Day.labelView label
-        , Event.timedView 10 11 "Mathématique"
-        , Event.timedView 15 18 "Menuiserie"
-        , Event.timedView 20 21 "Lecture"
-        ]
+        (List.concat
+            [ [ Day.labelView label ]
+            , List.map (\e -> e.preview) events
+            ]
+        )
 
 
 

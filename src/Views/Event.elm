@@ -1,4 +1,4 @@
-module Views.Event exposing (timedView, view)
+module Views.Event exposing (emptyView, timedView, view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -18,8 +18,8 @@ view start end label =
         ]
 
 
-timedView : Int -> Int -> String -> Html msg
-timedView start end label =
+timedView : String -> Int -> Int -> Html msg
+timedView label start end =
     div
         [ class "event event--timed"
         , Html.Attributes.attribute "style" ("--start: " ++ String.fromInt start ++ "; --end: " ++ String.fromInt end ++ ";")
@@ -31,3 +31,12 @@ timedView start end label =
             , span [ class "event__end" ] [ text (String.fromInt end ++ "h") ]
             ]
         ]
+
+
+emptyView : Int -> Int -> Html msg
+emptyView start end =
+    div
+        [ class "event event--empty"
+        , Html.Attributes.attribute "style" ("--start: " ++ String.fromInt start ++ "; --end: " ++ String.fromInt end ++ ";")
+        ]
+        [ div [ class "event__actions" ] [] ]
