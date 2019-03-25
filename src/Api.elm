@@ -131,10 +131,8 @@ application flagsDecoder config =
         init flags url navKey =
             let
                 flags_ =
-                    Debug.log "Flags"
-                        (Decode.decodeValue Decode.string flags
-                            |> Result.andThen (Decode.decodeString flagsDecoder)
-                        )
+                    Decode.decodeValue Decode.string flags
+                        |> Result.andThen (Decode.decodeString flagsDecoder)
             in
             config.init (flags_ |> Result.toMaybe) url navKey
     in
