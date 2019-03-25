@@ -5,14 +5,14 @@ import localeFrench from './assets/locales/translation.fr.locale'
 import learnings from './assets/activities.json'
 
 const storageKey = "koios-store";
-const storage = localStorage.getItem(storageKey);
+const viewer = localStorage.getItem(storageKey);
 
 const flags = {
   translations: {
     fr: localeFrench
   },
   learnings,
-  storage
+  viewer
 };
 
 const node = document.getElementById('main');
@@ -35,7 +35,7 @@ app.ports.storeCache.subscribe(function (val) {
 });
 
 // Whenever localStorage changes in another tab, report it if necessary.
-window.addEventListener("storage", function (event) {
+window.addEventListener("viewer", function (event) {
   if (event.storageArea === localStorage && event.key === storageKey) {
     app.ports.onStoreChange.send(event.newValue);
   }

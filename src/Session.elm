@@ -1,5 +1,6 @@
-module Session exposing (Session, changes, fromViewer, learningList, navKey, viewer)
+module Session exposing (Session, changes, fromViewer, navKey, viewer)
 
+import Api
 import Browser.Navigation as Nav
 import Data.Group exposing (Group)
 import Viewer exposing (Viewer)
@@ -10,8 +11,8 @@ import Viewer exposing (Viewer)
 
 
 type Session
-    = LoggedIn Nav.Key Viewer (List Group)
-    | Guest Nav.Key (List Group)
+    = LoggedIn Nav.Key Viewer
+    | Guest Nav.Key
 
 
 
@@ -21,31 +22,21 @@ type Session
 viewer : Session -> Maybe Viewer
 viewer session =
     case session of
-        LoggedIn _ v _ ->
+        LoggedIn _ v ->
             Just v
 
-        Guest _ _ ->
+        Guest _ ->
             Nothing
 
 
 navKey : Session -> Nav.Key
 navKey session =
     case session of
-        LoggedIn key _ _ ->
+        LoggedIn key _ ->
             key
 
-        Guest key _ ->
+        Guest key ->
             key
-
-
-learningList : Session -> List Group
-learningList session =
-    case session of
-        LoggedIn _ _ learnings ->
-            learnings
-
-        Guest _ learnings ->
-            learnings
 
 
 
@@ -54,17 +45,17 @@ learningList session =
 
 changes : (Session -> msg) -> Nav.Key -> Sub msg
 changes toMsg key =
-    Sub.none
+    Api.viewerChanges (\maybeViewer -> toMsg (fromViewer key maybeViewer)) Viewer.decoder
 
 
-fromViewer : Nav.Key -> Maybe Viewer -> List Group -> Session
-fromViewer key maybeViewer learnings =
+fromViewer : Nav.Key -> Maybe Viewer -> Session
+fromViewer key maybeViewer =
     -- It's stored in localStorage as a JSON String;
     -- first decode the Value as a String, then
     -- decode that String as JSON.
     case maybeViewer of
         Just viewerVal ->
-            LoggedIn key viewerVal learnings
+            LoggedIn key viewerVal
 
         Nothing ->
-            Guest key learnings
+            Guest key

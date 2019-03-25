@@ -35,10 +35,10 @@ type alias SectionPosition =
     ( Section, Maybe Target )
 
 
-init : Session -> ( Model, Cmd Msg )
-init session =
+init : Session -> List Group -> ( Model, Cmd Msg )
+init session learnings =
     ( { session = session
-      , learnings = Session.learningList session
+      , learnings = learnings
       , position = Nothing
       }
     , Cmd.none

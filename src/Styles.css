@@ -599,7 +599,7 @@ a.collection__link:hover span {
 .week {
   --schedule-week-hours: 12;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-auto-columns: minmax(3fr, 1fr);
   grid-auto-rows: 1fr;
   grid-template-rows: repeat(var(--schedule-week-hours),1fr);
 }
@@ -618,6 +618,7 @@ a.collection__link:hover span {
   padding-bottom: .2rem;
   border-bottom: 2px solid var(--background-color-inversed);
   margin-top: 0;
+  grid-column: 1/4;
 }
 
 .day__header {
@@ -795,6 +796,7 @@ a.collection__link:hover span {
 
 .event--empty {
   border-color: transparent;
+  grid-column: 1/4;
 
   transition: background-color 140ms ease-in;
 }
