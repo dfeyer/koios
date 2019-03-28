@@ -1,14 +1,16 @@
 module Page.Learning exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
+import Data.Activity as Activity exposing (Activity)
 import Data.Group as Group exposing (Group, Position, Section, Target, Topic)
 import Data.Section as Section
 import Data.Slugable exposing (Slugable, collectionView, compactCollectionView)
 import Data.Target as Target exposing (SlugableTarget)
 import Data.Topic as Topic
-import Html exposing (Html, div, text)
-import Html.Attributes exposing (class)
+import Html exposing (Html, a, div, h2, h3, h4, li, p, text, ul)
+import Html.Attributes exposing (class, href)
 import Route exposing (positionToRoute)
 import Session exposing (Session)
+import Views.ActionList as ActionList
 import Views.Breadcrumb as Breadcrumb
 import Views.Layout exposing (mainHeaderView, mainHeaderWithChapterView, rowView)
 
@@ -21,6 +23,7 @@ type alias Model =
     { session : Session
     , learnings : List Group
     , position : Maybe Position
+    , activity : Maybe Activity
     }
 
 
@@ -29,6 +32,7 @@ init session learnings maybePath =
     ( { session = session
       , learnings = learnings
       , position = Route.pathToPosition learnings maybePath
+      , activity = Nothing
       }
     , Cmd.none
     )
@@ -107,8 +111,12 @@ viewSection learnings group topic section =
     [ mainHeaderWithChapterView
         (sectionBreadcrumbView group topic)
         (text (Section.toString section))
-    , viewPositionCompact
-        (Target.targetBySection learnings group topic section)
+    , let
+        targets =
+            Target.targetBySection learnings group topic section
+      in
+      viewPositionCompact
+        targets
         (goToTarget group topic section)
         Target.toHtml
     ]
@@ -120,7 +128,58 @@ viewTarget group topic section target =
         (sectionBreadcrumbView group topic)
         (text (Section.toString section))
     , div [ class "teaser" ] [ text (Target.toString target) ]
+    , viewDetail
     ]
+
+
+viewDetail : Html Msg
+viewDetail =
+    Html.node "main"
+        [ class "main-content content content--two" ]
+        [ div [ class "content__infobox" ]
+            [ h2 [ class "content__title" ] [ text "Introduction" ]
+            , p [ class "content__introduction" ] [ text "Ut suscipit sit amet ex sit amet ultricies. Sed nisl sem, mattis vitae nunc eu, accumsan blandit augue. Nunc interdum arcu id consectetur pellentesque. Nullam lectus ex, sodales dignissim porta sit amet, pharetra ultrices ex. Proin non facilisis enim. Donec ornare commodo ante, et sagittis mauris euismod vel. Ut convallis sit amet lorem quis euismod. Aenean accumsan consequat diam, nec ultrices nunc fermentum a. Donec sagittis magna nec tincidunt condimentum. In tempor malesuada dignissim. Vestibulum ultricies eu ipsum eu suscipit. Suspendisse convallis nisi id mollis tincidunt. Curabitur venenatis, libero id ultricies blandit, metus arcu sodales ligula, sit amet laoreet nisl ligula eu leo. Aenean pharetra lacinia tortor, a sagittis tellus mattis vitae." ]
+            ]
+        , div [ class "content__infobox" ]
+            [ h3 [ class "content__title" ] [ text "Objectifs & pédagogie" ]
+            , p [ class "content__text" ] [ text "Ut suscipit sit amet ex sit amet ultricies. Sed nisl sem, mattis vitae nunc eu, accumsan blandit augue. Nunc interdum arcu id consectetur pellentesque. Nullam lectus ex, sodales dignissim porta sit amet, pharetra ultrices ex. Proin non facilisis enim. Donec ornare commodo ante, et sagittis mauris euismod vel. Ut convallis sit amet lorem quis euismod. Aenean accumsan consequat diam, nec ultrices nunc fermentum a. Donec sagittis magna nec tincidunt condimentum. In tempor malesuada dignissim. Vestibulum ultricies eu ipsum eu suscipit. Suspendisse convallis nisi id mollis tincidunt. Curabitur venenatis, libero id ultricies blandit, metus arcu sodales ligula, sit amet laoreet nisl ligula eu leo. Aenean pharetra lacinia tortor, a sagittis tellus mattis vitae." ]
+            , h4 [ class "content__title" ] [ text "Objectifs" ]
+            , p [ class "content__text" ] [ text "Ut suscipit sit amet ex sit amet ultricies. Sed nisl sem, mattis vitae nunc eu, accumsan blandit augue. Nunc interdum arcu id consectetur pellentesque. Nullam lectus ex, sodales dignissim porta sit amet, pharetra ultrices ex. Proin non facilisis enim. Donec ornare commodo ante, et sagittis mauris euismod vel. Ut convallis sit amet lorem quis euismod. Aenean accumsan consequat diam, nec ultrices nunc fermentum a. Donec sagittis magna nec tincidunt condimentum. In tempor malesuada dignissim. Vestibulum ultricies eu ipsum eu suscipit. Suspendisse convallis nisi id mollis tincidunt. Curabitur venenatis, libero id ultricies blandit, metus arcu sodales ligula, sit amet laoreet nisl ligula eu leo. Aenean pharetra lacinia tortor, a sagittis tellus mattis vitae." ]
+            , h4 [ class "content__title" ] [ text "Pédagogie" ]
+            , p [ class "content__text" ] [ text "Ut suscipit sit amet ex sit amet ultricies. Sed nisl sem, mattis vitae nunc eu, accumsan blandit augue. Nunc interdum arcu id consectetur pellentesque. Nullam lectus ex, sodales dignissim porta sit amet, pharetra ultrices ex. Proin non facilisis enim. Donec ornare commodo ante, et sagittis mauris euismod vel. Ut convallis sit amet lorem quis euismod. Aenean accumsan consequat diam, nec ultrices nunc fermentum a. Donec sagittis magna nec tincidunt condimentum. In tempor malesuada dignissim. Vestibulum ultricies eu ipsum eu suscipit. Suspendisse convallis nisi id mollis tincidunt. Curabitur venenatis, libero id ultricies blandit, metus arcu sodales ligula, sit amet laoreet nisl ligula eu leo. Aenean pharetra lacinia tortor, a sagittis tellus mattis vitae." ]
+            ]
+        , activityListView
+            [ Activity.createActivity "Lecture en couleur"
+            , Activity.createActivity "Fractions"
+            , Activity.createActivity "Histoire en histoire"
+            , Activity.createActivity "Biologie, le système cardiaque"
+            , Activity.createActivity "Dessin, le coeur"
+            ]
+        , activityListView
+            [ Activity.createActivity "Lecture en couleur"
+            , Activity.createActivity "Fractions"
+            , Activity.createActivity "Histoire en histoire"
+            , Activity.createActivity "Biologie, le système cardiaque"
+            , Activity.createActivity "Dessin, le coeur"
+            ]
+        ]
+
+
+activityListView : List Activity -> Html Msg
+activityListView list =
+    div [ class "content__infobox" ]
+        [ h3 [ class "content__title" ] [ text "Propositions d'activités" ]
+        , ul [ class "action-list" ]
+            (List.map
+                activityPreview
+                list
+            )
+        ]
+
+
+activityPreview : Activity -> Html Msg
+activityPreview { label } =
+    ActionList.link [ text label ]
 
 
 groupBreadcrumbView : Html Msg

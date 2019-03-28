@@ -269,28 +269,6 @@ hr {
   border-top: 0.0625rem solid #757575;
 }
 
-blockquote {
-  display: block;
-  position: relative;
-  font-style: italic;
-  background: #e0e0e0;
-  margin: 0.5rem;
-  padding: 0.5rem 0.5rem 1.5rem;
-  border-left: 0.25rem solid #3f51b5;
-  border-radius: 0 0.1875rem 0.1875rem 0;
-  box-shadow: 0 0.125rem 0.125rem 0 rgba(0, 0, 0, 0.14), 0 0.0625rem 0.3125rem 0 rgba(0, 0, 0, 0.12), 0 0.1875rem 0.0625rem -0.125rem rgba(0, 0, 0, 0.2);
-}
-
-blockquote:after {
-  position: absolute;
-  font-style: normal;
-  font-size: 0.875rem;
-  color: #616161;
-  left: 0.625rem;
-  bottom: 0;
-  content: "— " attr(cite);
-}
-
 code, kbd, pre, samp {
   font-family: monospace, monospace;
 }
@@ -350,7 +328,7 @@ a:visited {
 }
 
 a:hover, a:focus {
-  opacity: 0.75;
+  
 }
 
 figcaption {
@@ -584,6 +562,7 @@ a.collection__link:hover span {
   font-size: 1.6rem;
   font-weight: 600;
   margin-top: -1rem;
+  line-height: 1.2;
 }
 
 .schedule {
@@ -860,4 +839,89 @@ a.collection__link:hover span {
   background-color: var(--background-color);
   padding: 1rem;
   min-height: 8rem;
+}
+
+.main-content {
+  margin-top: 3rem;
+}
+
+.content {
+  display: grid;
+  grid-gap: 1rem;
+}
+
+.content--two {
+  grid-template-columns: minmax(10rem, 15rem) 1fr;
+}
+
+.content__title,
+.content__introduction,
+.content__text {
+  grid-column: 1;
+}
+
+.content__introduction {
+  grid-column: 1/ span 2;
+}
+
+.content__title {
+  display: block;
+}
+
+.content__title:before {
+  display: block;
+  content: "";
+  width: 20%;
+  border-top: 2px solid var(--background-color-inversed);
+  margin-top: 2rem;
+  padding-top: .4rem;
+}
+
+.content__introduction {
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin-bottom: 1.5rem;
+}
+
+.content__text {
+  grid-column-start: 2;
+}
+
+.content__infobox {
+  display: contents;
+  margin-bottom: 2rem;
+}
+
+.content__infobox > .content__title {
+  margin-top: 0;
+}
+
+.content__infobox > .content__title:before {
+  margin-top: 0;
+}
+
+.action-list {
+  display: grid;
+  grid-gap: .5rem;
+  padding: 0;
+}
+
+.action-list__item {
+  list-style: none;
+  border: 2px solid var(--background-color-inversed);
+  margin: 0;
+}
+
+.action-list__link {
+  cursor: pointer;
+  display: block;
+  text-decoration: none;
+  padding: .5rem;
+  background-color: transparent;
+
+  transition: background-color 180ms ease-out;
+}
+
+.action-list__link:hover {
+  background-color: var(--background-color);
 }
