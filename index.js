@@ -15,8 +15,6 @@ const flags = {
   viewer
 };
 
-console.log(flags);
-
 const node = document.getElementById('main');
 
 const app = Elm.Main.init({

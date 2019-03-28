@@ -55,24 +55,35 @@ contentWrapper =
     div [ class "content__main" ]
 
 
-navigation : Page -> Html.Html msg
-navigation page =
+navigationView : Page -> Html.Html msg
+navigationView page =
     Components.MainMenu.view
         [ ( text "Apprentissages", positionToRoute Nothing )
         , ( text "Semainier", Route.Schedule )
         , ( text "Journal", Route.Diary )
         , ( text "Calendrier", Route.Calendar )
-        , ( text "Connexion", Route.Login )
+        ]
+
+
+userNavigationView : Page -> Html.Html msg
+userNavigationView page =
+    Components.MainMenu.view
+        [ ( text "Connexion", Route.Login )
+        , ( text "Profile", Route.Login )
+        , ( text "Déconnexion", Route.Login )
         ]
 
 
 pageHeader : Page -> Html.Html msg
 pageHeader page =
     nav [ class "main-navigation", attribute "role" "navigation" ]
-        [ div [ class "main-navigation__wrapper" ]
+        [ div [ class "main-navigation__wrapper main-navigation__wrapper--sub" ]
+            [ userNavigationView page
+            ]
+        , div [ class "main-navigation__wrapper" ]
             [ a [ class "main-navigation__logo", Route.href (positionToRoute Nothing), id "logo-container" ]
                 [ text "Carnet de bord" ]
-            , navigation page
+            , navigationView page
             ]
         ]
 

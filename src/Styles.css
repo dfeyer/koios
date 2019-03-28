@@ -129,6 +129,9 @@
   --responsive: calc((var(--min-size) * 1px) + var(--diff) * ((100vw - 420px) / (1800 - 420))); /* Ranges from 421px to 1799px */
 
   --schedule-week-hour-begin: 8;
+
+  --top-nav-height: 1.75rem;
+  --nav-height: 3.75rem;
 }
 
 /* Layout */
@@ -317,7 +320,7 @@ sup, sub {
 }
 
 a {
-  color: var(--text-color);
+  color: inherit;
   text-decoration: underline;
   opacity: 1;
   transition: opacity 0.3s;
@@ -339,14 +342,34 @@ figcaption {
 /* Navigation */
 
 .main-navigation {
-  background-color: #FFFFFF;
-  padding: 0 2rem;
+  position: sticky;
+  top: calc(var(--top-nav-height) * -1);
+  box-shadow: 0 0 2rem 0 rgba(0,0,0,0.75);
+  z-index: 10;
 }
 
 .main-navigation__wrapper {
   display: flex;
+  background-color: #FFFFFF;
   justify-content: space-between;
   align-items: center;
+  padding: 0 2rem;
+  height: var(--nav-height);
+  overflow: hidden;
+}
+
+.main-navigation__wrapper--sub {
+  justify-content: flex-end;
+  color: var(--text-color-inversed);
+  background-color: var(--background-color-dynamic);
+  height: var(--top-nav-height);
+}
+
+.main-navigation__wrapper--sub .main-menu__link {
+  font-weight: 500;
+  line-height: var(--top-nav-height);
+  height: var(--top-nav-height);
+  font-size: .7rem;
 }
 
 .main-navigation__logo {
@@ -376,6 +399,7 @@ figcaption {
   font-family: var(--font-family-headline);
   font-weight: 800;
   text-decoration: none;
+  color: white;
   font-size: .8rem;
   line-height: 3.75rem;
   white-space: nowrap;
@@ -587,32 +611,6 @@ a.collection__link:hover span {
 
 }
 
-.day__label {
-  position: sticky;
-  top: 0;
-  background-color: var(--background-color-dynamic);
-  font-size: 1rem;
-  text-align: right;
-  padding-top: .2rem;
-  padding-bottom: .2rem;
-  border-bottom: 2px solid var(--background-color-inversed);
-  margin-top: 0;
-  grid-column: 1/4;
-}
-
-.day__header {
-  font-size: .8rem;
-  margin: 0;
-  font-weight: 300;
-}
-
-.day__subheader {
-  font-size: 1rem;
-  margin: 0;
-  margin-bottom: .25rem;
-  font-weight: 600;
-}
-
 .hour__label {
   --start: 1;
   --end: 2;
@@ -740,7 +738,7 @@ a.collection__link:hover span {
 
 .day__label {
   position: sticky;
-  top: 0;
+  top: calc(var(--nav-height) * 1);
   line-height: 1.2;
   margin-bottom: .2rem;
   background-color: var(--background-color-dynamic);
@@ -749,6 +747,20 @@ a.collection__link:hover span {
   padding-top: .2rem;
   padding-bottom: .2rem;
   border-bottom: 2px solid var(--background-color-inversed);
+  grid-column: 1/4;
+}
+
+.day__header {
+  font-size: .8rem;
+  margin: 0;
+  font-weight: 300;
+}
+
+.day__subheader {
+  font-size: 1rem;
+  margin: 0;
+  margin-bottom: .25rem;
+  font-weight: 600;
 }
 
 .event {
@@ -822,7 +834,7 @@ a.collection__link:hover span {
 
 .feed-item__header {
   position: sticky;
-  top: 0;
+  top: calc(var(--nav-height) * 1);
   background-color: var(--background-color-dynamic);
 }
 
