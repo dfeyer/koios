@@ -25,11 +25,11 @@ type Page
 
 
 view : Maybe Viewer -> Page -> { title : String, content : Html msg } -> Document msg
-view _ page { title, content } =
+view maybeViewer page { title, content } =
     { title = title
     , body =
         [ pageWrapper
-            [ pageHeader page
+            [ pageHeader page maybeViewer
             , progress
             , contentWrapper
                 [ content
@@ -65,20 +65,26 @@ navigationView page =
         ]
 
 
-userNavigationView : Page -> Html.Html msg
-userNavigationView page =
+userNavigationView : Page -> Maybe Viewer -> Html.Html msg
+userNavigationView page maybeViewer =
     Components.MainMenu.view
-        [ ( text "Connexion", Route.Login )
-        , ( text "Profile", Route.Login )
-        , ( text "Déconnexion", Route.Login )
-        ]
+        (case maybeViewer of
+            Just viewer ->
+                [ ( text "Profile", Route.Login )
+                , ( text "Déconnexion", Route.Login )
+                ]
+
+            Nothing ->
+                [ ( text "Connexion", Route.Login )
+                ]
+        )
 
 
-pageHeader : Page -> Html.Html msg
-pageHeader page =
+pageHeader : Page -> Maybe Viewer -> Html.Html msg
+pageHeader page maybeViewer =
     nav [ class "main-navigation", attribute "role" "navigation" ]
         [ div [ class "main-navigation__wrapper main-navigation__wrapper--sub" ]
-            [ userNavigationView page
+            [ userNavigationView page maybeViewer
             ]
         , div [ class "main-navigation__wrapper" ]
             [ a [ class "main-navigation__logo", Route.href (positionToRoute Nothing), id "logo-container" ]

@@ -34,6 +34,7 @@ app.ports.storeCache.subscribe(function (val) {
   }, 0);
 });
 
+
 // Whenever localStorage changes in another tab, report it if necessary.
 window.addEventListener("viewer", function (event) {
   if (event.storageArea === localStorage && event.key === storageKey) {
