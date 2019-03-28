@@ -7,7 +7,7 @@ import Browser.Navigation as Nav
 import Data.Group as Group exposing (Group)
 import Html exposing (..)
 import Html.Attributes exposing (class, title)
-import Html.Events
+import Html.Events exposing (onClick)
 import Icons.ChevronUp
 import Json.Decode as Decode exposing (Decoder, Value, nullable, string)
 import Json.Decode.Pipeline exposing (custom, required)
@@ -23,7 +23,6 @@ import Session exposing (Session)
 import Task
 import Tasks.Ui exposing (scrollToTop)
 import Url exposing (Url)
-import Username exposing (Username)
 import Viewer exposing (Viewer)
 import Views.Page as Page
 
@@ -50,18 +49,6 @@ type Module
     | Diary Diary.Model
     | Calendar Calendar.Model
     | Login Login.Model
-
-
-authorizeURL : UrlRequest
-authorizeURL =
-    External
-        (auth0AuthorizeURL
-            (Auth0Config "https://koios.eu.auth0.com" "m46vXrYcNOUWJIOegGaHXsxomn6c87PN")
-            "token"
-            "http://localhost:1234/auth/login"
-            [ "openid", "name", "email" ]
-            Nothing
-        )
 
 
 
@@ -148,7 +135,6 @@ type Msg
     | GotLoginMsg Login.Msg
     | GotSession Session
     | ScrollToTop
-    | GotToTop ()
 
 
 toSession : Model -> Session
@@ -218,7 +204,7 @@ update msg ({ module_ } as model) =
             ( model, Cmd.none )
 
         ( ScrollToTop, _ ) ->
-            ( model, Task.perform GotToTop scrollToTop )
+            ( model, Task.attempt (always Ignored) scrollToTop )
 
         ( ClickedLink urlRequest, _ ) ->
             case urlRequest of
@@ -328,7 +314,12 @@ view ({ module_ } as model) =
 
 scrollToTopView : msg -> Html msg
 scrollToTopView msg =
-    a [ Html.Attributes.href "#", onClickNoBubble msg, class "go-to-top", title "Aller en haut de la page" ] [ Icons.ChevronUp.view ]
+    div
+        [ onClick msg
+        , class "go-to-top"
+        , title "Aller en haut de la page"
+        ]
+        [ Icons.ChevronUp.view ]
 
 
 onClickNoBubble : msg -> Html.Attribute msg

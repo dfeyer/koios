@@ -1,5 +1,7 @@
 module Page.Learning exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
+import Browser.Dom exposing (Viewport)
+import Browser.Events exposing (onKeyDown, onKeyUp, onResize)
 import Data.Activity as Activity exposing (Activity)
 import Data.Group as Group exposing (Group, Position, Section, Target, Topic)
 import Data.Section as Section
@@ -8,8 +10,11 @@ import Data.Target as Target exposing (SlugableTarget)
 import Data.Topic as Topic
 import Html exposing (Html, a, div, h2, h3, h4, li, p, text, ul)
 import Html.Attributes exposing (class, href)
+import Html.Events exposing (keyCode)
+import Json.Decode as Decode
 import Route exposing (positionToRoute)
 import Session exposing (Session)
+import Task
 import Views.ActionList as ActionList
 import Views.Breadcrumb as Breadcrumb
 import Views.Layout exposing (mainHeaderView, mainHeaderWithChapterView, rowView)
@@ -24,17 +29,23 @@ type alias Model =
     , learnings : List Group
     , position : Maybe Position
     , activity : Maybe Activity
+    , viewport : Maybe ( Float, Float )
     }
 
 
 init : Session -> List Group -> Maybe String -> ( Model, Cmd Msg )
 init session learnings maybePath =
+    let
+        v =
+            Browser.Dom.getViewport
+    in
     ( { session = session
       , learnings = learnings
       , position = Route.pathToPosition learnings maybePath
       , activity = Nothing
+      , viewport = Nothing
       }
-    , Cmd.none
+    , Task.perform GotViewport Browser.Dom.getViewport
     )
 
 
@@ -236,7 +247,10 @@ viewError =
 
 
 type Msg
-    = GotSession Session
+    = Ignored
+    | Resize Int Int
+    | GotViewport Viewport
+    | GotSession Session
     | GotRoot
     | GotPosition Position
 
@@ -264,6 +278,19 @@ goToTarget group topic section target =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        Ignored ->
+            ( model, Cmd.none )
+
+        Resize width height ->
+            ( { model | viewport = Just ( toFloat width, toFloat height ) }
+            , Cmd.none
+            )
+
+        GotViewport { viewport } ->
+            ( { model | viewport = Just ( viewport.width, viewport.height ) }
+            , Cmd.none
+            )
+
         GotSession session ->
             ( { model | session = session }, Cmd.none )
 
@@ -283,7 +310,19 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Session.changes GotSession (Session.navKey model.session)
+    Sub.batch
+        [ Session.changes GotSession (Session.navKey model.session)
+        , onKeyUp (Decode.map (key False) keyCode)
+        , onKeyDown (Decode.map (key True) keyCode)
+        , onResize Resize
+        ]
+
+
+key : Bool -> Int -> Msg
+key on keycode =
+    case Debug.log "keyCode" keycode of
+        _ ->
+            Ignored
 
 
 

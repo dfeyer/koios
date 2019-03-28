@@ -361,7 +361,7 @@ figcaption {
 .main-navigation__wrapper--sub {
   justify-content: flex-end;
   color: var(--text-color-inversed);
-  background-color: var(--background-color-dynamic);
+  background-color: var(--background-color-inversed);
   height: var(--top-nav-height);
 }
 
@@ -370,6 +370,7 @@ figcaption {
   line-height: var(--top-nav-height);
   height: var(--top-nav-height);
   font-size: .7rem;
+  color: var(--text-color-inversed);
 }
 
 .main-navigation__logo {
@@ -536,6 +537,7 @@ a.collection__link:hover span {
 }
 
 .go-to-top {
+  cursor: pointer;
   position: fixed;
   display: flex;
   align-items: center;
