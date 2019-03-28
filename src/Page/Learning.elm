@@ -320,7 +320,7 @@ subscriptions model =
 
 key : Bool -> Int -> Msg
 key on keycode =
-    case Debug.log "keyCode" keycode of
+    case keycode of
         _ ->
             Ignored
 
