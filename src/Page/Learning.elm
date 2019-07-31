@@ -8,8 +8,8 @@ import Data.Section as Section
 import Data.Slugable exposing (Slugable, collectionView, compactCollectionView)
 import Data.Target as Target exposing (SlugableTarget)
 import Data.Topic as Topic
-import Html exposing (Html, a, div, h2, h3, h4, li, p, text, ul)
-import Html.Attributes exposing (class, href)
+import Html exposing (Html, div, h2, h3, h4, p, text, ul)
+import Html.Attributes exposing (class)
 import Html.Events exposing (keyCode)
 import Json.Decode as Decode
 import Route exposing (positionToRoute)

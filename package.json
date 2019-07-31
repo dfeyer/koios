@@ -15,9 +15,11 @@
     "test:init": "elm-test init",
     "test": "elm-test",
     "netlify:copy": "cpx _redirects dist",
-    "netlify:clean": "rimraf /opt/buildhome/.elm elm-stuff/"
+    "netlify:clean": "rimraf /opt/buildhome/.elm elm-stuff/",
+    "api:update": "elm-graphql http://www-koios-backend.ttree.localhost/graphql --base GraphQL"
   },
   "devDependencies": {
+    "@dillonkearns/elm-graphql": "^3.6.2",
     "cpx": "^1.5.0",
     "elm-format": "^0.8.1",
     "elm-hot": "^1.1.0",

@@ -1,7 +1,7 @@
 module Page.Schedule exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
 import Data.Hour as Hour
-import Html exposing (Html, div, h2, h3, text)
+import Html exposing (Html, div, text)
 import Html.Attributes exposing (class)
 import Session exposing (Session)
 import Views.Calendar as Calendar

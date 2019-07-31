@@ -1,6 +1,6 @@
 module Page.Calendar exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
-import Html exposing (Html, div, h3, span, text)
+import Html exposing (Html, div, h3, text)
 import Html.Attributes exposing (class)
 import Session exposing (Session)
 import Views.Event as Event

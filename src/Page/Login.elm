@@ -1,9 +1,9 @@
 module Page.Login exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
 import Api exposing (Cred, login)
-import Html exposing (Html, a, button, div, form, input, label, span, text)
-import Html.Attributes exposing (class, href, id, name, placeholder, required, type_, value)
-import Html.Events exposing (onClick, onInput, onSubmit)
+import Html exposing (Html, button, div, form, input, label, text)
+import Html.Attributes exposing (class, id, name, required, type_)
+import Html.Events exposing (onInput, onSubmit)
 import RemoteData exposing (RemoteData(..), WebData)
 import Request.PasswordLessAuth as PasswordLessAuth exposing (AuthResponse)
 import Session exposing (Session)

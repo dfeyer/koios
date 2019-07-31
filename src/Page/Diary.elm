@@ -1,6 +1,6 @@
 module Page.Diary exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
-import Html exposing (Html, article, div, footer, h1, h2, header, section, span, text)
+import Html exposing (Html, article, div, h2, header, section, text)
 import Html.Attributes exposing (class)
 import Session exposing (Session)
 import Views.Layout exposing (mainHeaderView)
