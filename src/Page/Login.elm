@@ -1,6 +1,6 @@
 module Page.Login exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
-import Api exposing (Cred)
+import Api exposing (Cred, login)
 import Html exposing (Html, a, button, div, form, input, label, span, text)
 import Html.Attributes exposing (class, href, id, name, placeholder, required, type_, value)
 import Html.Events exposing (onClick, onInput, onSubmit)
@@ -18,6 +18,7 @@ import Views.Layout exposing (mainHeaderView)
 type alias Model =
     { session : Session
     , credentials : Maybe Credentials
+    , isLoading : Bool
     }
 
 
@@ -38,6 +39,7 @@ initModel : Session -> Model
 initModel session =
     { session = session
     , credentials = Nothing
+    , isLoading = False
     }
 
 
@@ -46,20 +48,22 @@ initModel session =
 
 
 view : Model -> { title : String, content : Html Msg }
-view model =
+view ({ isLoading } as model) =
     { title = "Connexion | Mon carnet de board IHES"
     , content =
         div []
             [ div [ class "login-form" ]
-                [ stepSelectorView model ]
+                [ div [ class "login-form__wrapper" ]
+                    (case isLoading of
+                        True ->
+                            [ waitingView model ]
+
+                        False ->
+                            [ loginView model ]
+                    )
+                ]
             ]
     }
-
-
-stepSelectorView : Model -> Html Msg
-stepSelectorView model =
-    div [ class "login-form__wrapper" ]
-        [ loginView model ]
 
 
 waitingView : Model -> Html Msg
@@ -68,7 +72,7 @@ waitingView model =
 
 
 loginView : Model -> Html Msg
-loginView model =
+loginView _ =
     form
         [ class "login-form__form"
         , onSubmit LoginRequested
@@ -96,7 +100,7 @@ loginView model =
                 ]
                 []
             , div [ class "form__help" ]
-                [ text "Si votre compte n'existe pas ce numéro de téléphone deviendra votre identifiant" ]
+                [ text "La plateforme est en version beta sur invitation, vous pouvez nous demander un accès en nous envoyant un courriel." ]
             ]
         , div [ class "form__actions" ]
             [ button
@@ -117,7 +121,7 @@ type Msg
     | UsernameEdited String
     | PasswordEdited String
     | LoginRequested
-    | LoginCompleted (WebData AuthResponse)
+    | LoginCompleted (WebData Cred)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -145,15 +149,15 @@ update msg model =
         LoginRequested ->
             case model.credentials of
                 Just { username, password } ->
-                    ( model
-                    , PasswordLessAuth.auth (PasswordLessAuth.authParameters username password) |> Cmd.map LoginCompleted
+                    ( { model | isLoading = True }
+                    , login (PasswordLessAuth.authParameters username password) |> Cmd.map LoginCompleted
                     )
 
                 Nothing ->
                     ( model, Cmd.none )
 
         LoginCompleted _ ->
-            ( model
+            ( { model | isLoading = False }
             , Cmd.none
             )
 

@@ -1,4 +1,4 @@
-module Viewer exposing (Viewer, createViewer, cred, decoder, store, username)
+module Viewer exposing (Viewer, cred, decoder, store, username)
 
 import Api exposing (Cred)
 import Json.Decode as Decode exposing (Decoder)
@@ -11,11 +11,6 @@ import Username exposing (Username, createUsername)
 
 type Viewer
     = Viewer Cred
-
-
-createViewer : String -> String -> Viewer
-createViewer u b =
-    Viewer (Api.createCred (createUsername u) b)
 
 
 

@@ -2,7 +2,6 @@ module Session exposing (Session, changes, fromViewer, navKey, viewer)
 
 import Api
 import Browser.Navigation as Nav
-import Data.Group exposing (Group)
 import Viewer exposing (Viewer)
 
 

@@ -1,7 +1,6 @@
 module Main exposing (init, main, subscriptions, update, view)
 
-import Api exposing (Cred, decoderFromCred)
-import Auth0 exposing (Auth0Config, auth0AuthorizeURL)
+import Api exposing (Cred, storageDecoder)
 import Browser exposing (Document, UrlRequest(..))
 import Browser.Navigation as Nav
 import Data.Group as Group exposing (Group)
@@ -10,7 +9,7 @@ import Html.Attributes exposing (class, title)
 import Html.Events exposing (onClick)
 import Icons.ChevronUp
 import Json.Decode as Decode exposing (Decoder, Value, nullable, string)
-import Json.Decode.Pipeline exposing (custom, required)
+import Json.Decode.Pipeline exposing (required)
 import Page.Blank as Blank
 import Page.Calendar as Calendar
 import Page.Diary as Diary
@@ -84,11 +83,6 @@ decodeFlags =
         |> required "translations" decodeTranslationFlags
         |> required "learnings" (Decode.list Group.decode)
         |> required "viewer" (nullable (storageDecoder Viewer.decoder))
-
-
-storageDecoder : Decoder (Cred -> Viewer) -> Decoder Viewer
-storageDecoder decoder =
-    Decode.field "user" (decoderFromCred decoder)
 
 
 type alias TranslationFlags =

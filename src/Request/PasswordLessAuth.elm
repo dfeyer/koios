@@ -1,10 +1,7 @@
-module Request.PasswordLessAuth exposing (AuthResponse, auth, authParameters)
+module Request.PasswordLessAuth exposing (AuthParameters, AuthResponse, authEndpoint, authParameters, authParametersEncoder, endpointToString)
 
-import Http exposing (jsonBody)
-import Json.Decode as Decode exposing (Decoder, string)
-import Json.Decode.Pipeline exposing (required)
 import Json.Encode as Encode
-import RemoteData exposing (RemoteData, WebData, sendRequest)
+import Username exposing (Username, createUsername)
 
 
 
@@ -21,7 +18,7 @@ type Endpoint
 
 
 type alias AuthParameters =
-    { username : String
+    { username : Username
     , password : String
     }
 
@@ -32,7 +29,7 @@ type alias AuthParameters =
 
 authParameters : String -> String -> AuthParameters
 authParameters username password =
-    { username = username
+    { username = createUsername username
     , password = password
     }
 
@@ -53,28 +50,9 @@ authEndpoint =
     Endpoint "https://www-koios-backend.ttree.localhost/api/v1/auth/token"
 
 
-auth : AuthParameters -> Cmd (WebData AuthResponse)
-auth options =
-    sendRequest <|
-        Http.post
-            (endpointToString <|
-                authEndpoint
-            )
-            (jsonBody <|
-                encodeAuthParameters options
-            )
-            decodeAuthResponse
-
-
-encodeAuthParameters : AuthParameters -> Encode.Value
-encodeAuthParameters p =
+authParametersEncoder : AuthParameters -> Encode.Value
+authParametersEncoder p =
     Encode.object
-        [ ( "username", Encode.string p.username )
+        [ ( "username", Username.encode p.username )
         , ( "password", Encode.string p.password )
         ]
-
-
-decodeAuthResponse : Decoder AuthResponse
-decodeAuthResponse =
-    Decode.succeed AuthResponse
-        |> required "token" string

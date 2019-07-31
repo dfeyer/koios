@@ -1,4 +1,4 @@
-port module Api exposing (Cred, application, createCred, decoderFromCred, logout, storeCredWith, username, viewerChanges)
+port module Api exposing (Cred, application, credHeader, login, logout, storageDecoder, storeCredWith, username, viewerChanges)
 
 {-| The authentication credentials for the Viewer (that is, the currently logged-in user.)
 This includes:
@@ -17,10 +17,12 @@ This includes:
 
 import Browser
 import Browser.Navigation as Nav
-import Http
-import Json.Decode as Decode exposing (Decoder, Value)
+import Http exposing (jsonBody)
+import Json.Decode as Decode exposing (Decoder, Value, string)
 import Json.Decode.Pipeline exposing (required)
 import Json.Encode as Encode
+import RemoteData exposing (WebData, sendRequest)
+import Request.PasswordLessAuth exposing (AuthParameters, AuthResponse, authEndpoint, authParametersEncoder, endpointToString)
 import Url exposing (Url)
 import Username exposing (Username)
 
@@ -49,11 +51,17 @@ We epxose `login` and `application` instead, so we can be certain that if anyone
 ever has access to a `Cred` value, it came from either the login API endpoint
 or was passed in via flags.
 -}
-credDecoder : Decoder Cred
-credDecoder =
+credDecoder : Username -> Decoder Cred
+credDecoder u =
+    Decode.succeed (Cred u)
+        |> required "token" string
+
+
+storedCredDecoder : Decoder Cred
+storedCredDecoder =
     Decode.succeed Cred
         |> required "username" Username.decoder
-        |> required "token" Decode.string
+        |> required "token" string
 
 
 
@@ -100,6 +108,19 @@ storeCredWith (Cred u t) =
                 ]
     in
     storeCache (Just json)
+
+
+login : AuthParameters -> Cmd (WebData Cred)
+login options =
+    sendRequest <|
+        Http.post
+            (endpointToString <|
+                authEndpoint
+            )
+            (jsonBody <|
+                authParametersEncoder options
+            )
+            (credDecoder options.username)
 
 
 logout : Cmd msg
@@ -159,4 +180,4 @@ decoderFromCred : Decoder (Cred -> a) -> Decoder a
 decoderFromCred decoder =
     Decode.map2 (\fromCred cred -> fromCred cred)
         decoder
-        credDecoder
+        storedCredDecoder
