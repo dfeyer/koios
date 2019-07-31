@@ -7,7 +7,7 @@ import Html.Events exposing (onClick, onInput, onSubmit)
 import RemoteData exposing (RemoteData(..), WebData)
 import Request.PasswordLessAuth as PasswordLessAuth exposing (AuthResponse)
 import Session exposing (Session)
-import Viewer exposing (Viewer)
+import Viewer exposing (Viewer, viewer)
 import Views.Layout exposing (mainHeaderView)
 
 
@@ -156,6 +156,12 @@ update msg model =
                 Nothing ->
                     ( model, Cmd.none )
 
+        LoginCompleted (Success cred) ->
+            ( { model | isLoading = False }
+            , Viewer.store (viewer cred)
+            )
+
+        -- todo implement error handling
         LoginCompleted _ ->
             ( { model | isLoading = False }
             , Cmd.none

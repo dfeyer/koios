@@ -1,4 +1,4 @@
-module Viewer exposing (Viewer, cred, decoder, store, username)
+module Viewer exposing (Viewer, cred, decoder, store, username, viewer)
 
 import Api exposing (Cred)
 import Json.Decode as Decode exposing (Decoder)
@@ -11,6 +11,11 @@ import Username exposing (Username, createUsername)
 
 type Viewer
     = Viewer Cred
+
+
+viewer : Cred -> Viewer
+viewer c =
+    Viewer c
 
 
 
