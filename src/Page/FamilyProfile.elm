@@ -1,8 +1,12 @@
 module Page.FamilyProfile exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
+import Graphql.Http
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (class)
+import RemoteData exposing (RemoteData, WebData)
+import Request.Family exposing (Family, query)
 import Session exposing (Session)
+import Views.Layout exposing (mainHeaderView)
 
 
 
@@ -11,19 +15,37 @@ import Session exposing (Session)
 
 type alias Model =
     { session : Session
+    , family : FamiliyProfileRemoteData
     }
+
+
+
+-- TYPES
+
+
+type alias FamiliyProfileResponse =
+    Maybe Family
+
+
+type alias FamiliyProfileRemoteData =
+    RemoteData (Graphql.Http.Error FamiliyProfileResponse) FamiliyProfileResponse
+
+
+
+-- INIT
 
 
 init : Session -> ( Model, Cmd Msg )
 init session =
     ( initModel session
-    , Cmd.none
+    , loadFamilyProfile
     )
 
 
 initModel : Session -> Model
 initModel session =
     { session = session
+    , family = RemoteData.NotAsked
     }
 
 
@@ -32,15 +54,58 @@ initModel session =
 
 
 view : Model -> { title : String, content : Html Msg }
-view ({ session } as model) =
+view ({ family } as model) =
     { title = "Connexion | Mon carnet de board IHES"
     , content =
         div []
             [ div [ class "login-form" ]
-                [ div [ class "login-form__wrapper-large" ] [ text "User Profile" ]
-                ]
+                (case family of
+                    RemoteData.NotAsked ->
+                        viewLoading
+
+                    RemoteData.Loading ->
+                        viewLoading
+
+                    RemoteData.Failure _ ->
+                        viewError
+
+                    RemoteData.Success maybeFamily ->
+                        case maybeFamily of
+                            Just { name } ->
+                                [ div [ class "login-form__wrapper-large" ]
+                                    [ mainHeaderView (text (Maybe.withDefault "" name))
+                                    ]
+                                ]
+
+                            Nothing ->
+                                viewError
+                )
             ]
     }
+
+
+viewLoading : List (Html Msg)
+viewLoading =
+    [ div [ class "login-form__wrapper-large" ] [ text "Chargement du profile en cours..." ]
+    ]
+
+
+viewError : List (Html Msg)
+viewError =
+    [ div [ class "login-form__wrapper-large" ] [ text "Oups, désolé impossible de traiter votre demande actuellement." ]
+    ]
+
+
+
+-- REQUEST
+
+
+loadFamilyProfile : Cmd Msg
+loadFamilyProfile =
+    query
+        |> Graphql.Http.queryRequest "http://www-koios-backend.ttree.localhost/graphql"
+        -- todo add the bearer and test backend auth
+        |> Graphql.Http.send (RemoteData.fromResult >> ProfileLoaded)
 
 
 
@@ -50,6 +115,7 @@ view ({ session } as model) =
 type Msg
     = NoOp
     | GotSession Session
+    | ProfileLoaded FamiliyProfileRemoteData
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -62,6 +128,11 @@ update msg model =
 
         GotSession _ ->
             ( model
+            , Cmd.none
+            )
+
+        ProfileLoaded response ->
+            ( { model | family = response }
             , Cmd.none
             )
 

@@ -231,9 +231,13 @@ update msg ({ module_ } as model) =
             Learning.update subMsg learnings
                 |> updateWith Learning GotLearningMsg model
 
-        ( GotLoginMsg subMsg, Login learnings ) ->
-            Login.update subMsg learnings
+        ( GotLoginMsg subMsg, Login login ) ->
+            Login.update subMsg login
                 |> updateWith Login GotLoginMsg model
+
+        ( GotFamiliyProfileMsg subMsg, FamilyProfile profile ) ->
+            FamilyProfile.update subMsg profile
+                |> updateWith FamilyProfile GotFamiliyProfileMsg model
 
         ( _, _ ) ->
             -- Disregard messages that arrived for the wrong page.
