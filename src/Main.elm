@@ -1,6 +1,6 @@
 module Main exposing (init, main, subscriptions, update, view)
 
-import Api exposing (Cred, storageDecoder)
+import Api exposing (Cred, logout, storageDecoder)
 import Browser exposing (Document, UrlRequest(..))
 import Browser.Navigation as Nav
 import Data.Group as Group exposing (Group)
@@ -185,6 +185,9 @@ changeRouteTo maybeRoute model =
         Just Route.Login ->
             Login.init session
                 |> updateWith Login GotLoginMsg model
+
+        Just Route.Logout ->
+            ( model, logout )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )

@@ -72,7 +72,7 @@ userNavigationView page maybeViewer =
         (case maybeViewer of
             Just viewer ->
                 [ ( text "Profile", Route.Login )
-                , ( text "Déconnexion", Route.Login )
+                , ( text "Déconnexion", Route.Logout )
                 ]
 
             Nothing ->
