@@ -631,8 +631,13 @@ a.collection__link:hover span {
 }
 
 .login-form__wrapper {
+  flex: 1;
   margin: 4rem 30vw;
-  min-width: 40vw;
+  min-width: 30vw;
+}
+
+.login-form__wrapper-large {
+  flex: 1;
 }
 
 .form {

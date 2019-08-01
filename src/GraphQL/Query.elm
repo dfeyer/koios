@@ -2,7 +2,7 @@
 -- https://github.com/dillonkearns/elm-graphql
 
 
-module GraphQL.Query exposing (NodeRequiredArguments, PingRequiredArguments, node, ping)
+module GraphQL.Query exposing (PingRequiredArguments, family, ping)
 
 import GraphQL.InputObject
 import GraphQL.Interface
@@ -28,10 +28,6 @@ ping requiredArgs =
     Object.selectionForField "(Maybe String)" "ping" [ Argument.required "name" requiredArgs.name Encode.string ] (Decode.string |> Decode.nullable)
 
 
-type alias NodeRequiredArguments =
-    { id : GraphQL.ScalarCodecs.Id }
-
-
-node : NodeRequiredArguments -> SelectionSet decodesTo GraphQL.Interface.Node -> SelectionSet (Maybe decodesTo) RootQuery
-node requiredArgs object_ =
-    Object.selectionForCompositeField "node" [ Argument.required "id" requiredArgs.id (GraphQL.ScalarCodecs.codecs |> GraphQL.Scalar.unwrapEncoder .codecId) ] object_ (identity >> Decode.nullable)
+family : SelectionSet decodesTo GraphQL.Object.Family -> SelectionSet (Maybe decodesTo) RootQuery
+family object_ =
+    Object.selectionForCompositeField "family" [] object_ (identity >> Decode.nullable)

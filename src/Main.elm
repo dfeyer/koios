@@ -186,10 +186,6 @@ changeRouteTo maybeRoute model =
             Login.init session
                 |> updateWith Login GotLoginMsg model
 
-        Just Route.AuthVerify ->
-            Login.init session
-                |> updateWith Login GotLoginMsg model
-
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg ({ module_ } as model) =

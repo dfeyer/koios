@@ -1,4 +1,4 @@
-module Session exposing (Session, changes, fromViewer, navKey, viewer)
+module Session exposing (Session, changes, fromViewer, isLoggedIn, navKey, viewer)
 
 import Api
 import Browser.Navigation as Nav
@@ -12,6 +12,16 @@ import Viewer exposing (Viewer)
 type Session
     = LoggedIn Nav.Key Viewer
     | Guest Nav.Key
+
+
+isLoggedIn : Session -> Bool
+isLoggedIn session =
+    case session of
+        LoggedIn _ _ ->
+            True
+
+        Guest _ ->
+            False
 
 
 

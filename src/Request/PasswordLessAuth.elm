@@ -1,4 +1,4 @@
-module Request.PasswordLessAuth exposing (AuthParameters, AuthResponse, authEndpoint, authParameters, authParametersEncoder, endpointToString)
+module Request.PasswordLessAuth exposing (AuthParameters, AuthResponse, Endpoint, authEndpoint, authParameters, authParametersEncoder, endpoint, endpointToString)
 
 import Json.Encode as Encode
 import Username exposing (Username, createUsername)
@@ -39,6 +39,11 @@ endpointToString e =
     case e of
         Endpoint value ->
             value
+
+
+endpoint : String -> Endpoint
+endpoint s =
+    Endpoint s
 
 
 

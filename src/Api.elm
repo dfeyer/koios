@@ -1,4 +1,4 @@
-port module Api exposing (Cred, application, credHeader, login, logout, storageDecoder, storeCredWith, username, viewerChanges)
+port module Api exposing (Cred, application, login, logout, storageDecoder, storeCredWith, username, viewerChanges)
 
 {-| The authentication credentials for the Viewer (that is, the currently logged-in user.)
 This includes:
@@ -21,8 +21,8 @@ import Http exposing (jsonBody)
 import Json.Decode as Decode exposing (Decoder, Value, string)
 import Json.Decode.Pipeline exposing (required)
 import Json.Encode as Encode
-import RemoteData exposing (WebData, sendRequest)
-import Request.PasswordLessAuth exposing (AuthParameters, AuthResponse, authEndpoint, authParametersEncoder, endpointToString)
+import RemoteData exposing (RemoteData, WebData)
+import Request.PasswordLessAuth exposing (AuthParameters, AuthResponse, Endpoint, authEndpoint, authParametersEncoder, endpoint, endpointToString)
 import Url exposing (Url)
 import Username exposing (Username)
 
@@ -31,19 +31,9 @@ type Cred
     = Cred Username String
 
 
-createCred : Username -> String -> Cred
-createCred u b =
-    Cred u b
-
-
 username : Cred -> Username
 username (Cred value _) =
     value
-
-
-credHeader : Cred -> Http.Header
-credHeader (Cred _ str) =
-    Http.header "authorization" ("Token " ++ str)
 
 
 {-| It's important that this is never exposed!
@@ -110,17 +100,16 @@ storeCredWith (Cred u t) =
     storeCache (Just json)
 
 
-login : AuthParameters -> Cmd (WebData Cred)
-login options =
-    sendRequest <|
-        Http.post
-            (endpointToString <|
-                authEndpoint
-            )
-            (jsonBody <|
+login : (WebData Cred -> msg) -> AuthParameters -> Cmd msg
+login msg options =
+    Http.post
+        { url =
+            endpointToString authEndpoint
+        , body =
+            jsonBody <|
                 authParametersEncoder options
-            )
-            (credDecoder options.username)
+        , expect = Http.expectJson (RemoteData.fromResult >> msg) (credDecoder options.username)
+        }
 
 
 logout : Cmd msg

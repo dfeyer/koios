@@ -6,7 +6,8 @@ import Html.Attributes exposing (class, id, name, required, type_)
 import Html.Events exposing (onInput, onSubmit)
 import RemoteData exposing (RemoteData(..), WebData)
 import Request.PasswordLessAuth as PasswordLessAuth exposing (AuthResponse)
-import Session exposing (Session)
+import Route
+import Session exposing (Session, isLoggedIn)
 import Viewer exposing (Viewer, viewer)
 import Views.Layout exposing (mainHeaderView)
 
@@ -48,26 +49,44 @@ initModel session =
 
 
 view : Model -> { title : String, content : Html Msg }
-view ({ isLoading } as model) =
+view ({ session } as model) =
     { title = "Connexion | Mon carnet de board IHES"
     , content =
         div []
             [ div [ class "login-form" ]
-                [ div [ class "login-form__wrapper" ]
-                    (case isLoading of
-                        True ->
-                            [ waitingView model ]
+                (case isLoggedIn session of
+                    False ->
+                        viewLogin model
 
-                        False ->
-                            [ loginView model ]
-                    )
-                ]
+                    True ->
+                        viewUserProfile model
+                )
             ]
     }
 
 
+viewLogin : Model -> List (Html Msg)
+viewLogin ({ isLoading } as model) =
+    [ div [ class "login-form__wrapper" ]
+        (case isLoading of
+            True ->
+                [ waitingView model ]
+
+            False ->
+                [ loginView model ]
+        )
+    ]
+
+
+viewUserProfile : Model -> List (Html Msg)
+viewUserProfile _ =
+    -- todo implement user profile
+    [ div [ class "login-form__wrapper-large" ] [ text "User Profile" ]
+    ]
+
+
 waitingView : Model -> Html Msg
-waitingView model =
+waitingView _ =
     div [] [ text "Merci de patienter quelques instants..." ]
 
 
@@ -128,7 +147,9 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         GotSession session ->
-            ( { model | session = session }, Cmd.none )
+            ( { model | session = session }
+            , Route.replaceUrl (Session.navKey session) (Route.Learning Nothing)
+            )
 
         UsernameEdited username ->
             case model.credentials of
@@ -150,7 +171,7 @@ update msg model =
             case model.credentials of
                 Just { username, password } ->
                     ( { model | isLoading = True }
-                    , login (PasswordLessAuth.authParameters username password) |> Cmd.map LoginCompleted
+                    , login LoginCompleted (PasswordLessAuth.authParameters username password)
                     )
 
                 Nothing ->
