@@ -15,6 +15,7 @@ type Route
     | Calendar
     | Login
     | Logout
+    | FamilyProfile
 
 
 parser : Parser (Route -> a) a
@@ -27,6 +28,7 @@ parser =
         , map Calendar (s "calendrier")
         , map Login (s "connexion")
         , map Logout (s "deconnexion")
+        , map FamilyProfile (s "profile")
         ]
 
 
@@ -191,5 +193,8 @@ routeToString page =
 
                 Logout ->
                     [ "deconnexion" ]
+
+                FamilyProfile ->
+                    [ "profile" ]
     in
     "/" ++ String.join "/" pieces

@@ -13,6 +13,7 @@ import Json.Decode.Pipeline exposing (required)
 import Page.Blank as Blank
 import Page.Calendar as Calendar
 import Page.Diary as Diary
+import Page.FamilyProfile as FamilyProfile
 import Page.Learning as Learning
 import Page.Login as Login
 import Page.NotFound as NotFound
@@ -48,6 +49,7 @@ type Module
     | Diary Diary.Model
     | Calendar Calendar.Model
     | Login Login.Model
+    | FamilyProfile FamilyProfile.Model
 
 
 
@@ -128,6 +130,7 @@ type Msg
     | GotCalendarMsg Calendar.Msg
     | GotLoginMsg Login.Msg
     | GotSession Session
+    | GotFamiliyProfileMsg FamilyProfile.Msg
     | ScrollToTop
 
 
@@ -155,6 +158,9 @@ toSession { module_ } =
         Login login ->
             Login.toSession login
 
+        FamilyProfile family ->
+            FamilyProfile.toSession family
+
 
 changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
 changeRouteTo maybeRoute model =
@@ -181,6 +187,10 @@ changeRouteTo maybeRoute model =
         Just Route.Calendar ->
             Calendar.init session
                 |> updateWith Calendar GotCalendarMsg model
+
+        Just Route.FamilyProfile ->
+            FamilyProfile.init session
+                |> updateWith FamilyProfile GotFamiliyProfileMsg model
 
         Just Route.Login ->
             Login.init session
@@ -265,6 +275,9 @@ subscriptions ({ module_ } as model) =
         Login login ->
             Sub.map GotLoginMsg (Login.subscriptions login)
 
+        FamilyProfile family ->
+            Sub.map GotFamiliyProfileMsg (FamilyProfile.subscriptions family)
+
 
 
 -- VIEW
@@ -303,6 +316,9 @@ view ({ module_ } as model) =
 
         Login login ->
             viewPage Page.Login GotLoginMsg (Login.view login)
+
+        FamilyProfile family ->
+            viewPage Page.FamilyProfile GotFamiliyProfileMsg (FamilyProfile.view family)
 
 
 scrollToTopView : msg -> Html msg

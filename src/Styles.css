@@ -664,7 +664,7 @@ a.collection__link:hover span {
 
 .form__button {
   cursor: pointer;
-  padding: .8rem .5rem;
+  padding: .8rem 1.5rem;
   width: 100%;
   background-color: var(--background-color-inversed);
   color: var(--text-color-inversed);

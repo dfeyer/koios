@@ -23,6 +23,7 @@ type Page
     | Diary
     | Calendar
     | Login
+    | FamilyProfile
 
 
 view : Maybe Viewer -> Page -> { title : String, content : Html msg } -> Document msg
@@ -71,7 +72,7 @@ userNavigationView page maybeViewer =
     Components.MainMenu.view
         (case maybeViewer of
             Just viewer ->
-                [ ( text "Profile", Route.Login )
+                [ ( text "Profile", Route.FamilyProfile )
                 , ( text "Déconnexion", Route.Logout )
                 ]
 

@@ -1,6 +1,6 @@
 module Page.Login exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
-import Api exposing (Cred, login)
+import Api exposing (Cred, login, logout)
 import Html exposing (Html, button, div, form, input, label, text)
 import Html.Attributes exposing (class, id, name, required, type_)
 import Html.Events exposing (onInput, onSubmit)
@@ -59,7 +59,7 @@ view ({ session } as model) =
                         viewLogin model
 
                     True ->
-                        viewUserProfile model
+                        viewLogout model
                 )
             ]
     }
@@ -78,10 +78,20 @@ viewLogin ({ isLoading } as model) =
     ]
 
 
-viewUserProfile : Model -> List (Html Msg)
-viewUserProfile _ =
+viewLogout : Model -> List (Html Msg)
+viewLogout _ =
     -- todo implement user profile
-    [ div [ class "login-form__wrapper-large" ] [ text "User Profile" ]
+    [ form
+        [ class "login-form__form"
+        , onSubmit LogoutRequested
+        ]
+        [ div [ class "form__actions" ]
+            [ button
+                [ class "form__button"
+                ]
+                [ text "Se déconnecter" ]
+            ]
+        ]
     ]
 
 
@@ -139,6 +149,7 @@ type Msg
     | Reset
     | UsernameEdited String
     | PasswordEdited String
+    | LogoutRequested
     | LoginRequested
     | LoginCompleted (WebData Cred)
 
@@ -186,6 +197,11 @@ update msg model =
         LoginCompleted _ ->
             ( { model | isLoading = False }
             , Cmd.none
+            )
+
+        LogoutRequested ->
+            ( model
+            , logout
             )
 
         Reset ->
