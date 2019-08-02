@@ -28,6 +28,6 @@ ping requiredArgs =
     Object.selectionForField "(Maybe String)" "ping" [ Argument.required "name" requiredArgs.name Encode.string ] (Decode.string |> Decode.nullable)
 
 
-family : SelectionSet decodesTo GraphQL.Object.Family -> SelectionSet (Maybe decodesTo) RootQuery
+family : SelectionSet decodesTo GraphQL.Object.Family -> SelectionSet decodesTo RootQuery
 family object_ =
-    Object.selectionForCompositeField "family" [] object_ (identity >> Decode.nullable)
+    Object.selectionForCompositeField "family" [] object_ identity

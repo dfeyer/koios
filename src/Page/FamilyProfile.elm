@@ -57,16 +57,11 @@ view ({ family } as model) =
                     RemoteData.Failure _ ->
                         viewError
 
-                    RemoteData.Success maybeFamily ->
-                        case maybeFamily of
-                            Just { name } ->
-                                [ div [ class "login-form__wrapper-large" ]
-                                    [ mainHeaderView (text (Maybe.withDefault "" name))
-                                    ]
-                                ]
-
-                            Nothing ->
-                                viewError
+                    RemoteData.Success { name } ->
+                        [ div [ class "login-form__wrapper-large" ]
+                            [ mainHeaderView (text (Maybe.withDefault "" name))
+                            ]
+                        ]
                 )
             ]
     }

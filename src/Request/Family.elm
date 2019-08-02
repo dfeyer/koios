@@ -16,12 +16,22 @@ import RemoteData exposing (RemoteData)
 -- TYPES
 
 
-type alias FamiliyProfileResponse =
-    Maybe Family
+type alias Family =
+    { id : GraphQL.Scalar.Id
+    , name : Maybe String
+    , parents : List (Maybe String)
+    , childs : List (Maybe String)
+    }
+
+
+type alias Parent =
+    { id : GraphQL.Scalar.Id
+    , name : Maybe String
+    }
 
 
 type alias FamiliyProfileRemoteData =
-    RemoteData (Graphql.Http.Error FamiliyProfileResponse) FamiliyProfileResponse
+    RemoteData (Graphql.Http.Error Family) Family
 
 
 
@@ -40,23 +50,9 @@ loadFamilyProfile msg =
 -- QUERY
 
 
-familyProfileQuery : SelectionSet (Maybe Family) RootQuery
+familyProfileQuery : SelectionSet Family RootQuery
 familyProfileQuery =
     Query.family familySelection
-
-
-type alias Family =
-    { id : GraphQL.Scalar.Id
-    , name : Maybe String
-    , parents : List (Maybe String)
-    , childs : List (Maybe String)
-    }
-
-
-type alias Parent =
-    { id : GraphQL.Scalar.Id
-    , name : Maybe String
-    }
 
 
 familySelection : SelectionSet Family GraphQL.Object.Family
