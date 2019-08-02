@@ -1,10 +1,9 @@
 module Page.FamilyProfile exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
-import Graphql.Http
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (class)
 import RemoteData exposing (RemoteData, WebData)
-import Request.Family exposing (Family, query)
+import Request.Family exposing (FamiliyProfileRemoteData, Family, loadFamilyProfile)
 import Session exposing (Session)
 import Views.Layout exposing (mainHeaderView)
 
@@ -21,24 +20,13 @@ type alias Model =
 
 
 -- TYPES
-
-
-type alias FamiliyProfileResponse =
-    Maybe Family
-
-
-type alias FamiliyProfileRemoteData =
-    RemoteData (Graphql.Http.Error FamiliyProfileResponse) FamiliyProfileResponse
-
-
-
 -- INIT
 
 
 init : Session -> ( Model, Cmd Msg )
 init session =
     ( initModel session
-    , loadFamilyProfile
+    , loadFamilyProfile ProfileLoaded
     )
 
 
@@ -94,18 +82,6 @@ viewError : List (Html Msg)
 viewError =
     [ div [ class "login-form__wrapper-large" ] [ text "Oups, désolé impossible de traiter votre demande actuellement." ]
     ]
-
-
-
--- REQUEST
-
-
-loadFamilyProfile : Cmd Msg
-loadFamilyProfile =
-    query
-        |> Graphql.Http.queryRequest "http://www-koios-backend.ttree.localhost/graphql"
-        -- todo add the bearer and test backend auth
-        |> Graphql.Http.send (RemoteData.fromResult >> ProfileLoaded)
 
 
 
