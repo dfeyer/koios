@@ -2,7 +2,7 @@
 -- https://github.com/dillonkearns/elm-graphql
 
 
-module GraphQL.Object.ParentProfile exposing (accessLevel, address, country, creationDate, email, facebook, family, fax, firstname, id, instagram, lastname, locality, mastodon, mobile, name, phone, postalCode, profilePublic, profileValidated, twitter, username, website)
+module GraphQL.Object.ParentProfile exposing (AvatarUrlOptionalArguments, accessLevel, address, avatarUrl, country, creationDate, email, facebook, family, fax, firstname, id, instagram, lastname, locality, mastodon, mobile, name, phone, postalCode, profilePublic, profileValidated, twitter, username, website)
 
 import GraphQL.InputObject
 import GraphQL.Interface
@@ -24,14 +24,14 @@ id =
     Object.selectionForField "ScalarCodecs.Id" "id" [] (GraphQL.ScalarCodecs.codecs |> GraphQL.Scalar.unwrapCodecs |> .codecId |> .decoder)
 
 
-creationDate : SelectionSet (Maybe GraphQL.ScalarCodecs.DateTime) GraphQL.Object.ParentProfile
+creationDate : SelectionSet GraphQL.ScalarCodecs.DateTime GraphQL.Object.ParentProfile
 creationDate =
-    Object.selectionForField "(Maybe ScalarCodecs.DateTime)" "creationDate" [] (GraphQL.ScalarCodecs.codecs |> GraphQL.Scalar.unwrapCodecs |> .codecDateTime |> .decoder |> Decode.nullable)
+    Object.selectionForField "ScalarCodecs.DateTime" "creationDate" [] (GraphQL.ScalarCodecs.codecs |> GraphQL.Scalar.unwrapCodecs |> .codecDateTime |> .decoder)
 
 
-accessLevel : SelectionSet (Maybe Int) GraphQL.Object.ParentProfile
+accessLevel : SelectionSet Int GraphQL.Object.ParentProfile
 accessLevel =
-    Object.selectionForField "(Maybe Int)" "accessLevel" [] (Decode.int |> Decode.nullable)
+    Object.selectionForField "Int" "accessLevel" [] Decode.int
 
 
 profilePublic : SelectionSet Bool GraphQL.Object.ParentProfile
@@ -44,9 +44,26 @@ profileValidated =
     Object.selectionForField "Bool" "profileValidated" [] Decode.bool
 
 
-username : SelectionSet (Maybe String) GraphQL.Object.ParentProfile
+type alias AvatarUrlOptionalArguments =
+    { size : OptionalArgument Int }
+
+
+avatarUrl : (AvatarUrlOptionalArguments -> AvatarUrlOptionalArguments) -> SelectionSet String GraphQL.Object.ParentProfile
+avatarUrl fillInOptionals =
+    let
+        filledInOptionals =
+            fillInOptionals { size = Absent }
+
+        optionalArgs =
+            [ Argument.optional "size" filledInOptionals.size Encode.int ]
+                |> List.filterMap identity
+    in
+    Object.selectionForField "String" "avatarUrl" optionalArgs Decode.string
+
+
+username : SelectionSet String GraphQL.Object.ParentProfile
 username =
-    Object.selectionForField "(Maybe String)" "username" [] (Decode.string |> Decode.nullable)
+    Object.selectionForField "String" "username" [] Decode.string
 
 
 name : SelectionSet String GraphQL.Object.ParentProfile
