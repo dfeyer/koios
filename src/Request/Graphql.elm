@@ -16,19 +16,20 @@ endpoint =
 
 query : Session -> SelectionSet a RootQuery -> (RemoteData (Graphql.Http.Error a) a -> msg) -> Cmd msg
 query s q msg =
-    case viewer s of
-        Just v ->
-            let
-                bearer =
-                    token <|
-                        cred v
-            in
-            q
-                |> Graphql.Http.queryRequest endpoint
-                |> Graphql.Http.withHeader "Authorization" ("Bearer " ++ bearer)
-                |> Graphql.Http.send (RemoteData.fromResult >> msg)
+    Graphql.Http.send (RemoteData.fromResult >> msg) <|
+        (q
+            |> Graphql.Http.queryRequest endpoint
+            |> Graphql.Http.withHeader "X-Koios-Powered" "Koios/dev"
+            |> (case viewer s of
+                    Just v ->
+                        let
+                            bearer =
+                                token <|
+                                    cred v
+                        in
+                        Graphql.Http.withHeader "Authorization" ("Bearer " ++ bearer)
 
-        Nothing ->
-            q
-                |> Graphql.Http.queryRequest endpoint
-                |> Graphql.Http.send (RemoteData.fromResult >> msg)
+                    Nothing ->
+                        identity
+               )
+        )
