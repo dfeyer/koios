@@ -22,7 +22,7 @@ import Json.Decode as Decode exposing (Decoder, Value, string)
 import Json.Decode.Pipeline exposing (required)
 import Json.Encode as Encode
 import RemoteData exposing (RemoteData, WebData)
-import Request.PasswordLessAuth exposing (AuthParameters, AuthResponse, Endpoint, authEndpoint, authParametersEncoder, endpoint, endpointToString)
+import Request.Auth exposing (AuthParameters, AuthResponse, Endpoint, authEndpoint, authParametersEncoder, endpoint, endpointToString)
 import Url exposing (Url)
 import Username exposing (Username)
 

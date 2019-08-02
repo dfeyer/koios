@@ -1,4 +1,4 @@
-module Request.PasswordLessAuth exposing (AuthParameters, AuthResponse, Endpoint, authEndpoint, authParameters, authParametersEncoder, endpoint, endpointToString)
+module Request.Auth exposing (AuthParameters, AuthResponse, Endpoint, authEndpoint, authParameters, authParametersEncoder, endpoint, endpointToString)
 
 import Json.Encode as Encode
 import Username exposing (Username, createUsername)

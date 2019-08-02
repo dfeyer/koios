@@ -5,7 +5,7 @@ import Html exposing (Html, button, div, form, input, label, text)
 import Html.Attributes exposing (class, id, name, required, type_)
 import Html.Events exposing (onInput, onSubmit)
 import RemoteData exposing (RemoteData(..), WebData)
-import Request.PasswordLessAuth as PasswordLessAuth exposing (AuthResponse)
+import Request.Auth as Auth exposing (AuthResponse)
 import Route
 import Session exposing (Session, isLoggedIn)
 import Viewer exposing (Viewer, viewer)
@@ -182,7 +182,7 @@ update msg model =
             case model.credentials of
                 Just { username, password } ->
                     ( { model | isLoading = True }
-                    , login LoginCompleted (PasswordLessAuth.authParameters username password)
+                    , login LoginCompleted (Auth.authParameters username password)
                     )
 
                 Nothing ->
