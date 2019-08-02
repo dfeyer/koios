@@ -26,7 +26,7 @@ type alias Model =
 init : Session -> ( Model, Cmd Msg )
 init session =
     ( initModel session
-    , loadFamilyProfile ProfileLoaded
+    , loadFamilyProfile session ProfileLoaded
     )
 
 

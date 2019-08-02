@@ -1,4 +1,4 @@
-port module Api exposing (Cred, application, login, logout, storageDecoder, storeCredWith, username, viewerChanges)
+port module Api exposing (Cred, application, login, logout, storageDecoder, storeCredWith, token, username, viewerChanges)
 
 {-| The authentication credentials for the Viewer (that is, the currently logged-in user.)
 This includes:
@@ -27,12 +27,21 @@ import Url exposing (Url)
 import Username exposing (Username)
 
 
+type alias Token =
+    String
+
+
 type Cred
-    = Cred Username String
+    = Cred Username Token
 
 
 username : Cred -> Username
 username (Cred value _) =
+    value
+
+
+token : Cred -> Token
+token (Cred _ value) =
     value
 
 

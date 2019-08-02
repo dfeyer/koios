@@ -10,6 +10,8 @@ import Graphql.Http
 import Graphql.Operation exposing (RootQuery)
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet)
 import RemoteData exposing (RemoteData)
+import Request.Graphql exposing (query)
+import Session exposing (Session)
 
 
 
@@ -38,12 +40,9 @@ type alias FamiliyProfileRemoteData =
 -- REQUEST
 
 
-loadFamilyProfile : (FamiliyProfileRemoteData -> msg) -> Cmd msg
-loadFamilyProfile msg =
-    familyProfileQuery
-        |> Graphql.Http.queryRequest "http://www-koios-backend.ttree.localhost/graphql"
-        -- todo add the bearer and test backend auth
-        |> Graphql.Http.send (RemoteData.fromResult >> msg)
+loadFamilyProfile : Session -> (FamiliyProfileRemoteData -> msg) -> Cmd msg
+loadFamilyProfile session msg =
+    query session familyProfileQuery msg
 
 
 
