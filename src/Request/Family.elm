@@ -21,14 +21,22 @@ import Session exposing (Session)
 type alias Family =
     { id : GraphQL.Scalar.Id
     , name : Maybe String
-    , parents : List (Maybe String)
-    , childs : List (Maybe String)
+    , parents : List (Maybe ParentProfile)
+    , childs : List (Maybe ChildProfile)
     }
 
 
-type alias Parent =
+type alias ParentProfile =
     { id : GraphQL.Scalar.Id
-    , name : Maybe String
+    , name : String
+    , avatarUrl : String
+    }
+
+
+type alias ChildProfile =
+    { id : GraphQL.Scalar.Id
+    , name : String
+    , avatarUrl : String
     }
 
 
@@ -59,5 +67,21 @@ familySelection =
     SelectionSet.map4 Family
         Family.id
         Family.name
-        (Family.parents ParentProfile.name)
-        (Family.childs ChildProfile.name)
+        (Family.parents parentProfileSelection)
+        (Family.childs childProfileSelection)
+
+
+parentProfileSelection : SelectionSet ParentProfile GraphQL.Object.ParentProfile
+parentProfileSelection =
+    SelectionSet.map3 ParentProfile
+        ParentProfile.id
+        ParentProfile.name
+        (ParentProfile.avatarUrl identity)
+
+
+childProfileSelection : SelectionSet ChildProfile GraphQL.Object.ChildProfile
+childProfileSelection =
+    SelectionSet.map3 ChildProfile
+        ChildProfile.id
+        ChildProfile.name
+        (ChildProfile.avatarUrl identity)
