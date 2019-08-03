@@ -1,18 +1,8 @@
-module Views.Layout exposing (mainHeaderView, mainHeaderWithChapterView, pageLayoutView, rowView)
+module Views.Layout exposing (mainHeaderView, mainHeaderWithChapterView, rowView)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Shared exposing (..)
-
-
-pageLayoutView : List (Html msg) -> Html msg
-pageLayoutView content =
-    div
-        [ id "banner"
-        ]
-        [ div []
-            content
-        ]
 
 
 mainHeaderView : Html msg -> Html msg

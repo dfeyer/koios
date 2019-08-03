@@ -5,7 +5,6 @@ import Components.MainMenu
 import Components.StabyloMenu
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Request.Family
 import Route exposing (Route(..), positionToRoute)
 import Viewer exposing (Viewer)
 import Views.Helpers exposing (ihes)
