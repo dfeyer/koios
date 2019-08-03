@@ -1,10 +1,12 @@
 module Page.FamilyProfile exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
-import Html exposing (Html, div, text)
+import Components.ContentArea as ContentArea
+import Html exposing (Html, div, h2, text)
 import Html.Attributes exposing (class)
 import RemoteData exposing (RemoteData, WebData)
-import Request.Family exposing (FamiliyProfileRemoteData, Family, loadFamilyProfile)
+import Request.Family exposing (FamiliyProfileRemoteData, Family, Profile, loadFamilyProfile)
 import Session exposing (Session)
+import Views.ActionList as ActionList
 import Views.Layout exposing (mainHeaderView)
 
 
@@ -42,29 +44,53 @@ initModel session =
 
 
 view : Model -> { title : String, content : Html Msg }
-view ({ family } as model) =
+view model =
     { title = "Connexion | Mon carnet de board IHES"
     , content =
         div []
-            [ div [ class "login-form" ]
-                (case family of
-                    RemoteData.NotAsked ->
-                        viewLoading
+            (case model.family of
+                RemoteData.NotAsked ->
+                    viewLoading
 
-                    RemoteData.Loading ->
-                        viewLoading
+                RemoteData.Loading ->
+                    viewLoading
 
-                    RemoteData.Failure _ ->
-                        viewError
+                RemoteData.Failure _ ->
+                    viewError
 
-                    RemoteData.Success { name } ->
-                        [ div [ class "login-form__wrapper-large" ]
-                            [ mainHeaderView (text (Maybe.withDefault "" name))
-                            ]
-                        ]
-                )
-            ]
+                RemoteData.Success family ->
+                    viewProfile family
+            )
     }
+
+
+viewProfile : Family -> List (Html Msg)
+viewProfile family =
+    [ ContentArea.view
+        [ ContentArea.infoBox
+            [ ContentArea.primaryTitle family.name
+            , ContentArea.introduction "Ut suscipit sit amet ex sit amet ultricies. Sed nisl sem, mattis vitae nunc eu, accumsan blandit augue. Nunc interdum arcu id consectetur pellentesque. Nullam lectus ex, sodales dignissim porta sit amet, pharetra ultrices ex. Proin non facilisis enim. Donec ornare commodo ante, et sagittis mauris euismod vel. Ut convallis sit amet lorem quis euismod. Aenean accumsan consequat diam, nec ultrices nunc fermentum a. Donec sagittis magna nec tincidunt condimentum. In tempor malesuada dignissim. Vestibulum ultricies eu ipsum eu suscipit. Suspendisse convallis nisi id mollis tincidunt."
+            ]
+        , ContentArea.infoBox
+            [ ContentArea.secondaryTitle "Référants"
+            , ActionList.view family.parents viewProfileLink
+            ]
+        , ContentArea.infoBox
+            [ ContentArea.secondaryTitle "Apprenants"
+            , ActionList.view family.childs viewProfileLink
+            ]
+        ]
+    ]
+
+
+viewProfileLink : Maybe (Profile a) -> Html Msg
+viewProfileLink maybeProfile =
+    case maybeProfile of
+        Just profile ->
+            ActionList.link [ div [] [ text profile.name ] ]
+
+        Nothing ->
+            ActionList.link [ div [] [] ]
 
 
 viewLoading : List (Html Msg)

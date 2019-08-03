@@ -862,13 +862,13 @@ a.collection__link:hover span {
   min-height: 8rem;
 }
 
-.main-content {
-  margin-top: 3rem;
-}
-
 .content {
   display: grid;
   grid-gap: 1rem;
+}
+
+main {
+  margin-top: 3rem;
 }
 
 .content--two {
@@ -879,6 +879,10 @@ a.collection__link:hover span {
 .content__introduction,
 .content__text {
   grid-column: 1;
+}
+
+h2.content__title {
+  grid-column: 1/ span 2;
 }
 
 .content__introduction {

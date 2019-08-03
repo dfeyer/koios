@@ -1,4 +1,4 @@
-module Request.Family exposing (FamiliyProfileRemoteData, Family, familySelection, loadFamilyProfile)
+module Request.Family exposing (FamiliyProfileRemoteData, Family, Profile, familySelection, loadFamilyProfile)
 
 import GraphQL.Object
 import GraphQL.Object.ChildProfile as ChildProfile
@@ -20,23 +20,37 @@ import Session exposing (Session)
 
 type alias Family =
     { id : GraphQL.Scalar.Id
-    , name : Maybe String
+    , name : String
     , parents : List (Maybe ParentProfile)
     , childs : List (Maybe ChildProfile)
     }
 
 
+type alias Profile a =
+    { a | id : GraphQL.Scalar.Id, name : String, avatarUrl : String }
+
+
 type alias ParentProfile =
-    { id : GraphQL.Scalar.Id
-    , name : String
-    , avatarUrl : String
+    Profile {}
+
+
+parentProfile : GraphQL.Scalar.Id -> String -> String -> ParentProfile
+parentProfile id name avatarUrl =
+    { id = id
+    , name = name
+    , avatarUrl = avatarUrl
     }
 
 
 type alias ChildProfile =
-    { id : GraphQL.Scalar.Id
-    , name : String
-    , avatarUrl : String
+    Profile {}
+
+
+childProfile : GraphQL.Scalar.Id -> String -> String -> ChildProfile
+childProfile id name avatarUrl =
+    { id = id
+    , name = name
+    , avatarUrl = avatarUrl
     }
 
 
@@ -73,7 +87,7 @@ familySelection =
 
 parentProfileSelection : SelectionSet ParentProfile GraphQL.Object.ParentProfile
 parentProfileSelection =
-    SelectionSet.map3 ParentProfile
+    SelectionSet.map3 parentProfile
         ParentProfile.id
         ParentProfile.name
         (ParentProfile.avatarUrl identity)
@@ -81,7 +95,7 @@ parentProfileSelection =
 
 childProfileSelection : SelectionSet ChildProfile GraphQL.Object.ChildProfile
 childProfileSelection =
-    SelectionSet.map3 ChildProfile
+    SelectionSet.map3 childProfile
         ChildProfile.id
         ChildProfile.name
         (ChildProfile.avatarUrl identity)

@@ -2,20 +2,21 @@ module Page.Learning exposing (Model, Msg, init, subscriptions, toSession, updat
 
 import Browser.Dom exposing (Viewport)
 import Browser.Events exposing (onKeyDown, onKeyUp, onResize)
+import Components.ActivityList as ActivityList
+import Components.ContentArea as ContentArea
 import Data.Activity as Activity exposing (Activity)
 import Data.Group as Group exposing (Group, Position, Section, Target, Topic)
 import Data.Section as Section
 import Data.Slugable exposing (Slugable, collectionView, compactCollectionView)
 import Data.Target as Target exposing (SlugableTarget)
 import Data.Topic as Topic
-import Html exposing (Html, div, h2, h3, h4, p, text, ul)
+import Html exposing (Html, div, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (keyCode)
 import Json.Decode as Decode
 import Route exposing (positionToRoute)
 import Session exposing (Session)
 import Task
-import Views.ActionList as ActionList
 import Views.Breadcrumb as Breadcrumb
 import Views.Layout exposing (mainHeaderView, mainHeaderWithChapterView, rowView)
 
@@ -145,52 +146,34 @@ viewTarget group topic section target =
 
 viewDetail : Html Msg
 viewDetail =
-    Html.node "main"
-        [ class "main-content content content--two" ]
-        [ div [ class "content__infobox" ]
-            [ h2 [ class "content__title" ] [ text "Introduction" ]
-            , p [ class "content__introduction" ] [ text "Ut suscipit sit amet ex sit amet ultricies. Sed nisl sem, mattis vitae nunc eu, accumsan blandit augue. Nunc interdum arcu id consectetur pellentesque. Nullam lectus ex, sodales dignissim porta sit amet, pharetra ultrices ex. Proin non facilisis enim. Donec ornare commodo ante, et sagittis mauris euismod vel. Ut convallis sit amet lorem quis euismod. Aenean accumsan consequat diam, nec ultrices nunc fermentum a. Donec sagittis magna nec tincidunt condimentum. In tempor malesuada dignissim. Vestibulum ultricies eu ipsum eu suscipit. Suspendisse convallis nisi id mollis tincidunt. Curabitur venenatis, libero id ultricies blandit, metus arcu sodales ligula, sit amet laoreet nisl ligula eu leo. Aenean pharetra lacinia tortor, a sagittis tellus mattis vitae." ]
+    ContentArea.view
+        [ ContentArea.infoBox
+            [ ContentArea.primaryTitle "Introduction"
+            , ContentArea.introduction "Ut suscipit sit amet ex sit amet ultricies. Sed nisl sem, mattis vitae nunc eu, accumsan blandit augue. Nunc interdum arcu id consectetur pellentesque. Nullam lectus ex, sodales dignissim porta sit amet, pharetra ultrices ex. Proin non facilisis enim. Donec ornare commodo ante, et sagittis mauris euismod vel. Ut convallis sit amet lorem quis euismod. Aenean accumsan consequat diam, nec ultrices nunc fermentum a. Donec sagittis magna nec tincidunt condimentum. In tempor malesuada dignissim. Vestibulum ultricies eu ipsum eu suscipit. Suspendisse convallis nisi id mollis tincidunt. Curabitur venenatis, libero id ultricies blandit, metus arcu sodales ligula, sit amet laoreet nisl ligula eu leo. Aenean pharetra lacinia tortor, a sagittis tellus mattis vitae."
             ]
-        , div [ class "content__infobox" ]
-            [ h3 [ class "content__title" ] [ text "Objectifs & pédagogie" ]
-            , p [ class "content__text" ] [ text "Ut suscipit sit amet ex sit amet ultricies. Sed nisl sem, mattis vitae nunc eu, accumsan blandit augue. Nunc interdum arcu id consectetur pellentesque. Nullam lectus ex, sodales dignissim porta sit amet, pharetra ultrices ex. Proin non facilisis enim. Donec ornare commodo ante, et sagittis mauris euismod vel. Ut convallis sit amet lorem quis euismod. Aenean accumsan consequat diam, nec ultrices nunc fermentum a. Donec sagittis magna nec tincidunt condimentum. In tempor malesuada dignissim. Vestibulum ultricies eu ipsum eu suscipit. Suspendisse convallis nisi id mollis tincidunt. Curabitur venenatis, libero id ultricies blandit, metus arcu sodales ligula, sit amet laoreet nisl ligula eu leo. Aenean pharetra lacinia tortor, a sagittis tellus mattis vitae." ]
-            , h4 [ class "content__title" ] [ text "Objectifs" ]
-            , p [ class "content__text" ] [ text "Ut suscipit sit amet ex sit amet ultricies. Sed nisl sem, mattis vitae nunc eu, accumsan blandit augue. Nunc interdum arcu id consectetur pellentesque. Nullam lectus ex, sodales dignissim porta sit amet, pharetra ultrices ex. Proin non facilisis enim. Donec ornare commodo ante, et sagittis mauris euismod vel. Ut convallis sit amet lorem quis euismod. Aenean accumsan consequat diam, nec ultrices nunc fermentum a. Donec sagittis magna nec tincidunt condimentum. In tempor malesuada dignissim. Vestibulum ultricies eu ipsum eu suscipit. Suspendisse convallis nisi id mollis tincidunt. Curabitur venenatis, libero id ultricies blandit, metus arcu sodales ligula, sit amet laoreet nisl ligula eu leo. Aenean pharetra lacinia tortor, a sagittis tellus mattis vitae." ]
-            , h4 [ class "content__title" ] [ text "Pédagogie" ]
-            , p [ class "content__text" ] [ text "Ut suscipit sit amet ex sit amet ultricies. Sed nisl sem, mattis vitae nunc eu, accumsan blandit augue. Nunc interdum arcu id consectetur pellentesque. Nullam lectus ex, sodales dignissim porta sit amet, pharetra ultrices ex. Proin non facilisis enim. Donec ornare commodo ante, et sagittis mauris euismod vel. Ut convallis sit amet lorem quis euismod. Aenean accumsan consequat diam, nec ultrices nunc fermentum a. Donec sagittis magna nec tincidunt condimentum. In tempor malesuada dignissim. Vestibulum ultricies eu ipsum eu suscipit. Suspendisse convallis nisi id mollis tincidunt. Curabitur venenatis, libero id ultricies blandit, metus arcu sodales ligula, sit amet laoreet nisl ligula eu leo. Aenean pharetra lacinia tortor, a sagittis tellus mattis vitae." ]
+        , ContentArea.infoBox
+            [ ContentArea.secondaryTitle "Objectifs & pédagogie"
+            , ContentArea.paragraph "Ut suscipit sit amet ex sit amet ultricies. Sed nisl sem, mattis vitae nunc eu, accumsan blandit augue. Nunc interdum arcu id consectetur pellentesque. Nullam lectus ex, sodales dignissim porta sit amet, pharetra ultrices ex. Proin non facilisis enim. Donec ornare commodo ante, et sagittis mauris euismod vel. Ut convallis sit amet lorem quis euismod. Aenean accumsan consequat diam, nec ultrices nunc fermentum a. Donec sagittis magna nec tincidunt condimentum. In tempor malesuada dignissim. Vestibulum ultricies eu ipsum eu suscipit. Suspendisse convallis nisi id mollis tincidunt. Curabitur venenatis, libero id ultricies blandit, metus arcu sodales ligula, sit amet laoreet nisl ligula eu leo. Aenean pharetra lacinia tortor, a sagittis tellus mattis vitae."
+            , ContentArea.ternaryTitle "Objectifs"
+            , ContentArea.paragraph "Ut suscipit sit amet ex sit amet ultricies. Sed nisl sem, mattis vitae nunc eu, accumsan blandit augue. Nunc interdum arcu id consectetur pellentesque. Nullam lectus ex, sodales dignissim porta sit amet, pharetra ultrices ex. Proin non facilisis enim. Donec ornare commodo ante, et sagittis mauris euismod vel. Ut convallis sit amet lorem quis euismod. Aenean accumsan consequat diam, nec ultrices nunc fermentum a. Donec sagittis magna nec tincidunt condimentum. In tempor malesuada dignissim. Vestibulum ultricies eu ipsum eu suscipit. Suspendisse convallis nisi id mollis tincidunt. Curabitur venenatis, libero id ultricies blandit, metus arcu sodales ligula, sit amet laoreet nisl ligula eu leo. Aenean pharetra lacinia tortor, a sagittis tellus mattis vitae."
+            , ContentArea.ternaryTitle "Pédagogie"
+            , ContentArea.paragraph "Ut suscipit sit amet ex sit amet ultricies. Sed nisl sem, mattis vitae nunc eu, accumsan blandit augue. Nunc interdum arcu id consectetur pellentesque. Nullam lectus ex, sodales dignissim porta sit amet, pharetra ultrices ex. Proin non facilisis enim. Donec ornare commodo ante, et sagittis mauris euismod vel. Ut convallis sit amet lorem quis euismod. Aenean accumsan consequat diam, nec ultrices nunc fermentum a. Donec sagittis magna nec tincidunt condimentum. In tempor malesuada dignissim. Vestibulum ultricies eu ipsum eu suscipit. Suspendisse convallis nisi id mollis tincidunt. Curabitur venenatis, libero id ultricies blandit, metus arcu sodales ligula, sit amet laoreet nisl ligula eu leo. Aenean pharetra lacinia tortor, a sagittis tellus mattis vitae."
             ]
-        , activityListView
-            [ Activity.createActivity "Lecture en couleur"
-            , Activity.createActivity "Fractions"
-            , Activity.createActivity "Histoire en histoire"
-            , Activity.createActivity "Biologie, le système cardiaque"
-            , Activity.createActivity "Dessin, le coeur"
+        , ActivityList.view
+            [ Activity.fromString "Lecture en couleur"
+            , Activity.fromString "Fractions"
+            , Activity.fromString "Histoire en histoire"
+            , Activity.fromString "Biologie, le système cardiaque"
+            , Activity.fromString "Dessin, le coeur"
             ]
-        , activityListView
-            [ Activity.createActivity "Lecture en couleur"
-            , Activity.createActivity "Fractions"
-            , Activity.createActivity "Histoire en histoire"
-            , Activity.createActivity "Biologie, le système cardiaque"
-            , Activity.createActivity "Dessin, le coeur"
+        , ActivityList.view
+            [ Activity.fromString "Lecture en couleur"
+            , Activity.fromString "Fractions"
+            , Activity.fromString "Histoire en histoire"
+            , Activity.fromString "Biologie, le système cardiaque"
+            , Activity.fromString "Dessin, le coeur"
             ]
         ]
-
-
-activityListView : List Activity -> Html Msg
-activityListView list =
-    div [ class "content__infobox" ]
-        [ h3 [ class "content__title" ] [ text "Propositions d'activités" ]
-        , ul [ class "action-list" ]
-            (List.map
-                activityPreview
-                list
-            )
-        ]
-
-
-activityPreview : Activity -> Html Msg
-activityPreview { label } =
-    ActionList.link [ text label ]
 
 
 groupBreadcrumbView : Html Msg

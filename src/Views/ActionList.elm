@@ -1,11 +1,11 @@
-module Views.ActionList exposing (item, link, list)
+module Views.ActionList exposing (item, link, view)
 
 import Html exposing (Html, a, li, ul)
 import Html.Attributes exposing (class, href)
 
 
-list : List a -> (a -> Html msg) -> Html msg
-list items renderer =
+view : List a -> (a -> Html msg) -> Html msg
+view items renderer =
     ul [ class "action-list" ]
         (List.map
             renderer

@@ -24,9 +24,9 @@ id =
     Object.selectionForField "ScalarCodecs.Id" "id" [] (GraphQL.ScalarCodecs.codecs |> GraphQL.Scalar.unwrapCodecs |> .codecId |> .decoder)
 
 
-name : SelectionSet (Maybe String) GraphQL.Object.Family
+name : SelectionSet String GraphQL.Object.Family
 name =
-    Object.selectionForField "(Maybe String)" "name" [] (Decode.string |> Decode.nullable)
+    Object.selectionForField "String" "name" [] Decode.string
 
 
 parents : SelectionSet decodesTo GraphQL.Object.ParentProfile -> SelectionSet (List (Maybe decodesTo)) GraphQL.Object.Family

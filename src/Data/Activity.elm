@@ -1,4 +1,4 @@
-module Data.Activity exposing (Activity, ActivityId, createActivity)
+module Data.Activity exposing (Activity, ActivityId, fromString)
 
 
 type ActivityId
@@ -11,8 +11,8 @@ type alias Activity =
     }
 
 
-createActivity : String -> Activity
-createActivity label =
+fromString : String -> Activity
+fromString label =
     { id = ActivityId label
     , label = label
     }
