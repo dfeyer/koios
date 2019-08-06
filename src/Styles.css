@@ -577,6 +577,7 @@ a.collection__link:hover span {
 }
 
 .page-header {
+  grid-column: 1/ span 2;
   margin-bottom: 2rem;
 }
 
@@ -931,6 +932,22 @@ h2.content__title {
   padding: 0;
 }
 
+.action-list__item,
+.action-list__link {
+  display: flex;
+  align-items: center;
+}
+.action-list__item > *,
+.action-list__link > * {
+  margin-right: .5rem;
+}
+
+.action-list__circular-image {
+  border-radius: 5%;
+  width: 1.5rem;
+  mix-blend-mode: multiply;
+}
+
 .action-list__item {
   list-style: none;
   border: 2px solid var(--background-color-inversed);
@@ -938,15 +955,53 @@ h2.content__title {
 }
 
 .action-list__link {
+  flex: 1;
   cursor: pointer;
-  display: block;
   text-decoration: none;
   padding: .5rem;
   background-color: transparent;
+  margin-right: 0;
 
   transition: background-color 180ms ease-out;
 }
 
 .action-list__link:hover {
   background-color: var(--background-color);
+}
+
+.action-list__link--action .action-list__circular-image {
+  width: 1.5rem;
+  margin-right: 2.5rem;
+}
+
+action-list-with-actions {
+
+}
+
+.action-list-with-actions__list {
+
+}
+
+.action-list-with-actions__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: .75rem;
+}
+
+.button {
+  cursor: pointer;
+  background-color: white;
+  color: black;
+  padding: .3rem .6rem;
+  outline-offset: 0;
+  outline: white solid .15rem;
+  border: 0;
+
+  transition: background-color 320ms ease-in-out;
+}
+
+.button:hover,
+.button:focus {
+  background-color: black;
+  color: white;
 }

@@ -1,4 +1,4 @@
-module Request.Family exposing (FamiliyProfileRemoteData, Family, Profile, familySelection, loadFamilyProfile)
+module Request.Family exposing (ChildProfile, FamiliyProfileRemoteData, Family, ParentProfile, Profile, familySelection, loadFamilyProfile)
 
 import GraphQL.Object
 import GraphQL.Object.ChildProfile as ChildProfile

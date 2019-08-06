@@ -1,13 +1,15 @@
 module Page.FamilyProfile exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
 import Components.ContentArea as ContentArea
-import Html exposing (Html, div, h2, text)
-import Html.Attributes exposing (class)
+import Html exposing (Html, button, div, h2, img, text)
+import Html.Attributes exposing (class, src)
 import RemoteData exposing (RemoteData, WebData)
-import Request.Family exposing (FamiliyProfileRemoteData, Family, Profile, loadFamilyProfile)
+import Request.Family exposing (FamiliyProfileRemoteData, Family, ParentProfile, Profile, loadFamilyProfile)
 import Session exposing (Session)
+import Shared exposing (filterNothing)
 import Views.ActionList as ActionList
-import Views.Layout exposing (mainHeaderView)
+import Views.Button as Button
+import Views.Layout exposing (mainHeaderWithChapterView)
 
 
 
@@ -67,30 +69,40 @@ view model =
 viewProfile : Family -> List (Html Msg)
 viewProfile family =
     [ ContentArea.view
-        [ ContentArea.infoBox
-            [ ContentArea.primaryTitle family.name
-            , ContentArea.introduction "Ut suscipit sit amet ex sit amet ultricies. Sed nisl sem, mattis vitae nunc eu, accumsan blandit augue. Nunc interdum arcu id consectetur pellentesque. Nullam lectus ex, sodales dignissim porta sit amet, pharetra ultrices ex. Proin non facilisis enim. Donec ornare commodo ante, et sagittis mauris euismod vel. Ut convallis sit amet lorem quis euismod. Aenean accumsan consequat diam, nec ultrices nunc fermentum a. Donec sagittis magna nec tincidunt condimentum. In tempor malesuada dignissim. Vestibulum ultricies eu ipsum eu suscipit. Suspendisse convallis nisi id mollis tincidunt."
-            ]
+        [ mainHeaderWithChapterView
+            (text "Profile")
+            (text family.name)
         , ContentArea.infoBox
             [ ContentArea.secondaryTitle "Référants"
-            , ActionList.view family.parents viewProfileLink
+            , ActionList.viewWithActions
+                (filterNothing family.parents)
+                viewProfileLink
+                [ viewAddProfileLink ]
             ]
         , ContentArea.infoBox
             [ ContentArea.secondaryTitle "Apprenants"
-            , ActionList.view family.childs viewProfileLink
+            , ActionList.viewWithActions
+                (filterNothing family.childs)
+                viewProfileLink
+                [ viewAddProfileLink ]
             ]
         ]
     ]
 
 
-viewProfileLink : Maybe (Profile a) -> Html Msg
-viewProfileLink maybeProfile =
-    case maybeProfile of
-        Just profile ->
-            ActionList.link [ div [] [ text profile.name ] ]
+viewProfileLink : Profile a -> Html Msg
+viewProfileLink profile =
+    ActionList.link
+        [ img [ class "action-list__circular-image", src profile.avatarUrl ] []
+        , div [] [ text profile.name ]
+        ]
 
-        Nothing ->
-            ActionList.link [ div [] [] ]
+
+viewAddProfileLink : Html Msg
+viewAddProfileLink =
+    Button.view
+        [ div [] [ text "Créer un nouveau compte" ]
+        ]
 
 
 viewLoading : List (Html Msg)
@@ -110,21 +122,15 @@ viewError =
 
 
 type Msg
-    = NoOp
-    | GotSession Session
+    = GotSession Session
     | ProfileLoaded FamiliyProfileRemoteData
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        NoOp ->
-            ( model
-            , Cmd.none
-            )
-
-        GotSession _ ->
-            ( model
+        GotSession session ->
+            ( { model | session = session }
             , Cmd.none
             )
 
