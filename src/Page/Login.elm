@@ -9,6 +9,7 @@ import Request.Auth as Auth exposing (AuthResponse)
 import Route
 import Session exposing (Session, isLoggedIn)
 import Viewer exposing (Viewer, viewer)
+import Views.Button as Button
 import Views.Layout exposing (mainHeaderView)
 
 
@@ -86,9 +87,7 @@ viewLogout _ =
         , onSubmit LogoutRequested
         ]
         [ div [ class "form__actions" ]
-            [ button
-                [ class "form__button"
-                ]
+            [ Button.view
                 [ text "Se déconnecter" ]
             ]
         ]
@@ -132,9 +131,7 @@ loginView _ =
                 [ text "La plateforme est en version beta sur invitation, vous pouvez nous demander un accès en nous envoyant un courriel." ]
             ]
         , div [ class "form__actions" ]
-            [ button
-                [ class "form__button"
-                ]
+            [ Button.view
                 [ text "Se connecter" ]
             ]
         ]

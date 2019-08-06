@@ -8,7 +8,9 @@ view : List (Html msg) -> Html.Html msg
 view list =
     node
         "main"
-        [ class "content content--two" ]
+        [ class "content"
+        , class "content--two"
+        ]
         list
 
 
