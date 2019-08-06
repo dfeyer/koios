@@ -1,14 +1,16 @@
 module Page.FamilyProfile exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
 import Components.ContentArea as ContentArea
-import Html exposing (Html, button, div, h2, img, text)
+import Html exposing (Html, div, img, text)
 import Html.Attributes exposing (class, src)
 import RemoteData exposing (RemoteData, WebData)
 import Request.Family exposing (FamiliyProfileRemoteData, Family, ParentProfile, Profile, loadFamilyProfile)
-import Session exposing (Session)
+import Route
+import Session exposing (Session, isLoggedIn)
 import Shared exposing (filterNothing)
 import Views.ActionList as ActionList
 import Views.Button as Button
+import Views.Helpers exposing (WithSession)
 import Views.Layout exposing (mainHeaderWithChapterView)
 
 
@@ -17,9 +19,9 @@ import Views.Layout exposing (mainHeaderWithChapterView)
 
 
 type alias Model =
-    { session : Session
-    , family : FamiliyProfileRemoteData
-    }
+    WithSession
+        { family : FamiliyProfileRemoteData
+        }
 
 
 
@@ -130,9 +132,16 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         GotSession session ->
-            ( { model | session = session }
-            , Cmd.none
-            )
+            case isLoggedIn session of
+                True ->
+                    ( { model | session = session }
+                    , Cmd.none
+                    )
+
+                False ->
+                    ( { model | session = session }
+                    , Route.replaceUrl (Session.navKey session) (Route.Learning Nothing)
+                    )
 
         ProfileLoaded response ->
             ( { model | family = response }

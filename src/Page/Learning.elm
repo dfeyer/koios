@@ -18,6 +18,7 @@ import Route exposing (positionToRoute)
 import Session exposing (Session)
 import Task
 import Views.Breadcrumb as Breadcrumb
+import Views.Helpers exposing (WithSession)
 import Views.Layout exposing (mainHeaderView, mainHeaderWithChapterView, rowView)
 
 
@@ -26,12 +27,12 @@ import Views.Layout exposing (mainHeaderView, mainHeaderWithChapterView, rowView
 
 
 type alias Model =
-    { session : Session
-    , learnings : List Group
-    , position : Maybe Position
-    , activity : Maybe Activity
-    , viewport : Maybe ( Float, Float )
-    }
+    WithSession
+        { learnings : List Group
+        , position : Maybe Position
+        , activity : Maybe Activity
+        , viewport : Maybe ( Float, Float )
+        }
 
 
 init : Session -> List Group -> Maybe String -> ( Model, Cmd Msg )

@@ -7,6 +7,7 @@ import Session exposing (Session)
 import Views.Calendar as Calendar
 import Views.Day as Day
 import Views.Event as Event
+import Views.Helpers exposing (WithSession)
 import Views.Layout exposing (mainHeaderWithChapterView)
 
 
@@ -15,8 +16,7 @@ import Views.Layout exposing (mainHeaderWithChapterView)
 
 
 type alias Model =
-    { session : Session
-    }
+    WithSession {}
 
 
 init : Session -> ( Model, Cmd Msg )

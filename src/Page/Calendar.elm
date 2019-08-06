@@ -4,6 +4,7 @@ import Html exposing (Html, div, h3, text)
 import Html.Attributes exposing (class)
 import Session exposing (Session)
 import Views.Event as Event
+import Views.Helpers exposing (WithSession)
 import Views.Layout exposing (mainHeaderWithChapterView)
 
 
@@ -12,8 +13,7 @@ import Views.Layout exposing (mainHeaderWithChapterView)
 
 
 type alias Model =
-    { session : Session
-    }
+    WithSession {}
 
 
 init : Session -> ( Model, Cmd Msg )

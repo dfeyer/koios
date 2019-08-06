@@ -10,6 +10,7 @@ import Route
 import Session exposing (Session, isLoggedIn)
 import Viewer exposing (Viewer, viewer)
 import Views.Button as Button
+import Views.Helpers exposing (WithSession)
 import Views.Layout exposing (mainHeaderView)
 
 
@@ -18,10 +19,10 @@ import Views.Layout exposing (mainHeaderView)
 
 
 type alias Model =
-    { session : Session
-    , credentials : Maybe Credentials
-    , isLoading : Bool
-    }
+    WithSession
+        { credentials : Maybe Credentials
+        , isLoading : Bool
+        }
 
 
 type alias Credentials =
@@ -155,9 +156,16 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         GotSession session ->
-            ( { model | session = session }
-            , Route.replaceUrl (Session.navKey session) (Route.Learning Nothing)
-            )
+            case isLoggedIn session of
+                True ->
+                    ( { model | session = session }
+                    , Route.replaceUrl (Session.navKey session) (Route.Learning Nothing)
+                    )
+
+                False ->
+                    ( { model | session = session }
+                    , Route.replaceUrl (Session.navKey session) (Route.Learning Nothing)
+                    )
 
         UsernameEdited username ->
             case model.credentials of
