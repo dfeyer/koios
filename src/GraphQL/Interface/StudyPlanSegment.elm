@@ -2,7 +2,7 @@
 -- https://github.com/dillonkearns/elm-graphql
 
 
-module GraphQL.Interface.StudyPlanSegment exposing (Fragments, fragments, id, maybeFragments, name, slug)
+module GraphQL.Interface.StudyPlanSegment exposing (Fragments, code, fragments, id, maybeFragments, name, slug)
 
 import GraphQL.InputObject
 import GraphQL.Interface
@@ -56,6 +56,11 @@ maybeFragments =
 id : SelectionSet GraphQL.ScalarCodecs.Id GraphQL.Interface.StudyPlanSegment
 id =
     Object.selectionForField "ScalarCodecs.Id" "id" [] (GraphQL.ScalarCodecs.codecs |> GraphQL.Scalar.unwrapCodecs |> .codecId |> .decoder)
+
+
+code : SelectionSet String GraphQL.Interface.StudyPlanSegment
+code =
+    Object.selectionForField "String" "code" [] Decode.string
 
 
 slug : SelectionSet String GraphQL.Interface.StudyPlanSegment

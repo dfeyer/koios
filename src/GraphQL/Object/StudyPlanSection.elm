@@ -2,7 +2,7 @@
 -- https://github.com/dillonkearns/elm-graphql
 
 
-module GraphQL.Object.StudyPlanSection exposing (TargetRequiredArguments, id, name, next, prev, slug, target, targets, topic)
+module GraphQL.Object.StudyPlanSection exposing (TargetRequiredArguments, code, id, name, next, prev, slug, target, targets, topic)
 
 import GraphQL.InputObject
 import GraphQL.Interface
@@ -22,6 +22,11 @@ import Json.Decode as Decode
 id : SelectionSet GraphQL.ScalarCodecs.Id GraphQL.Object.StudyPlanSection
 id =
     Object.selectionForField "ScalarCodecs.Id" "id" [] (GraphQL.ScalarCodecs.codecs |> GraphQL.Scalar.unwrapCodecs |> .codecId |> .decoder)
+
+
+code : SelectionSet String GraphQL.Object.StudyPlanSection
+code =
+    Object.selectionForField "String" "code" [] Decode.string
 
 
 slug : SelectionSet String GraphQL.Object.StudyPlanSection
