@@ -2,7 +2,7 @@
 -- https://github.com/dillonkearns/elm-graphql
 
 
-module GraphQL.Object.StudyPlanTopic exposing (group, id, name, sections)
+module GraphQL.Object.StudyPlanTopic exposing (SectionRequiredArguments, group, id, name, next, prev, section, sections, slug)
 
 import GraphQL.InputObject
 import GraphQL.Interface
@@ -24,6 +24,11 @@ id =
     Object.selectionForField "ScalarCodecs.Id" "id" [] (GraphQL.ScalarCodecs.codecs |> GraphQL.Scalar.unwrapCodecs |> .codecId |> .decoder)
 
 
+slug : SelectionSet String GraphQL.Object.StudyPlanTopic
+slug =
+    Object.selectionForField "String" "slug" [] Decode.string
+
+
 name : SelectionSet (Maybe String) GraphQL.Object.StudyPlanTopic
 name =
     Object.selectionForField "(Maybe String)" "name" [] (Decode.string |> Decode.nullable)
@@ -34,6 +39,25 @@ sections object_ =
     Object.selectionForCompositeField "sections" [] object_ (identity >> Decode.nullable >> Decode.list)
 
 
+type alias SectionRequiredArguments =
+    { id : GraphQL.ScalarCodecs.Id }
+
+
+section : SectionRequiredArguments -> SelectionSet decodesTo GraphQL.Object.StudyPlanSection -> SelectionSet decodesTo GraphQL.Object.StudyPlanTopic
+section requiredArgs object_ =
+    Object.selectionForCompositeField "section" [ Argument.required "id" requiredArgs.id (GraphQL.ScalarCodecs.codecs |> GraphQL.Scalar.unwrapEncoder .codecId) ] object_ identity
+
+
 group : SelectionSet decodesTo GraphQL.Object.StudyPlanGroup -> SelectionSet decodesTo GraphQL.Object.StudyPlanTopic
 group object_ =
     Object.selectionForCompositeField "group" [] object_ identity
+
+
+next : SelectionSet decodesTo GraphQL.Object.StudyPlanGroup -> SelectionSet (Maybe decodesTo) GraphQL.Object.StudyPlanTopic
+next object_ =
+    Object.selectionForCompositeField "next" [] object_ (identity >> Decode.nullable)
+
+
+prev : SelectionSet decodesTo GraphQL.Object.StudyPlanGroup -> SelectionSet (Maybe decodesTo) GraphQL.Object.StudyPlanTopic
+prev object_ =
+    Object.selectionForCompositeField "prev" [] object_ (identity >> Decode.nullable)

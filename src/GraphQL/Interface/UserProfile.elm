@@ -2,7 +2,7 @@
 -- https://github.com/dillonkearns/elm-graphql
 
 
-module GraphQL.Interface.UserProfile exposing (AvatarUrlOptionalArguments, Fragments, accessLevel, address, avatarUrl, country, creationDate, email, facebook, family, fax, firstname, fragments, id, instagram, lastname, locality, mastodon, maybeFragments, mobile, name, phone, postalCode, profilePublic, profileValidated, twitter, username, website)
+module GraphQL.Interface.UserProfile exposing (AvatarUrlOptionalArguments, Fragments, accessLevel, address, avatarUrl, country, creationDate, email, facebook, family, fax, firstname, fragments, id, instagram, lastname, locality, mastodon, maybeFragments, mobile, name, phone, postalCode, profilePublic, profileValidated, slug, twitter, username, website)
 
 import GraphQL.InputObject
 import GraphQL.Interface
@@ -50,6 +50,11 @@ maybeFragments =
 id : SelectionSet GraphQL.ScalarCodecs.Id GraphQL.Interface.UserProfile
 id =
     Object.selectionForField "ScalarCodecs.Id" "id" [] (GraphQL.ScalarCodecs.codecs |> GraphQL.Scalar.unwrapCodecs |> .codecId |> .decoder)
+
+
+slug : SelectionSet String GraphQL.Interface.UserProfile
+slug =
+    Object.selectionForField "String" "slug" [] Decode.string
 
 
 creationDate : SelectionSet GraphQL.ScalarCodecs.DateTime GraphQL.Interface.UserProfile

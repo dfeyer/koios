@@ -2,8 +2,12 @@
 -- https://github.com/dillonkearns/elm-graphql
 
 
-module GraphQL.Union exposing (StudyPlanSearchResult(..))
+module GraphQL.Union exposing (StudyPlanSearchResult(..), StudyPlanSegments(..))
 
 
 type StudyPlanSearchResult
     = StudyPlanSearchResult
+
+
+type StudyPlanSegments
+    = StudyPlanSegments

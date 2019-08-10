@@ -2,7 +2,7 @@
 -- https://github.com/dillonkearns/elm-graphql
 
 
-module GraphQL.Object.ParentProfile exposing (AvatarUrlOptionalArguments, accessLevel, address, avatarUrl, country, creationDate, email, facebook, family, fax, firstname, id, instagram, lastname, locality, mastodon, mobile, name, phone, postalCode, profilePublic, profileValidated, twitter, username, website)
+module GraphQL.Object.ParentProfile exposing (AvatarUrlOptionalArguments, accessLevel, address, avatarUrl, country, creationDate, email, facebook, family, fax, firstname, id, instagram, lastname, locality, mastodon, mobile, name, phone, postalCode, profilePublic, profileValidated, slug, twitter, username, website)
 
 import GraphQL.InputObject
 import GraphQL.Interface
@@ -22,6 +22,11 @@ import Json.Decode as Decode
 id : SelectionSet GraphQL.ScalarCodecs.Id GraphQL.Object.ParentProfile
 id =
     Object.selectionForField "ScalarCodecs.Id" "id" [] (GraphQL.ScalarCodecs.codecs |> GraphQL.Scalar.unwrapCodecs |> .codecId |> .decoder)
+
+
+slug : SelectionSet String GraphQL.Object.ParentProfile
+slug =
+    Object.selectionForField "String" "slug" [] Decode.string
 
 
 creationDate : SelectionSet GraphQL.ScalarCodecs.DateTime GraphQL.Object.ParentProfile

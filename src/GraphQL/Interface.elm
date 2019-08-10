@@ -2,11 +2,19 @@
 -- https://github.com/dillonkearns/elm-graphql
 
 
-module GraphQL.Interface exposing (Node(..), UserProfile(..))
+module GraphQL.Interface exposing (IterableStudyPlanSegment(..), Node(..), StudyPlanSegment(..), UserProfile(..))
+
+
+type IterableStudyPlanSegment
+    = IterableStudyPlanSegment
 
 
 type Node
     = Node
+
+
+type StudyPlanSegment
+    = StudyPlanSegment
 
 
 type UserProfile

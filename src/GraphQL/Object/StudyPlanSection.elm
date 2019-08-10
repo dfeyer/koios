@@ -2,7 +2,7 @@
 -- https://github.com/dillonkearns/elm-graphql
 
 
-module GraphQL.Object.StudyPlanSection exposing (id, name, targets, topic)
+module GraphQL.Object.StudyPlanSection exposing (TargetRequiredArguments, id, name, next, prev, slug, target, targets, topic)
 
 import GraphQL.InputObject
 import GraphQL.Interface
@@ -24,6 +24,11 @@ id =
     Object.selectionForField "ScalarCodecs.Id" "id" [] (GraphQL.ScalarCodecs.codecs |> GraphQL.Scalar.unwrapCodecs |> .codecId |> .decoder)
 
 
+slug : SelectionSet String GraphQL.Object.StudyPlanSection
+slug =
+    Object.selectionForField "String" "slug" [] Decode.string
+
+
 name : SelectionSet (Maybe String) GraphQL.Object.StudyPlanSection
 name =
     Object.selectionForField "(Maybe String)" "name" [] (Decode.string |> Decode.nullable)
@@ -34,6 +39,25 @@ targets object_ =
     Object.selectionForCompositeField "targets" [] object_ (identity >> Decode.nullable >> Decode.list)
 
 
+type alias TargetRequiredArguments =
+    { id : GraphQL.ScalarCodecs.Id }
+
+
+target : TargetRequiredArguments -> SelectionSet decodesTo GraphQL.Object.StudyPlanTarget -> SelectionSet decodesTo GraphQL.Object.StudyPlanSection
+target requiredArgs object_ =
+    Object.selectionForCompositeField "target" [ Argument.required "id" requiredArgs.id (GraphQL.ScalarCodecs.codecs |> GraphQL.Scalar.unwrapEncoder .codecId) ] object_ identity
+
+
 topic : SelectionSet decodesTo GraphQL.Object.StudyPlanTopic -> SelectionSet decodesTo GraphQL.Object.StudyPlanSection
 topic object_ =
     Object.selectionForCompositeField "topic" [] object_ identity
+
+
+next : SelectionSet decodesTo GraphQL.Object.StudyPlanGroup -> SelectionSet (Maybe decodesTo) GraphQL.Object.StudyPlanSection
+next object_ =
+    Object.selectionForCompositeField "next" [] object_ (identity >> Decode.nullable)
+
+
+prev : SelectionSet decodesTo GraphQL.Object.StudyPlanGroup -> SelectionSet (Maybe decodesTo) GraphQL.Object.StudyPlanSection
+prev object_ =
+    Object.selectionForCompositeField "prev" [] object_ (identity >> Decode.nullable)

@@ -2,7 +2,7 @@
 -- https://github.com/dillonkearns/elm-graphql
 
 
-module GraphQL.Interface.Node exposing (Fragments, fragments, id, maybeFragments, slug)
+module GraphQL.Interface.IterableStudyPlanSegment exposing (Fragments, fragments, maybeFragments, next, prev)
 
 import GraphQL.InputObject
 import GraphQL.Interface
@@ -20,11 +20,7 @@ import Json.Decode as Decode
 
 
 type alias Fragments decodesTo =
-    { onFamily : SelectionSet decodesTo GraphQL.Object.Family
-    , onParentProfile : SelectionSet decodesTo GraphQL.Object.ParentProfile
-    , onChildProfile : SelectionSet decodesTo GraphQL.Object.ChildProfile
-    , onStudyPlan : SelectionSet decodesTo GraphQL.Object.StudyPlan
-    , onStudyPlanGroup : SelectionSet decodesTo GraphQL.Object.StudyPlanGroup
+    { onStudyPlanGroup : SelectionSet decodesTo GraphQL.Object.StudyPlanGroup
     , onStudyPlanTopic : SelectionSet decodesTo GraphQL.Object.StudyPlanTopic
     , onStudyPlanSection : SelectionSet decodesTo GraphQL.Object.StudyPlanSection
     , onStudyPlanTarget : SelectionSet decodesTo GraphQL.Object.StudyPlanTarget
@@ -35,14 +31,10 @@ type alias Fragments decodesTo =
 -}
 fragments :
     Fragments decodesTo
-    -> SelectionSet decodesTo GraphQL.Interface.Node
+    -> SelectionSet decodesTo GraphQL.Interface.IterableStudyPlanSegment
 fragments selections =
     Object.exhuastiveFragmentSelection
-        [ Object.buildFragment "Family" selections.onFamily
-        , Object.buildFragment "ParentProfile" selections.onParentProfile
-        , Object.buildFragment "ChildProfile" selections.onChildProfile
-        , Object.buildFragment "StudyPlan" selections.onStudyPlan
-        , Object.buildFragment "StudyPlanGroup" selections.onStudyPlanGroup
+        [ Object.buildFragment "StudyPlanGroup" selections.onStudyPlanGroup
         , Object.buildFragment "StudyPlanTopic" selections.onStudyPlanTopic
         , Object.buildFragment "StudyPlanSection" selections.onStudyPlanSection
         , Object.buildFragment "StudyPlanTarget" selections.onStudyPlanTarget
@@ -54,22 +46,18 @@ update syntax to add `SelectionSet`s for the types you want to handle.
 -}
 maybeFragments : Fragments (Maybe decodesTo)
 maybeFragments =
-    { onFamily = Graphql.SelectionSet.empty |> Graphql.SelectionSet.map (\_ -> Nothing)
-    , onParentProfile = Graphql.SelectionSet.empty |> Graphql.SelectionSet.map (\_ -> Nothing)
-    , onChildProfile = Graphql.SelectionSet.empty |> Graphql.SelectionSet.map (\_ -> Nothing)
-    , onStudyPlan = Graphql.SelectionSet.empty |> Graphql.SelectionSet.map (\_ -> Nothing)
-    , onStudyPlanGroup = Graphql.SelectionSet.empty |> Graphql.SelectionSet.map (\_ -> Nothing)
+    { onStudyPlanGroup = Graphql.SelectionSet.empty |> Graphql.SelectionSet.map (\_ -> Nothing)
     , onStudyPlanTopic = Graphql.SelectionSet.empty |> Graphql.SelectionSet.map (\_ -> Nothing)
     , onStudyPlanSection = Graphql.SelectionSet.empty |> Graphql.SelectionSet.map (\_ -> Nothing)
     , onStudyPlanTarget = Graphql.SelectionSet.empty |> Graphql.SelectionSet.map (\_ -> Nothing)
     }
 
 
-id : SelectionSet GraphQL.ScalarCodecs.Id GraphQL.Interface.Node
-id =
-    Object.selectionForField "ScalarCodecs.Id" "id" [] (GraphQL.ScalarCodecs.codecs |> GraphQL.Scalar.unwrapCodecs |> .codecId |> .decoder)
+next : SelectionSet decodesTo GraphQL.Union.StudyPlanSegments -> SelectionSet (Maybe decodesTo) GraphQL.Interface.IterableStudyPlanSegment
+next object_ =
+    Object.selectionForCompositeField "next" [] object_ (identity >> Decode.nullable)
 
 
-slug : SelectionSet String GraphQL.Interface.Node
-slug =
-    Object.selectionForField "String" "slug" [] Decode.string
+prev : SelectionSet decodesTo GraphQL.Union.StudyPlanSegments -> SelectionSet (Maybe decodesTo) GraphQL.Interface.IterableStudyPlanSegment
+prev object_ =
+    Object.selectionForCompositeField "prev" [] object_ (identity >> Decode.nullable)

@@ -2,7 +2,7 @@
 -- https://github.com/dillonkearns/elm-graphql
 
 
-module GraphQL.Query exposing (PingRequiredArguments, family, ping)
+module GraphQL.Query exposing (PingRequiredArguments, StudyPlanRequiredArguments, family, ping, studyPlan, studyPlans)
 
 import GraphQL.InputObject
 import GraphQL.Interface
@@ -31,3 +31,17 @@ ping requiredArgs =
 family : SelectionSet decodesTo GraphQL.Object.Family -> SelectionSet decodesTo RootQuery
 family object_ =
     Object.selectionForCompositeField "family" [] object_ identity
+
+
+studyPlans : SelectionSet decodesTo GraphQL.Object.StudyPlan -> SelectionSet (List decodesTo) RootQuery
+studyPlans object_ =
+    Object.selectionForCompositeField "studyPlans" [] object_ (identity >> Decode.list)
+
+
+type alias StudyPlanRequiredArguments =
+    { id : GraphQL.ScalarCodecs.Id }
+
+
+studyPlan : StudyPlanRequiredArguments -> SelectionSet decodesTo GraphQL.Object.StudyPlan -> SelectionSet decodesTo RootQuery
+studyPlan requiredArgs object_ =
+    Object.selectionForCompositeField "studyPlan" [ Argument.required "id" requiredArgs.id (GraphQL.ScalarCodecs.codecs |> GraphQL.Scalar.unwrapEncoder .codecId) ] object_ identity

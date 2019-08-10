@@ -2,7 +2,7 @@
 -- https://github.com/dillonkearns/elm-graphql
 
 
-module GraphQL.Object.Family exposing (childs, id, name, parents)
+module GraphQL.Object.Family exposing (childs, id, name, parents, slug)
 
 import GraphQL.InputObject
 import GraphQL.Interface
@@ -22,6 +22,11 @@ import Json.Decode as Decode
 id : SelectionSet GraphQL.ScalarCodecs.Id GraphQL.Object.Family
 id =
     Object.selectionForField "ScalarCodecs.Id" "id" [] (GraphQL.ScalarCodecs.codecs |> GraphQL.Scalar.unwrapCodecs |> .codecId |> .decoder)
+
+
+slug : SelectionSet String GraphQL.Object.Family
+slug =
+    Object.selectionForField "String" "slug" [] Decode.string
 
 
 name : SelectionSet String GraphQL.Object.Family

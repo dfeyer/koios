@@ -2,7 +2,7 @@
 -- https://github.com/dillonkearns/elm-graphql
 
 
-module GraphQL.Object.StudyPlanTarget exposing (id, name, section)
+module GraphQL.Object.StudyPlanTarget exposing (id, name, next, prev, section, slug)
 
 import GraphQL.InputObject
 import GraphQL.Interface
@@ -24,6 +24,11 @@ id =
     Object.selectionForField "ScalarCodecs.Id" "id" [] (GraphQL.ScalarCodecs.codecs |> GraphQL.Scalar.unwrapCodecs |> .codecId |> .decoder)
 
 
+slug : SelectionSet String GraphQL.Object.StudyPlanTarget
+slug =
+    Object.selectionForField "String" "slug" [] Decode.string
+
+
 name : SelectionSet (Maybe String) GraphQL.Object.StudyPlanTarget
 name =
     Object.selectionForField "(Maybe String)" "name" [] (Decode.string |> Decode.nullable)
@@ -32,3 +37,13 @@ name =
 section : SelectionSet decodesTo GraphQL.Object.StudyPlanSection -> SelectionSet decodesTo GraphQL.Object.StudyPlanTarget
 section object_ =
     Object.selectionForCompositeField "section" [] object_ identity
+
+
+next : SelectionSet decodesTo GraphQL.Object.StudyPlanGroup -> SelectionSet (Maybe decodesTo) GraphQL.Object.StudyPlanTarget
+next object_ =
+    Object.selectionForCompositeField "next" [] object_ (identity >> Decode.nullable)
+
+
+prev : SelectionSet decodesTo GraphQL.Object.StudyPlanGroup -> SelectionSet (Maybe decodesTo) GraphQL.Object.StudyPlanTarget
+prev object_ =
+    Object.selectionForCompositeField "prev" [] object_ (identity >> Decode.nullable)

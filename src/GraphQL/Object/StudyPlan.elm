@@ -2,7 +2,7 @@
 -- https://github.com/dillonkearns/elm-graphql
 
 
-module GraphQL.Object.StudyPlan exposing (SearchOptionalArguments, SearchRequiredArguments, groups, id, name, search)
+module GraphQL.Object.StudyPlan exposing (GroupRequiredArguments, SearchOptionalArguments, SearchRequiredArguments, group, groups, id, name, search, slug)
 
 import GraphQL.InputObject
 import GraphQL.Interface
@@ -24,6 +24,11 @@ id =
     Object.selectionForField "ScalarCodecs.Id" "id" [] (GraphQL.ScalarCodecs.codecs |> GraphQL.Scalar.unwrapCodecs |> .codecId |> .decoder)
 
 
+slug : SelectionSet String GraphQL.Object.StudyPlan
+slug =
+    Object.selectionForField "String" "slug" [] Decode.string
+
+
 name : SelectionSet (Maybe String) GraphQL.Object.StudyPlan
 name =
     Object.selectionForField "(Maybe String)" "name" [] (Decode.string |> Decode.nullable)
@@ -32,6 +37,15 @@ name =
 groups : SelectionSet decodesTo GraphQL.Object.StudyPlanGroup -> SelectionSet (List (Maybe decodesTo)) GraphQL.Object.StudyPlan
 groups object_ =
     Object.selectionForCompositeField "groups" [] object_ (identity >> Decode.nullable >> Decode.list)
+
+
+type alias GroupRequiredArguments =
+    { id : GraphQL.ScalarCodecs.Id }
+
+
+group : GroupRequiredArguments -> SelectionSet decodesTo GraphQL.Object.StudyPlanGroup -> SelectionSet decodesTo GraphQL.Object.StudyPlan
+group requiredArgs object_ =
+    Object.selectionForCompositeField "group" [ Argument.required "id" requiredArgs.id (GraphQL.ScalarCodecs.codecs |> GraphQL.Scalar.unwrapEncoder .codecId) ] object_ identity
 
 
 type alias SearchOptionalArguments =
